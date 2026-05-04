@@ -1,0 +1,3 @@
+[submodule "am335x_bsp"]
+	path = am335x_bsp
+	url = https://github.com/iiievan/am335x_bsp.git
