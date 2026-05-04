@@ -1,0 +1,6 @@
+
+target_sources(lib_third_party_amazon_freertos_kernel_portable_MemMang
+                PUBLIC
+                    "${CMAKE_CURRENT_SOURCE_DIR}/heap_4.c"
+
+            )

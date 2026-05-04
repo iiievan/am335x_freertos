@@ -4,7 +4,8 @@
 #include "rtt/rtt_log.h"
 #include "hal/boards/beaglebone_black.hpp"
 #include "hal/sysTimer.hpp"
-
+#include "FreeRTOS.h"
+#include "task.h"
 
 #define TAG "main"
 
@@ -13,6 +14,26 @@ void delay_ms(const uint32_t ms)
     using namespace HAL::TIMERS;
     const volatile uint32_t start = sys_time.get_ms();
     while((sys_time.get_ms() - start) < ms);
+}
+
+void vTask1(void *pvParameters)
+{
+    (void)pvParameters;
+    for(;;)
+    {
+        Board::USR0.toggle();
+        vTaskDelay(pdMS_TO_TICKS(500));
+    }
+}
+
+void vTask2(void *pvParameters)
+{
+    (void)pvParameters;
+    for(;;)
+    {
+        Board::USR1.toggle();
+        vTaskDelay(pdMS_TO_TICKS(750));
+    }
 }
 
 int main ()
@@ -24,38 +45,15 @@ int main ()
     if (!init_sts)
     {
         RTT_LOG_E(TAG, "Board initialization failed!");
-        while (1);
+        while (1){}
     }
 
-    RTT_LOG_I(TAG, "Board initialization seccess!");
+    xTaskCreate(vTask1, "Task1", 512, NULL, 1, NULL);
+    xTaskCreate(vTask2, "Task2", 512, NULL, 1, NULL);
 
-    uint8_t counter = 0;
-    while(true)
-    {
-        delay_ms(300);
-        switch (counter)
-        {
-            case 0:
-                Board::USR0.toggle();
-                counter++;
-                break;
-            case 1:
-                Board::USR1.toggle();
-                counter++;
-                break;
-            case 2:
-                Board::USR2.toggle();
-                counter++;
-                break;
-            case 3:
-                Board::USR3.toggle();
-                counter++;
-                break;
-            default:
-                counter = 0;
-                break;
-        }
-    }
+    vTaskStartScheduler();
+
+    for(;;){} // Should never reach here
 
     return(0);
 }

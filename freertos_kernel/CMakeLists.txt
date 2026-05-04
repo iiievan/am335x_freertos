@@ -11,34 +11,23 @@ set(FREERTOS_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/timers.c
         ${CMAKE_CURRENT_SOURCE_DIR}/event_groups.c
         ${CMAKE_CURRENT_SOURCE_DIR}/stream_buffer.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/portable/MemMang/heap_4.c
 )
+
 
 # ARM Cortex-A8 specific port files
 set(FREERTOS_PORT_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/portable/port.c
 )
 
-# Check if portmacro.h exists (it should be in the portable directory)
-if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/portable/portmacro.h)
-    message(FATAL_ERROR "portmacro.h not found in portable directory!")
-endif()
-
-# ASM files - separate handling needed for ARM assembly
+# ASM files
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/portable/startup.s)
-    set_source_files_properties(
-            ${CMAKE_CURRENT_SOURCE_DIR}/portable/startup.s
-            PROPERTIES LANGUAGE ASM
-    )
     list(APPEND FREERTOS_PORT_SOURCES
             ${CMAKE_CURRENT_SOURCE_DIR}/portable/startup.s
     )
 endif()
 
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/portable/exceptionhandlers.s)
-    set_source_files_properties(
-            ${CMAKE_CURRENT_SOURCE_DIR}/portable/exceptionhandlers.s
-            PROPERTIES LANGUAGE ASM
-    )
     list(APPEND FREERTOS_PORT_SOURCES
             ${CMAKE_CURRENT_SOURCE_DIR}/portable/exceptionhandlers.s
     )
@@ -53,70 +42,56 @@ add_library(${FREERTOS_KERNEL} STATIC
 # Include directories
 target_include_directories(${FREERTOS_KERNEL} PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/portable)
+        ${CMAKE_CURRENT_SOURCE_DIR}/portable
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_SOURCE_DIR}/app  # For FreeRTOSConfig.h
+)
 
-
-# Compile definitions for ARM Cortex-A8
+# Compile definitions
 target_compile_definitions(${FREERTOS_KERNEL} PRIVATE
         __ARM_ARCH_7A__
         ARM_ARCH_7A
-        __CORTEX_A8__
-        CORTEX_A8
+        AM335X_FREERTOS
 )
 
-# Compiler flags for bare-metal ARM
+# Use the same architecture flags as BSP (hard float, NEON)
 target_compile_options(${FREERTOS_KERNEL} PRIVATE
         -mcpu=cortex-a8
+        -mtune=cortex-a8
+        -mfloat-abi=hard
+        -mfpu=neon
         -marm
         -mthumb-interwork
-        -mlittle-endian
-        -msoft-float
-        -mno-unaligned-access
-        -ffunction-sections
+        -mlong-calls
         -fdata-sections
-        -fno-strict-aliasing
-        -fno-builtin
+        -funsigned-char
+        -ffunction-sections
         -Wall
         -Wextra
+        -ffreestanding
 )
 
-# Note: FreeRTOS doesn't use exceptions or RTTI
+# Assembly flags - важно: НЕ добавляем -x здесь, если он уже есть в toolchain
+# Вместо этого используем свойство LANGUAGE
+set_source_files_properties(
+        ${CMAKE_CURRENT_SOURCE_DIR}/portable/exceptionhandlers.s
+        ${CMAKE_CURRENT_SOURCE_DIR}/portable/startup.s
+        PROPERTIES
+        LANGUAGE ASM
+        COMPILE_FLAGS "-x assembler-with-cpp"
+)
+
+# Optimization levels
 target_compile_options(${FREERTOS_KERNEL} PRIVATE
-        -fno-exceptions
-        -fno-rtti
-        $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>
-        $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
+        $<$<CONFIG:Debug>:-O0 -g3 -DDEBUG>
+        $<$<CONFIG:Release>:-Os -g0 -DNDEBUG>
+        $<$<CONFIG:RelWithDebInfo>:-Os -g3 -DNDEBUG>
 )
 
-# Assembly flags
-target_compile_options(${FREERTOS_KERNEL} PRIVATE
-        $<$<COMPILE_LANGUAGE:ASM>:-mcpu=cortex-a8>
-        $<$<COMPILE_LANGUAGE:ASM>:-marm>
-        $<$<COMPILE_LANGUAGE:ASM>:-mthumb-interwork>
-        $<$<COMPILE_LANGUAGE:ASM>:-x>
-        $<$<COMPILE_LANGUAGE:ASM>:-assembler-with-cpp>
-)
-
-# Linker flags (passed through the library)
-target_link_options(${FREERTOS_KERNEL} INTERFACE
-        -Wl,--gc-sections
-        -Wl,-wrap,malloc
-        -Wl,-wrap,free
-        -Wl,-wrap,calloc
-        -Wl,-wrap,realloc
-)
-
-# Set POSITION_INDEPENDENT_CODE property for ARM
+# Set C standard
 set_target_properties(${FREERTOS_KERNEL} PROPERTIES
         POSITION_INDEPENDENT_CODE OFF
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
         C_EXTENSIONS OFF
-)
-
-# Optional: Add custom target for size analysis
-add_custom_target(freertos_size
-        COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${PROJECT_NAME}.elf>
-        DEPENDS ${PROJECT_NAME}.elf
-        COMMENT "Analyzing FreeRTOS footprint..."
 )

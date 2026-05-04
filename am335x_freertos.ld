@@ -48,7 +48,7 @@ SECTIONS
         __service_start = .;
         KEEP(*(.init_fptr*))
         __services_end = .;
-    } > DDR3
+    } > DDR
 
     /* ARM exception unwinding & index */
     .ARM.extab : ALIGN(4) {
@@ -153,7 +153,7 @@ SECTIONS
         . += HEAP_SIZE;
         . = ALIGN(8);
         __heap_end = .;
-    } > DDR3
+    } > DDR
 
     /* Символы для newlib/gcc */
     PROVIDE(end = __heap_end);

@@ -74,7 +74,7 @@
 	CMP		R3, #0
 
 	@ Save the floating point context, if any. @
-	FMRXNE  R1,  FPSCR
+	VMRSNE  R1,  FPSCR
 	VPUSHNE {D0-D7}
 	@ VPUSHNE	{D16-D31}
 	PUSHNE	{R1}
@@ -386,6 +386,7 @@ ulMaxAPIPriorityMaskConst: 			.word ulMaxAPIPriorityMask
 vTaskSwitchContextConst: 			.word vTaskSwitchContext
 vApplicationIRQHandlerConst: 		.word vApplicationIRQHandler
 ulPortInterruptNestingConst: 		.word ulPortInterruptNesting
+.weak vApplicationFPUSafeIRQHandler
 vApplicationFPUSafeIRQHandlerConst: .word vApplicationFPUSafeIRQHandler
 
 @*****************************************************************************
