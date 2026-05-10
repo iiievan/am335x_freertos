@@ -6,5 +6,6 @@ tests/cmake-*
 /Debug
 /Release
 /build
+*.jdebug.user
 
 
