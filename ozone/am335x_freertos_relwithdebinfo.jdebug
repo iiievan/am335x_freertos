@@ -1,0 +1,288 @@
+
+/*********************************************************************
+*
+*       OnProjectLoad
+*
+* Function description
+*   Project load routine. Required.
+*
+**********************************************************************
+*/
+void OnProjectLoad (void) 
+{
+  Edit.SysVar (VAR_RTT_ENABLED, 1);
+  Project.SetRTT(0);
+
+  // Вот эти две строки решают проблему неработающего Reset с открытой вкладкой Peripherals
+  Edit.SysVar("PERIPHERAL_UPDATE_INTERVAL", 0);       // полностью отключает авто-обновление
+  Edit.SysVar("PERIPHERAL_UPDATE_ON_HALT", 0);        // не обновлять при halt/reset
+
+  Project.SetDevice ("AM3359");
+  Project.SetHostIF ("USB", "941000024");
+  Project.SetTargetIF ("JTAG");
+  Project.SetTIFSpeed ("12 MHz");
+
+  Edit.SysVar (VAR_ALLOW_BMA_EMULATION, 1);
+
+  Project.AddSvdFile("Cortex-A8.svd");
+  Project.AddSvdFile ("AM335x.svd");
+
+  File.Open("../cmake-build-relwithdebinfo/am335x_freertos.elf");
+
+  // Используем числовое значение 1 для режима "Halt after reset"
+  Debug.SetResetMode(1);
+}
+
+/*********************************************************************
+*
+*     DisableWatchdog
+*
+* Function description
+*   Helper Function
+*
+**********************************************************************
+*/
+void DisableWatchdog(void) 
+{
+   Util.Log("Disable watchdog");
+
+   // ВАЖНО: Отключаем RTT перед остановкой ядра
+   // Это ключевое решение проблемы
+   Project.SetRTT(0);
+
+   // Небольшая пауза не нужна, SetRTT выполняется синхронно
+
+   Debug.Halt();
+   Target.WriteU32(0x44E35048, 0x0000AAAA);
+   Target.WriteU32(0x44E35048, 0x00005555);
+
+   // Включаем RTT обратно после записи
+   Project.SetRTT(1);
+}
+
+/*********************************************************************
+*
+*     SetExecModeARM
+*
+* Function description
+*   Helper Function
+*
+**********************************************************************
+*/
+void SetExecModeARM(void) 
+{
+   unsigned int CPSR;
+   
+   CPSR = Target.GetReg("CPSR");
+   if (CPSR != 0xFFFFFFFF) 
+   {
+      if ((CPSR & (1 << 5)) == (1 << 5))
+      {
+         Util.Log("Setting Execution Mode to ARM.");
+         CPSR -= (1 << 5);
+         Target.SetReg("CPSR", CPSR);
+      }
+   }  
+}
+
+/*********************************************************************
+*
+*     SetPCtoBootloaderEntry
+*
+* Function description
+*   Helper Function
+*
+**********************************************************************
+*/
+void SetPCtoBootloaderEntry(void) 
+{
+   Target.SetReg("PC", 0x402F0400); 
+}
+
+/*********************************************************************
+*
+*     SetPCtoMainImageEntry
+*
+* Function description
+*   Helper Function
+*
+**********************************************************************
+*/
+void SetPCtoMainImageEntry(void) 
+{
+   unsigned int PC;
+
+   PC = Elf.GetEntryPointPC();
+   if (PC == 0xFFFFFFFF) 
+   {
+      PC = Elf.GetBaseAddr(); // fall back to vector
+   }
+   Target.SetReg("PC", PC); 
+}
+
+/*********************************************************************
+*                                                                     
+*       TargetDownload                                              
+*                                                                     
+* Function description                                                
+*   Replaces the default download routine.
+*   Loads the bootloader instead of the main image.                             
+*                                                                     
+**********************************************************************
+*/                                                                
+void TargetDownload (void) 
+{
+   Util.Log("TargetDownload");
+   Util.Log("Loading Bootloader application");
+   
+   Edit.SysVar(VAR_RESET_MODE, RM_RESET_HALT);
+   Exec.Download("../cmake-build-relwithdebinfo/am335x_freertos.hex");
+}
+
+/*********************************************************************
+*                                                                     
+*       TargetReset                                             
+*                                                                     
+* Function description                                                
+*   Replaces the default reset routine.
+*   Runs the bootloader and then resets to symbol.                             
+*                                                                     
+**********************************************************************
+*/                                                                
+void TargetReset(void) 
+{
+   Util.Log("TargetReset");
+   
+   DisableWatchdog();
+   SetExecModeARM();
+   SetPCtoBootloaderEntry();
+
+   // Используем числовое значение 1 для режима "Halt after reset"
+   Debug.SetResetMode(1);
+}   
+
+/*********************************************************************
+*                                                                     
+*       AfterTargetReset                                             
+*                                                                     
+* Function description                                                
+*   Event handler                          
+*                                                                     
+**********************************************************************
+*/                                                                
+void AfterTargetReset(void) 
+{
+   Util.Log("AfterTargetReset");
+}
+
+/*********************************************************************
+*
+*      AfterMainImageDownload
+*
+* Function description
+*   Helper Function
+*
+**********************************************************************
+*/
+void AfterMainImageDownload (void)
+{
+   Util.Log("Running to main");
+
+   Debug.SetResetMode(RM_BREAK_AT_SYMBOL);
+   SetPCtoMainImageEntry();
+   Break.SetOnSrc("main");
+   Window.Close("Disassembly");
+   Debug.Continue();
+}
+
+/*********************************************************************
+*
+*      AfterBootloaderDownload
+*
+* Function description
+*   Helper Function
+*
+**********************************************************************
+*/
+void AfterBootloaderDownload (void)
+{
+   SetPCtoBootloaderEntry();
+}
+
+/*********************************************************************
+*
+*      AfterTargetDownload
+*
+* Function description
+*   Event handler routine.
+*
+**********************************************************************
+*/
+void AfterTargetDownload (void) 
+{
+   unsigned int PC;
+   unsigned int Inst;
+   
+   Util.Log("AfterTargetDownload");
+   Util.Log("Initializing PC.");
+
+   //
+   // Check if the bootloader was downloaded or the main image and initialize the PC accordingly
+   //
+   PC = Target.GetReg("PC");
+   if ((PC > 0x402F0400) && (PC < 0x4030FFFF))
+   { 
+      Inst = Target.ReadU32(PC);
+      if (Inst == 0xE1200472) //__asm("bkpt 0x42"); 
+      {
+         //
+         // PC is at booloader end, therefore main image was downloaded
+         //
+         AfterMainImageDownload();      
+      }         
+   } 
+   else 
+   {
+      AfterBootloaderDownload();
+   }
+}
+
+/*********************************************************************
+*
+*       AfterTargetHalt
+*
+* Function description
+*   Event handler routine. Optional.
+*
+**********************************************************************
+*/
+void AfterTargetHalt (void)
+{
+   unsigned int PC;
+   unsigned int Inst;
+  
+   Util.Log("AfterTargetHalt");
+
+   //
+   // Check if PC is at the end of the bootloader, "__asm("bkpt 0x42")".
+   // If it is, load the application and run it.
+   //
+   PC = Target.GetReg("PC");
+   if (PC == 0xFFFFFFFF) 
+   {
+      Util.Log("Failed to get PC");
+   } 
+   else if ((PC > 0x402F0400) && (PC < 0x4030FFFF)) // Check bootloader range
+   {
+      Inst = Target.ReadU32(PC);
+      if (Inst == 0xE1200472)  //__asm("bkpt 0x42"); 
+      {
+         Util.Log("Bootloader reached end.");         
+         Util.Log("Loading main image.");
+
+         File.Load("am335x_freertos.elf", 0);
+      }         
+   }
+}  
+
+/*** EOF ***/

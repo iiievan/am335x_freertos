@@ -1,0 +1,551 @@
+/*********************************************************************
+*       AM335x DDR3 Initialization for J-Link / Ozone
+*       Based on SEGGER J-Link script file specification
+**********************************************************************
+*/
+
+// Глобальные переменные
+U32 clk_in;
+
+void CHGBIT(unsigned U32 addr, U32 mask, U32 data)
+{
+    U32 reg;
+    reg = JLINK_MEM_ReadU32(addr);
+    reg &= ~mask;
+    reg |= data;
+    JLINK_MEM_WriteU32(addr, reg);
+}
+
+void CLRBIT(U32 addr, U32 mask)
+{
+    U32 reg;
+    reg = JLINK_MEM_ReadU32(addr);
+    reg &= ~mask;
+    JLINK_MEM_WriteU32(addr, reg);
+}
+
+void SETBIT(U32 addr, U32 mask)
+{
+    U32 reg;
+    reg = JLINK_MEM_ReadU32(addr);
+    reg |= mask;
+    JLINK_MEM_WriteU32(addr, reg);
+}
+
+void TESTBIT (U32 addr, U32 mask)
+{
+	return(JLINK_MEM_ReadU32(addr) & mask);
+}
+
+//=========================================================================
+// PLL Configuration Functions
+//=========================================================================
+
+void get_input_clock_frequency(void) 
+{
+    U32 temp;
+    
+    temp = JLINK_MEM_ReadU32(0x44E10000 + 0x40);
+    temp = temp >> 22;
+    temp = temp & 0x3;
+    
+    if(temp == 0) {
+        clk_in = 19;
+        JLINK_SYS_Report("Input Clock: 19.2MHz");
+    } else if(temp == 1) {
+        clk_in = 24;
+        JLINK_SYS_Report("Input Clock: 24MHz");
+    } else if(temp == 2) {
+        clk_in = 25;
+        JLINK_SYS_Report("Input Clock: 25MHz");
+    } else if(temp == 3) {
+        clk_in = 26;
+        JLINK_SYS_Report("Input Clock: 26MHz");
+    }
+}
+
+void mpu_pll_config(U32 clk_in, U32 N, U32 M, U32 M2)
+{
+    U32 ref_clk,clk_out;
+    U32 clkmode,clksel,div_m2;
+    U32 temp;
+
+  	//ref_clk     = clk_in/(N+1);
+  	//clk_out     = (ref_clk*M)/M2;
+
+  	clkmode = JLINK_MEM_ReadU32(0x44E00000 + 0x488);
+  	clksel  = JLINK_MEM_ReadU32(0x44E00000 + 0x42C);
+  	div_m2  = JLINK_MEM_ReadU32(0x44E00000 + 0x4A8);
+
+    JLINK_SYS_Report("MPU PLL: Going to Bypass...");
+    
+    JLINK_MEM_WriteU32(0x44E00000 + 0x488, 0x4);
+
+    while ((JLINK_MEM_ReadU32(0x44E00000 + 0x420) & 0x101) != 0x00000100) {
+        JLINK_SYS_Sleep(1);
+    }
+
+    JLINK_SYS_Report("Bypassed, changing values... ");
+
+    // Set multiply and divide values
+    clksel = clksel & (~0x7FFFF);
+    clksel = clksel | ((M << 8) | N);
+    JLINK_MEM_WriteU32(0x44E00000 + 0x42C, clksel);
+    
+    div_m2 = div_m2 & ~0x1F;
+    div_m2 = div_m2 | M2;
+    JLINK_MEM_WriteU32(0x44E00000 + 0x4A8, div_m2);
+    
+    JLINK_SYS_Report("MPU PLL: Locking...");
+    
+    clkmode = clkmode | 0x7;
+    JLINK_MEM_WriteU32(0x44E00000 + 0x488, clkmode);
+
+    while ((JLINK_MEM_ReadU32(0x44E00000 + 0x420) & 0x101) != 0x1) {
+        JLINK_SYS_Sleep(1);
+    }
+    
+    JLINK_SYS_Report("MPU PLL: Locked");
+}
+
+void core_pll_config(U32 clk_in, U32 N, U32 M, U32 M4, U32 M5, U32 M6)
+{
+	U32  ref_clk,clk_out4,clk_out5,clk_out6;
+	U32  clkmode,clksel,div_m4,div_m5,div_m6;
+    U32  temp;
+
+    //ref_clk      = clk_in/(N+1);
+	//clk_out4     = (ref_clk*M)/M4;  //M4=200MHz
+	//clk_out5     = (ref_clk*M)/M5;  //M5=250MHz
+	//clk_out6     = (ref_clk*M)/M6;  //M6=500MHz
+
+    //JLINK_SYS_Report1("ref_clk:", ref_clk);
+    //JLINK_SYS_Report1("clk_out4:", clk_out4);
+    //JLINK_SYS_Report1("clk_out5:", clk_out5);
+    //JLINK_SYS_Report1("clk_out6:", clk_out6);
+
+    clkmode = JLINK_MEM_ReadU32(0x44E00000 + 0x490);
+	clksel  = JLINK_MEM_ReadU32(0x44E00000 + 0x468);
+	div_m4  = JLINK_MEM_ReadU32(0x44E00000 + 0x480);
+	div_m5  = JLINK_MEM_ReadU32(0x44E00000 + 0x484);
+	div_m6  = JLINK_MEM_ReadU32(0x44E00000 + 0x4D8);
+    
+    //put DPLL in bypass mode
+    clkmode = (clkmode & 0xfffffff8) | 0x00000004;
+    JLINK_MEM_WriteU32(0x44E00000 + 0x490, clkmode);
+    
+    while ((JLINK_MEM_ReadU32(0x44E00000 + 0x45C) & 0x00000100) != 0x00000100) {
+        JLINK_SYS_Sleep(1);
+    }
+
+    JLINK_SYS_Report("Core PLL Bypassed... ");
+    
+    clksel = (clksel & ~0x7FFFF);
+    clksel = clksel | ((M << 8) | N);
+    JLINK_MEM_WriteU32(0x44E00000 + 0x468, clksel);
+    JLINK_MEM_WriteU32(0x44E00000 + 0x480, M4);
+    JLINK_MEM_WriteU32(0x44E00000 + 0x484, M5);
+    JLINK_MEM_WriteU32(0x44E00000 + 0x4D8, M6);
+
+    JLINK_SYS_Report("Now locking Core PLL. ");
+    
+    clkmode = (clkmode & 0xfffffff8) | 0x00000007;
+    JLINK_MEM_WriteU32(0x44E00000 + 0x490, clkmode);
+    
+    while ((JLINK_MEM_ReadU32(0x44E00000 + 0x45C) & 0x00000001) != 0x00000001) {
+        JLINK_SYS_Sleep(1);
+    }
+    
+    JLINK_SYS_Report("Core PLL: Locked");
+}
+
+void ddr_pll_config(U32 clk_in, U32 N, U32 M, U32 M2)
+{
+    U32 ref_clk,clk_out;
+	U32 clkmode,clksel,div_m2;
+    U32 temp; 
+
+    clkmode  = JLINK_MEM_ReadU32(0x44E00000 + 0x494);
+    clksel   = JLINK_MEM_ReadU32(0x44E00000 + 0x440);
+    
+    
+    clkmode = (clkmode & 0xfffffff8) | 0x00000004;
+    JLINK_MEM_WriteU32(0x44E00000 + 0x494, clkmode);
+    
+    while ((JLINK_MEM_ReadU32(0x44E00000 + 0x434) & 0x00000100) != 0x00000100) {
+        JLINK_SYS_Sleep(1);
+    }
+
+    JLINK_SYS_Report("DDR PLL: Bypassed");
+    
+	clksel = clksel & (~0x7FFFF);
+	clksel = clksel | ((M <<0x8) | N);
+    JLINK_MEM_WriteU32(0x44E00000 + 0x440, clksel);
+    
+    div_m2   = JLINK_MEM_ReadU32(0x44E00000 + 0x4A0);
+    div_m2 = (div_m2 & 0xFFFFFFE0) | M2;
+    JLINK_MEM_WriteU32(0x44E00000 + 0x4A0, div_m2);
+    
+    clkmode = (clkmode & 0xfffffff8) | 0x00000007;
+    JLINK_MEM_WriteU32(0x44E00000 + 0x494, clkmode);
+    
+    while ((JLINK_MEM_ReadU32(0x44E00000 + 0x434) & 0x00000001) != 0x00000001) {
+        JLINK_SYS_Sleep(1);
+    }
+    
+    JLINK_SYS_Report("DDR PLL: Locked");
+}
+
+void per_pll_config(U32 clk_in, U32 N, U32 M, U32 M2)
+{
+    U32 ref_clk,clk_out;
+	U32 clkmode,clksel,div_m2;
+    U32 temp;
+
+    //ref_clk     = clk_in/(N+1);
+	//clk_out     = (ref_clk*M)/M2;
+
+    clkmode = JLINK_MEM_ReadU32(0x44E00000 + 0x48C);
+    clksel = JLINK_MEM_ReadU32(0x44E00000 + 0x49C);
+    div_m2 = JLINK_MEM_ReadU32(0x44E00000 + 0x4AC);
+    
+    clkmode = (clkmode & 0xfffffff8) | 0x00000004;
+    JLINK_MEM_WriteU32(0x44E00000 + 0x48C, clkmode);
+    
+    while ((JLINK_MEM_ReadU32(0x44E00000 + 0x470) & 0x00000100) != 0x00000100) {
+        JLINK_SYS_Sleep(1);
+    }
+
+    JLINK_SYS_Report("PER PLL: Bypassed");
+    
+	clksel = clksel & (~0x7FFFF);
+	clksel = clksel | ((M <<0x8) | N);
+    JLINK_MEM_WriteU32(0x44E00000 + 0x49C, clksel);
+    
+    div_m2 = 0xFFFFFF80 | M2;
+    JLINK_MEM_WriteU32(0x44E00000 + 0x4AC, div_m2);
+    
+    clkmode = (clkmode & 0xfffffff8) | 0x00000007;
+    JLINK_MEM_WriteU32(0x44E00000 + 0x48C, clkmode);
+    
+    while ((JLINK_MEM_ReadU32(0x44E00000 + 0x470) & 0x00000001) != 0x00000001) {
+        JLINK_SYS_Sleep(1);
+    }
+    
+    JLINK_SYS_Report("PER PLL: Locked");
+}
+
+void disp_pll_config(U32 clk_in, U32 N, U32 M, U32 M2)
+{
+    U32 ref_clk,clk_out;
+	U32 clkmode,clksel,div_m2;
+    U32 temp;
+
+    JLINK_SYS_Report("DISP PLL Config in progress...");
+    
+    //ref_clk     = clk_in/(N+1);
+	//clk_out     = (ref_clk*M)/M2;
+
+    clkmode = JLINK_MEM_ReadU32(0x44E00000 + 0x498);
+    clksel  = JLINK_MEM_ReadU32(0x44E00000 + 0x454);
+    div_m2  = JLINK_MEM_ReadU32(0x44E00000 + 0x4A4);
+    
+    clkmode = (clkmode & 0xfffffff8) | 0x00000004;
+    JLINK_MEM_WriteU32(0x44E00000 + 0x498, clkmode);
+    
+    while ((JLINK_MEM_ReadU32(0x44E00000 + 0x448) & 0x00000100) != 0x00000100) {
+        JLINK_SYS_Sleep(1);
+    }
+    
+	clksel = clksel & (~0x7FFFF);
+	clksel = clksel | ((M <<0x8) | N);
+    JLINK_MEM_WriteU32(0x44E00000 + 0x454, clksel);
+    
+    div_m2 = 0xFFFFFFE0 | M2;
+    JLINK_MEM_WriteU32(0x44E00000 + 0x4A4, div_m2);
+    
+    clkmode = (clkmode & 0xfffffff8) | 0x00000007;
+    JLINK_MEM_WriteU32(0x44E00000 + 0x498, clkmode);    
+
+    while ((JLINK_MEM_ReadU32(0x44E00000 + 0x448) & 0x00000001) != 0x00000001) {
+        JLINK_SYS_Sleep(1);
+    }
+    
+    JLINK_SYS_Report("DISP PLL Config done");
+}
+
+void arm_opp120_config(void) 
+{
+    JLINK_SYS_Report("Subarctic ALL ADPLL Config for OPP == OPP100 is In Progress...");
+    get_input_clock_frequency();
+    
+    if (clk_in == 24) {
+        mpu_pll_config(clk_in, 23, 550, 1);
+        core_pll_config(clk_in, 23, 1000, 10, 8, 4);
+        ddr_pll_config(clk_in, 23, 400, 1);  // 303 MGhz  ?
+        per_pll_config(clk_in, 23, 960, 5);
+        disp_pll_config(clk_in, 23, 48, 1);
+        JLINK_SYS_Report("Subarctic ALL ADPLL Config for OPP == OPP100 is Done");
+    } else {
+        JLINK_SYS_Report("Subarctic PLL Config failed!!  Check SYSBOOT[15:14] for proper input freq config");
+    }
+}
+
+//=========================================================================
+// EMIF/DDR Configuration Functions
+//=========================================================================
+
+void emif_prcm_clk_enable(void) 
+{
+    JLINK_SYS_Report("EMIF PRCM is in progress...");
+    JLINK_MEM_WriteU32(0x44E00000 + 0x0D0, 0x2);
+    JLINK_MEM_WriteU32(0x44E00000 + 0x028, 0x2);
+    while (JLINK_MEM_ReadU32(0x44E00000 + 0x028) != 0x02) {
+        JLINK_SYS_Sleep(1);
+    }
+    JLINK_SYS_Report("EMIF PRCM done");
+}
+
+void vtp_enable(void) 
+{
+    U32 reg;
+    
+    // Enable VTP
+    reg = JLINK_MEM_ReadU32(0x44E10000 + 0x0E0C);
+    JLINK_MEM_WriteU32(0x44E10000 + 0x0E0C, reg | 0x00000040);
+    
+    // Clear CLRZ
+    reg = JLINK_MEM_ReadU32(0x44E10000 + 0x0E0C);
+    JLINK_MEM_WriteU32(0x44E10000 + 0x0E0C, reg & 0xFFFFFFFE);
+    
+    // Set CLRZ
+    reg = JLINK_MEM_ReadU32(0x44E10000 + 0x0E0C);
+    JLINK_MEM_WriteU32(0x44E10000 + 0x0E0C, reg | 0x00000001);
+    
+    JLINK_SYS_Report("Waiting for VTP Ready...");
+    while ((JLINK_MEM_ReadU32(0x44E10000 + 0x0E0C) & 0x00000020) != 0x00000020) {
+        JLINK_SYS_Sleep(1);
+    }
+    JLINK_SYS_Report("VTP Enable done");
+}
+
+void gpio_module_clk_config(void) 
+{
+    U32 buff;
+    
+    buff = JLINK_MEM_ReadU32(0x44E00000 + 0x400 + 0x8);
+    buff |= 0x2;
+    JLINK_MEM_WriteU32(0x44E00000 + 0x400 + 0x8, buff);
+    
+    while ((JLINK_MEM_ReadU32(0x44E00000 + 0x400 + 0x8) & 0x3) != 0x2) {
+        JLINK_SYS_Sleep(1);
+    }
+    
+    buff = JLINK_MEM_ReadU32(0x44E00000 + 0x400 + 0x8);
+    buff |= 0x00040000;
+    JLINK_MEM_WriteU32(0x44E00000 + 0x400 + 0x8, buff);
+    
+    while ((JLINK_MEM_ReadU32(0x44E00000 + 0x400 + 0x8) & 0x00040000) != 0x00040000) {
+        JLINK_SYS_Sleep(1);
+    }
+    while ((JLINK_MEM_ReadU32(0x44E00000 + 0x400 + 0x8) & 0x00030000) != 0x0) {
+        JLINK_SYS_Sleep(1);
+    }
+    while ((JLINK_MEM_ReadU32(0x44E00000 + 0x400) & 0x00000100) != 0x00000100) {
+        JLINK_SYS_Sleep(1);
+    }
+    
+    JLINK_SYS_Report("GPIO module clock configuration is done");
+}
+
+void phy_config_cmd(void)
+{
+    U32 i;
+
+    i = 0;
+    do
+    {
+        JLINK_SYS_Report("DDR PHY CMD Register configuration is in progress");
+ 
+        JLINK_MEM_WriteU32(0x44E12000 + 0x01c+ (i * 0x34), 0x40);
+        JLINK_MEM_WriteU32(0x44E12000 + 0x02c+ (i * 0x34), 0x1);
+        i = i + 1;
+    }while(i < 3);
+
+}
+
+void phy_config_data(void)
+{
+    U32 i;
+
+    i = 0;
+    do
+    {
+        JLINK_SYS_Report("DDR PHY Data Register configuration is in progress");
+
+        JLINK_MEM_WriteU32(0x44E12000 + 0x0c8 + (i * 0xA4), 0x3B );
+        JLINK_MEM_WriteU32(0x44E12000 + 0x0DC + (i * 0xA4), 0x85 );
+        JLINK_MEM_WriteU32(0x44E12000 + 0x108 + (i * 0xA4), 0x100);
+        JLINK_MEM_WriteU32(0x44E12000 + 0x120 + (i * 0xA4), 0xC1 );
+        i = i + 1;
+    }while(i < 2);
+}
+
+void ddr3_emif_config(void) 
+{
+    JLINK_SYS_Report("DDR3 EMIF and PHY configuration...");
+    
+    emif_prcm_clk_enable();
+    gpio_module_clk_config();
+    
+    JLINK_MEM_WriteU32(0x44E10000 + 0x964, 0x00000067);
+    
+    JLINK_MEM_WriteU32(0x44E07000 + 0x130, JLINK_MEM_ReadU32(0x44E07000 + 0x130) & 0xFFFFFFFE);
+    JLINK_MEM_WriteU32(0x44E07000 + 0x10, JLINK_MEM_ReadU32(0x44E07000 + 0x10) | 0x02);
+    
+    while ((JLINK_MEM_ReadU32(0x44E07000 + 0x114) & 0x01) == 0) {
+        JLINK_SYS_Sleep(1);
+    }
+    
+    JLINK_MEM_WriteU32(0x44E07000 + 0x134, JLINK_MEM_ReadU32(0x44E07000 + 0x134) & ~(1 << 7));
+    JLINK_MEM_WriteU32(0x44E07000 + 0x194, (1 << 7));
+    
+    JLINK_MEM_WriteU32(0x44E10000 + 0x0E0C, JLINK_MEM_ReadU32(0x44E10000 + 0x0E0C) & 0xFFFFFFFE);
+    JLINK_MEM_WriteU32(0x44E10000 + 0x0E0C, JLINK_MEM_ReadU32(0x44E10000 + 0x0E0C) | 0x00000001);
+    
+    vtp_enable();
+    phy_config_cmd();
+    phy_config_data();   
+    
+    // IO control
+    JLINK_MEM_WriteU32(0x44E10000 + 0x1404, 0x18B);
+    JLINK_MEM_WriteU32(0x44E10000 + 0x1408, 0x18B);
+    JLINK_MEM_WriteU32(0x44E10000 + 0x140C, 0x18B);
+    JLINK_MEM_WriteU32(0x44E10000 + 0x1440, 0x18B);
+    JLINK_MEM_WriteU32(0x44E10000 + 0x1444, 0x18B);
+    
+    JLINK_MEM_WriteU32(0x44E10000 + 0x0E04, 0x10000000);
+    JLINK_MEM_WriteU32(0x44E10000 + 0x131C, 0x00000001);
+    
+    JLINK_SYS_Report("EMIF Timing register configuration is in progress...");
+
+    JLINK_MEM_WriteU32(0x4C000000 + 0x0E4, 0x06);
+    JLINK_MEM_WriteU32(0x4C000000 + 0x0E8, 0x06);
+    JLINK_MEM_WriteU32(0x4C000000 + 0x0EC, 0x06);
+    
+    JLINK_MEM_WriteU32(0x4C000000 + 0x018, 0x0888A39B);
+    JLINK_MEM_WriteU32(0x4C000000 + 0x01C, 0x0888A39B);
+    
+    JLINK_MEM_WriteU32(0x4C000000 + 0x020, 0x26517FDA);
+    JLINK_MEM_WriteU32(0x4C000000 + 0x024, 0x26517FDA);
+    
+    JLINK_MEM_WriteU32(0x4C000000 + 0x028, 0x501F84EF);
+    JLINK_MEM_WriteU32(0x4C000000 + 0x02C, 0x501F84EF);
+    
+    JLINK_MEM_WriteU32(0x4C000000 + 0x010, 0x0000093B);
+    JLINK_MEM_WriteU32(0x4C000000 + 0x014, 0x0000093B);
+    
+    JLINK_MEM_WriteU32(0x4C000000 + 0x0C8, 0x50074BE4);
+    JLINK_MEM_WriteU32(0x4C000000 + 0x008, 0x61C04BB2);
+    
+    JLINK_SYS_Sleep(10);
+
+    JLINK_SYS_Report("EMIF Timing register configuration is done...");
+    
+    if ((JLINK_MEM_ReadU32(0x4C000000 + 0x004) & 0x4) == 0x4) {
+        JLINK_SYS_Report("PHY is READY!");
+    }
+    
+    JLINK_SYS_Report("DDR3 EMIF configuration done");
+}
+
+void am335x_evm_initialization(void) 
+{
+    JLINK_SYS_Report("=== AM335x EVM Initialization ===");
+    arm_opp120_config();
+    ddr3_emif_config();
+    JLINK_SYS_Report("=== AM335x EVM Initialization done ===");
+}
+
+//=========================================================================
+// J-Link Script Entry Points
+//=========================================================================
+
+/*********************************************************************
+*       InitTarget()
+*       Called before JTAG/SWD detection.
+*       For AM335x, we need to configure ICEPick first.
+*********************************************************************/
+//int InitTarget(void) {
+//    
+//    return 0;
+//}
+
+/*********************************************************************
+*       SetupTarget()
+*       Called after general debug connect sequence.
+*       Here we initialize PLL and DDR.
+*********************************************************************/
+int SetupTarget(void) 
+{
+    int test;
+    JLINK_SYS_Report("SetupTarget(): Initializing DDR...");
+    
+    // Останавливаем ядро перед инициализацией
+    JLINK_TARGET_Halt();
+    JLINK_SYS_Sleep(10);
+    
+    // Инициализация PLL и DDR
+    am335x_evm_initialization();
+    
+    // Проверяем DDR
+    JLINK_MEM_WriteU32(0x80000000, 0xDEADBEEF);
+    test = JLINK_MEM_ReadU32(0x80000000);
+    
+    if (test == 0xDEADBEEF) {
+        JLINK_SYS_Report("DDR test: SUCCESS!");
+    } else {
+        JLINK_SYS_Report("DDR test: FAILED!");
+    }
+    
+    return 0;
+}
+
+/*********************************************************************
+*       ResetTarget()
+*       Called when debugger issues a reset request.
+*       We need to preserve DDR initialization.
+*********************************************************************/
+//int ResetTarget(void) 
+//{
+//    JLINK_SYS_Report("ResetTarget(): Soft reset...");
+//    
+//    // Сохраняем важные регистры если нужно
+//    // Выполняем мягкий сброс, не убивая DDR
+//    
+//    // Ставим PC на точку входа
+//    // (PC будет установлен через Ozone отдельно)
+//    
+//    // Ядро должно быть остановлено на выходе
+//    JLINK_TARGET_Halt();
+//    JLINK_SYS_Sleep(5);
+//    
+//    return 0;
+//}
+
+/*********************************************************************
+*       AfterResetTarget()
+*       Called after ResetTarget().
+*********************************************************************/
+//int AfterResetTarget(void) 
+//{
+//    JLINK_SYS_Report("AfterResetTarget(): Re-initializing DDR...");
+//    
+//    // DDR могла сброситься, переинициализируем
+//    am335x_evm_initialization();
+//    
+//    // Убеждаемся что ядро остановлено
+//    JLINK_TARGET_Halt();
+//    
+//    return 0;
+//}

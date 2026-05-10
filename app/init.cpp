@@ -8,6 +8,7 @@
 #include "hal/INTC.hpp"
 #include "hal/sysTimer.hpp"
 #include "hal/boards/beaglebone_black.hpp"
+#include "hal/MMU.hpp"
 
 
 #define DDR_TEST_SIZE            (32 * 1024 * 1024)
@@ -116,15 +117,11 @@ bool init_board()
 {
     copy_vector_table();
 
-    rtt_log_init();
-    RTT_LOG_I(TAG, "=== AM335x Boot Loader Starting ===");
-    cp15_MMU_disable();
-    cp15_D_cache_disable();
-    cp15_I_cache_disable();
+    init_memory();
 
-    cp15_DSB_ISB_sync_barrier();
-
-    rtt_cache_clean();
+    //rtt_log_init();
+    //RTT_LOG_I(TAG, "=== AM335x Boot Loader Starting ===");
+    //rtt_cache_clean();
 
     HAL::INTC::init();              //Initializing the ARM Interrupt Controller.
     HAL::TIMERS::sys_time.init();   // setup system timer for 1ms interrupt
@@ -137,7 +134,7 @@ bool init_board()
 
     Board::get_uart0().put_string((char *)"\r\n Application started... \r\n");
     Board::get_uart0().put_string((char *)"UART0 initialized... \r\n");
-    RTT_LOG_I(TAG, "Application started successful!");
+    //RTT_LOG_I(TAG, "Application started successful!");
 
     return true;
 }
