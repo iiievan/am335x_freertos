@@ -22,7 +22,7 @@ void vTask1(void *pvParameters)
     for(;;)
     {
         Board::USR0.toggle();
-        vTaskDelay(pdMS_TO_TICKS(500));
+        vTaskDelay(1000);
     }
 }
 
@@ -32,7 +32,7 @@ void vTask2(void *pvParameters)
     for(;;)
     {
         Board::USR1.toggle();
-        vTaskDelay(pdMS_TO_TICKS(750));
+        vTaskDelay(1700);
     }
 }
 

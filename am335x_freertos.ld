@@ -155,6 +155,8 @@ SECTIONS
         __heap_end = .;
     } > DDR
 
+    __end_of_memory = .;
+
     /* Символы для newlib/gcc */
     PROVIDE(end = __heap_end);
     PROVIDE(_end = __heap_end);
@@ -171,8 +173,6 @@ SECTIONS
         __rtt_end = .;
     } > RTT_RAM
 
-    /* Конец используемой памяти */
-    __end_of_memory = .;
 
     /* Экспорт символов для TI-RTOS совместимости */
     __INIT_FPTR_START = __service_start;

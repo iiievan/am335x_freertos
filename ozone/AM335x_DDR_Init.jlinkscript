@@ -280,9 +280,9 @@ void arm_opp120_config(void)
     get_input_clock_frequency();
     
     if (clk_in == 24) {
-        mpu_pll_config(clk_in, 23, 550, 1);
-        core_pll_config(clk_in, 23, 1000, 10, 8, 4);
-        ddr_pll_config(clk_in, 23, 400, 1);  // 303 MGhz  ?
+        mpu_pll_config(clk_in, 23, 1000, 1);
+        core_pll_config(clk_in, 23, 500, 10, 8, 4);
+        ddr_pll_config(clk_in, 23, 303, 1);  // 400 MGhz  ?
         per_pll_config(clk_in, 23, 960, 5);
         disp_pll_config(clk_in, 23, 48, 1);
         JLINK_SYS_Report("Subarctic ALL ADPLL Config for OPP == OPP100 is Done");
@@ -486,28 +486,32 @@ void am335x_evm_initialization(void)
 *       Called after general debug connect sequence.
 *       Here we initialize PLL and DDR.
 *********************************************************************/
-int SetupTarget(void) 
+int SetupTarget(void)
 {
     int test;
     JLINK_SYS_Report("SetupTarget(): Initializing DDR...");
-    
-    // Останавливаем ядро перед инициализацией
+
+    // Ядро уже обнаружено и подключено! Просто убеждаемся что оно остановлено
     JLINK_TARGET_Halt();
     JLINK_SYS_Sleep(10);
-    
+
     // Инициализация PLL и DDR
     am335x_evm_initialization();
-    
+
+    // Даем DDR стабилизироваться
+    JLINK_SYS_Sleep(100);
+
     // Проверяем DDR
     JLINK_MEM_WriteU32(0x80000000, 0xDEADBEEF);
     test = JLINK_MEM_ReadU32(0x80000000);
-    
+
     if (test == 0xDEADBEEF) {
         JLINK_SYS_Report("DDR test: SUCCESS!");
     } else {
-        JLINK_SYS_Report("DDR test: FAILED!");
+        JLINK_SYS_Report1("DDR test: FAILED! Value: ", test);
+        return -1;
     }
-    
+
     return 0;
 }
 

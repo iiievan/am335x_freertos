@@ -48,12 +48,7 @@ extern HAL::TIMERS::sysTimer<SYST_t> sys_time;
 
 extern "C" void vSetupTickInterrupt(void)
 {
-    // Системный таймер уже инициализирован в init_board()
-    // Просто убеждаемся что он запущен
-    // Таймер настроен на 1ms период (1000 Hz)
-
-    // Если нужно переконфигурировать:
-    // sys_time.set_period(1000 / configTICK_RATE_HZ); // для 1000Hz тика
+    HAL::TIMERS::sys_time.init();   // setup system timer for 1ms interrupt
 }
 
 /*
@@ -69,15 +64,22 @@ extern "C" void FreeRTOS_Tick_Handler(void);
 // В input_callback или новом IRQ обработчике:
 extern "C" void vApplicationIRQHandler(void)
 {
+    using namespace REGS::INTC;
     // Получить номер активного IRQ из INTC
     volatile uint32_t *sir_irq = (volatile uint32_t *)0x48200040;
     uint32_t irq_num = *sir_irq & 0x7F;
 
+    static volatile uint32_t tick_count = 0;
+    static volatile uint64_t freq_cnt = 0;
     // Обработка разных прерываний
     switch(irq_num) {
-    case 68: // DMTIMER1MS IRQ номер для AM335x
-        // Очистить флаг прерывания таймера
-        // Вызвать тик FreeRTOS
+    case TINT1_1MS:
+        tick_count++;
+        freq_cnt++;
+        if (tick_count >= 1000) {
+            Board::USR2.toggle();
+            tick_count = 0;
+        }
         FreeRTOS_Tick_Handler();
         break;
 
@@ -124,13 +126,10 @@ bool init_board()
     //rtt_cache_clean();
 
     HAL::INTC::init();              //Initializing the ARM Interrupt Controller.
-    HAL::TIMERS::sys_time.init();   // setup system timer for 1ms interrupt
 
     Board::init_user_leds();
 
     Board::get_uart0().init(input_callback);
-
-    HAL::INTC::master_IRQ_enable();
 
     Board::get_uart0().put_string((char *)"\r\n Application started... \r\n");
     Board::get_uart0().put_string((char *)"UART0 initialized... \r\n");

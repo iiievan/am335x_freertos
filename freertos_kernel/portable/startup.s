@@ -42,8 +42,9 @@ Entry:
     ORR r0, r0, #(I_BIT | F_BIT)
     MSR cpsr_c, r0
 
-    @ === Инициализация стеков для всех режимов ===
-    @ Порядок важен: от меньшего адреса к большему
+    @ ============================================
+    @ Шаг 1: Инициализация стеков
+    @ ============================================
 
     @ SVC режим
     MRS r0, cpsr
@@ -80,100 +81,89 @@ Entry:
     MSR cpsr_c, r0
     LDR sp, =__irq_stack_end
 
-    @ System/User режим (используется для main и задач FreeRTOS)
+    @ System/User режим
     MRS r0, cpsr
     BIC r0, r0, #MODE_MSK
     ORR r0, r0, #(MODE_SYS | I_BIT | F_BIT)
     MSR cpsr_c, r0
     LDR sp, =__stack_end
 
-    @ === Инициализация кэшей ===
+    @ ============================================
+    @ Шаг 2: Минимальная инициализация кэшей
+    @ ============================================
 
-    @ Invalidate Branch Prediction (BTAC)
+    @ Invalidate Branch Prediction
     MOV r0, #0
-    MCR p15, 0, r0, c7, c5, #6
+    MCR p15, #0, r0, c7, c5, #6
     ISB
 
-    @ Enable Branch Prediction
-    MRC p15, 0, r0, c1, c0, #0
-    ORR r0, r0, #0x00000800
-    MCR p15, 0, r0, c1, c0, #0
-
-    @ Invalidate instruction cache
+    @ Invalidate I-Cache (безопасно)
     MOV r0, #0
-    MCR p15, 0, r0, c7, c5, #0
+    MCR p15, 0, r0, c7, c5, 0
 
-    @ Invalidate Data Cache(?)
-    @ BL BSP_DCacheInvalidateAll
+    @ D-Cache НЕ ТРОГАЕМ! Он выключен, и это правильно.
 
-    @ Set domain access (полный доступ для всех доменов)
+    @ Set domain access (обязательно для AM335x)
     LDR r0, =0x55555555
-    MCR p15, 0, r0, c3, c0, #0
+    MCR p15, 0, r0, c3, c0, 0
 
-    @ === Enable VFP/NEON ===
-    MRC p15, 0, r1, c1, c0, #2       @ Read Coprocessor Access Control Register
-    ORR r1, r1, #(0xF << 20)         @ Enable full access for CP10 and CP11
-    MCR p15, 0, r1, c1, c0, #2       @ Write Coprocessor Access Control Register
+    @ ============================================
+    @ Шаг 3: VFP/NEON
+    @ ============================================
+
+    @ Enable VFP/NEON
+    MRC p15, 0, r1, c1, c0, #2
+    ORR r1, r1, #(0xF << 20)
+    MCR p15, 0, r1, c1, c0, #2
     MOV r1, #0
-    MCR p15, 0, r1, c7, c5, #4       @ Flush prefetch buffer
-    MOV r0, #0x40000000              @ Enable VFP/NEON
+    MCR p15, 0, r1, c7, c5, #4
+    MOV r0, #0x40000000
     VMSR FPEXC, r0
 
-    @ === Инициализация переменных FreeRTOS ===
-    LDR r0, =ulPortInterruptNesting
-    MOV r1, #0
-    STR r1, [r0]
+    @ ============================================
+    @ Шаг 4: Очистка BSS (ДО конструкторов!)
+    @ ============================================
 
-    LDR r0, =ulCriticalNesting
-    MOV r1, #0
-    STR r1, [r0]
-
-    LDR r0, =ulPortTaskHasFPUContext
-    MOV r1, #0
-    STR r1, [r0]
-
-    LDR r0, =ulPortYieldRequired
-    MOV r1, #0
-    STR r1, [r0]
-
-    @ === Очистка BSS ===
     LDR r0, =__bss_start
     LDR r1, =__bss_end
     MOV r2, #0
-clear_bss:
+    clear_bss:
     STR r2, [r0], #4
     CMP r0, r1
     BLO clear_bss
 
-    @ === Вызов C++ конструкторов ===
+    @ ============================================
+    @ Шаг 5: Инициализация переменных FreeRTOS
+    @ ============================================
+
+    LDR r0, =ulPortInterruptNesting
+    MOV r1, #0
+    STR r1, [r0]
+    LDR r0, =ulCriticalNesting
+    MOV r1, #0
+    STR r1, [r0]
+    LDR r0, =ulPortTaskHasFPUContext
+    MOV r1, #0
+    STR r1, [r0]
+    LDR r0, =ulPortYieldRequired
+    MOV r1, #0
+    STR r1, [r0]
+
+    @ ============================================
+    @ Шаг 6: Конструкторы C++ (ПОСЛЕ очистки BSS!)
+    @ ============================================
+
     LDR r0, =__libc_init_array
     BLX r0
 
-    @ === Переход в main ===
+    @ ============================================
+    @ Шаг 7: Переход в main
+    @ ============================================
+
     BL main
 
-    @ Бесконечный цикл если main вернулся
 loop:
     WFI
     B loop
-
-@******************************************************************************
-@ BSP_DCacheInvalidateAll - Инвалидация всего data cache
-@ Важно: не вызывать после инициализации MMU для кэшируемых регионов!
-@******************************************************************************
-BSP_DCacheInvalidateAll:
-    MOV r0, #0x1FF
-dcache_loop1:
-    MOV r1, #0x00000003
-dcache_loop2:
-    MOV r2, r1, LSL #30
-    ADD r2, r2, r0, LSL #5
-    MCR p15, 0, r2, c7, c6, #2
-    SUBS r1, r1, #1
-    BGE dcache_loop2
-    SUBS r0, r0, #1
-    BGE dcache_loop1
-    DSB
-    BX lr
 
 .end
