@@ -22,7 +22,8 @@ void vTask1(void *pvParameters)
     for(;;)
     {
         Board::USR0.toggle();
-        vTaskDelay(1000);
+        vTaskDelay(250);
+        RTT_LOG_I(TAG, "USR2.LED toggle!");
     }
 }
 
@@ -32,7 +33,8 @@ void vTask2(void *pvParameters)
     for(;;)
     {
         Board::USR1.toggle();
-        vTaskDelay(1700);
+        vTaskDelay(750);
+        RTT_LOG_I(TAG, "USR1.LED toggle!");
     }
 }
 
@@ -45,8 +47,9 @@ int main ()
     if (!init_sts)
     {
         RTT_LOG_E(TAG, "Board initialization failed!");
-        while (1){}
+        while (true){}
     }
+    RTT_LOG_I(TAG, "Board initialization done!");
 
     xTaskCreate(vTask1, "Task1", 512, NULL, 1, NULL);
     xTaskCreate(vTask2, "Task2", 512, NULL, 1, NULL);

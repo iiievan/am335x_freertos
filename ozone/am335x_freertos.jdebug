@@ -10,7 +10,6 @@
 */
 void OnProjectLoad (void) 
 {
-  Edit.SysVar (VAR_RTT_ENABLED, 1);
   Project.SetJLinkScript("AM335x_DDR_Init.jlinkscript");
   Project.SetOSPlugin ("FreeRTOSPlugin_CA9");
   Project.SetRTT(0);
