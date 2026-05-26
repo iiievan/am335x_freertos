@@ -10,6 +10,7 @@
 #include "hal/boards/beaglebone_black.hpp"
 #include "hal/MMU.hpp"
 
+
 #define TAG "brd_ini"
 
 extern "C"

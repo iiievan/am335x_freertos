@@ -6,6 +6,8 @@
 #include "hal/sysTimer.hpp"
 #include "FreeRTOS.h"
 #include "task.h"
+#include "hal/EDMA.hpp"
+#include "edma_test.h"
 
 #define TAG "main"
 
@@ -44,6 +46,8 @@ int main ()
 
     init_sts = init_board();
 
+    edma_setup();
+
     if (!init_sts)
     {
         RTT_LOG_E(TAG, "Board initialization failed!");
@@ -60,3 +64,4 @@ int main ()
 
     return(0);
 }
+
