@@ -24,7 +24,8 @@ void vTask1(void *pvParameters)
     for(;;)
     {
         Board::USR0.toggle();
-        vTaskDelay(250);
+        app_qdma_test();
+        vTaskDelay(1250);
         RTT_LOG_I(TAG, "USR2.LED toggle!");
     }
 }

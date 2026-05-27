@@ -32,5 +32,4 @@ void app_qdma_test();
 void edma_cc_compl_isr(void * param);
 void edma_cc_err_isr(void * param);
 
-
 #endif //AM335X_FREERTOS_EDMA_TEST_H
