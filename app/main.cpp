@@ -46,7 +46,8 @@ void vEdmaTask(void *pvParameters)
 
     edma_test();
 
-    vTaskDelete(NULL);
+    //vTaskDelete(NULL);
+    vTaskSuspend(NULL);
 }
 
 int main ()

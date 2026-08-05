@@ -6,6 +6,7 @@
 #include "hal/EDMA/ParamBuilder.hpp"
 #include "hal/INTC.hpp"
 #include "rtt/rtt_log.h"
+#include "startup/cp15.h"
 
 #include <array>
 #include <atomic>
@@ -62,6 +63,11 @@ extern "C" void edma_test(void)
         dst_buf[i] = 0x00;
     }
 
+    // Выталкиваем исходный буфер из L1D кэша в RAM и Сбрасываем возможные dirty-строки целевого буфера
+    cp15_D_cache_clean_buff(reinterpret_cast<unsigned int>(src_buf), BUFFER_SIZE);
+    cp15_D_cache_flush_buff(reinterpret_cast<unsigned int>(dst_buf), BUFFER_SIZE);
+    cp15_DSB_barrier(); // Гарантируем завершение всех операций записи перед стартом DMA
+
     // 4. Создаем канал DMA (выбираем канал 63, как в примере StarterWare)
     constexpr uint8_t TEST_CHANNEL = 63;
     HAL::EDMA::DmaChannel dma(TEST_CHANNEL, REGS::EDMA::EVENT_Q0);
@@ -100,6 +106,12 @@ extern "C" void edma_test(void)
         RTT_LOG_E(TAG, "EDMA Transfer TIMEOUT!");
         return;
     }
+
+    // Ждем завершения выгрузки шины DMA и синхронизируем память
+    cp15_DSB_barrier();
+
+    // Инвалидируем D-кэш приёмника, чтобы ЦП прочитал новые данные прямо из RAM
+    cp15_D_cache_flush_buff(reinterpret_cast<unsigned int>(dst_buf), BUFFER_SIZE);
 
     // 9. Проверяем целостность данных
     bool match = true;
