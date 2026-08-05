@@ -16,6 +16,3866 @@
   <resetValue>0x00000000</resetValue>
   <resetMask>0xFFFFFFFF</resetMask>
   <peripherals>
+  <peripheral>
+    <name>INTC</name>
+      <description>INTC</description>
+      <baseAddress>0x48200000</baseAddress>
+      <groupName>Peripherals</groupName>
+      <registers>
+        <register>
+          <name>REVISION</name>
+          <addressOffset>0x00</addressOffset>
+          <description>REVISION Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>Rev</name>
+              <description>IP revision</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>8</bitWidth>
+              <access>read-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>SYSCONFIG</name>
+          <addressOffset>0x10</addressOffset>
+          <description>SYSCONFIG Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>Autoidle</name>
+              <description>bit: 0 (RW) Internal OCP clock gating strategy [0x0 = clkfree, 0x1 = autoClkGate]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>SoftReset</name>
+              <description>bit: 1 (RW) Software reset. [0x0 = always returns 0, 0x1 = never happens]</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>SYSSTATUS</name>
+          <addressOffset>0x14</addressOffset>
+          <description>SYSSTATUS Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>ResetDone</name>
+              <description>bit: 0 (R) Internal reset monitoring [0x0 = reset is on-going, 0x1 = Reset completed]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>SIR_IRQ</name>
+          <addressOffset>0x40</addressOffset>
+          <description>SIR_IRQ Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>ActiveIRQ</name>
+              <description>Active IRQ number</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>7</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>SpuriousIRQ</name>
+              <description>Spurious IRQ flag</description>
+              <bitOffset>7</bitOffset>
+              <bitWidth>25</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>SIR_FIQ</name>
+          <addressOffset>0x44</addressOffset>
+          <description>SIR_FIQ Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>ActiveFIQ</name>
+              <description>Active FIQ number</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>7</bitWidth>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>SpuriousFIQ</name>
+              <description>Spurious FIQ flag</description>
+              <bitOffset>7</bitOffset>
+              <bitWidth>25</bitWidth>
+              <access>read-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>CONTROL</name>
+          <addressOffset>0x48</addressOffset>
+          <description>CONTROL Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>NewIRQAgr</name>
+              <description>bit: 0 (W) Reset IRQ output and enable new IRQ generation [0x0 = no function effect, 0x1 = generate IRQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>NewFIQAgr</name>
+              <description>bit: 1 (W) Reset FIQ output and enable new FIQ generation [0x0 = no function effect, 0x1 = generate FIQ]</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>PROTECTION</name>
+          <addressOffset>0x4C</addressOffset>
+          <description>PROTECTION Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>Protection</name>
+              <description>bit: 0 (RW) Protection mode [0x0 = disabled(def), 0x1 = enabled]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>IDLE</name>
+          <addressOffset>0x50</addressOffset>
+          <description>IDLE Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FuncIdle</name>
+              <description>bit: 0 (RW) Functional clock auto-idle mode [0x0 = is applied, 0x1 = auto-gated based on interrupt input activity]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Turbo</name>
+              <description>bit: 1 (RW) Input synchroniser clock auto-gating [0x0 = is free running (default), 0x1 = generate IRQ]</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>IRQ_PRIORITY</name>
+          <addressOffset>0x60</addressOffset>
+          <description>IRQ_PRIORITY Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>IRQPriority</name>
+              <description>Current IRQ priority</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>7</bitWidth>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>SpuriousIRQflag</name>
+              <description>Spurious IRQ flag</description>
+              <bitOffset>7</bitOffset>
+              <bitWidth>25</bitWidth>
+              <access>read-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>FIQ_PRIORITY</name>
+          <addressOffset>0x64</addressOffset>
+          <description>FIQ_PRIORITY Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQPriority</name>
+              <description>Current FIQ priority</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>7</bitWidth>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>SpuriousFIQflag</name>
+              <description>Spurious FIQ flag</description>
+              <bitOffset>7</bitOffset>
+              <bitWidth>25</bitWidth>
+              <access>read-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>THRESHOLD</name>
+          <addressOffset>0x68</addressOffset>
+          <description>THRESHOLD Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>PriorityThreshold</name>
+              <description>Priority threshold. Values used are 00h to 3Fh. Value FFh disables the threshold.</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>8</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>ITR0</name>
+          <addressOffset>0x80</addressOffset>
+          <description>ITR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>Itr</name>
+              <description>Interrupt status before masking</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>read-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>MIR0</name>
+          <addressOffset>0x84</addressOffset>
+          <description>MIR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>Mir</name>
+              <description>Interrupt mask</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>MIR_CLEAR0</name>
+          <addressOffset>0x88</addressOffset>
+          <description>MIR_CLEAR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>MirClear</name>
+              <description>Write 1 clears the mask bit to 0, reads return 0</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>write-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>MIR_SET0</name>
+          <addressOffset>0x8C</addressOffset>
+          <description>MIR_SET Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>MirSet</name>
+              <description>Write 1 sets the mask bit to 1, reads return 0</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>write-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>ISR_SET0</name>
+          <addressOffset>0x90</addressOffset>
+          <description>ISR_SET Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>IsrSet</name>
+              <description>Reads returns the currently active software interrupts, Write 1 sets the software interrupt bits to 1</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>ISR_CLEAR0</name>
+          <addressOffset>0x94</addressOffset>
+          <description>ISR_CLEAR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>IsrClear</name>
+              <description>Write 1 clears the software interrupt bits to 0, reads return 0</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>write-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>PENDING_IRQ0</name>
+          <addressOffset>0x98</addressOffset>
+          <description>PENDING_IRQ Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>PendingIRQ</name>
+              <description>IRQ status after masking</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>read-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>PENDING_FIQ0</name>
+          <addressOffset>0x9C</addressOffset>
+          <description>PENDING_FIQ Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>PendingFIQ</name>
+              <description>FIQ status after masking</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>read-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>ITR1</name>
+          <addressOffset>0xA0</addressOffset>
+          <description>ITR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>Itr</name>
+              <description>Interrupt status before masking</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>read-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>MIR1</name>
+          <addressOffset>0xA4</addressOffset>
+          <description>MIR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>Mir</name>
+              <description>Interrupt mask</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>MIR_CLEAR1</name>
+          <addressOffset>0xA8</addressOffset>
+          <description>MIR_CLEAR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>MirClear</name>
+              <description>Write 1 clears the mask bit to 0, reads return 0</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>write-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>MIR_SET1</name>
+          <addressOffset>0xAC</addressOffset>
+          <description>MIR_SET Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>MirSet</name>
+              <description>Write 1 sets the mask bit to 1, reads return 0</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>write-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>ISR_SET1</name>
+          <addressOffset>0xB0</addressOffset>
+          <description>ISR_SET Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>IsrSet</name>
+              <description>Reads returns the currently active software interrupts, Write 1 sets the software interrupt bits to 1</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>ISR_CLEAR1</name>
+          <addressOffset>0xB4</addressOffset>
+          <description>ISR_CLEAR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>IsrClear</name>
+              <description>Write 1 clears the software interrupt bits to 0, reads return 0</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>write-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>PENDING_IRQ1</name>
+          <addressOffset>0xB8</addressOffset>
+          <description>PENDING_IRQ Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>PendingIRQ</name>
+              <description>IRQ status after masking</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>read-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>PENDING_FIQ1</name>
+          <addressOffset>0xBC</addressOffset>
+          <description>PENDING_FIQ Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>PendingFIQ</name>
+              <description>FIQ status after masking</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>read-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>ITR2</name>
+          <addressOffset>0xC0</addressOffset>
+          <description>ITR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>Itr</name>
+              <description>Interrupt status before masking</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>read-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>MIR2</name>
+          <addressOffset>0xC4</addressOffset>
+          <description>MIR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>Mir</name>
+              <description>Interrupt mask</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>MIR_CLEAR2</name>
+          <addressOffset>0xC8</addressOffset>
+          <description>MIR_CLEAR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>MirClear</name>
+              <description>Write 1 clears the mask bit to 0, reads return 0</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>write-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>MIR_SET2</name>
+          <addressOffset>0xCC</addressOffset>
+          <description>MIR_SET Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>MirSet</name>
+              <description>Write 1 sets the mask bit to 1, reads return 0</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>write-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>ISR_SET2</name>
+          <addressOffset>0xD0</addressOffset>
+          <description>ISR_SET Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>IsrSet</name>
+              <description>Reads returns the currently active software interrupts, Write 1 sets the software interrupt bits to 1</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>ISR_CLEAR2</name>
+          <addressOffset>0xD4</addressOffset>
+          <description>ISR_CLEAR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>IsrClear</name>
+              <description>Write 1 clears the software interrupt bits to 0, reads return 0</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>write-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>PENDING_IRQ2</name>
+          <addressOffset>0xD8</addressOffset>
+          <description>PENDING_IRQ Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>PendingIRQ</name>
+              <description>IRQ status after masking</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>read-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>PENDING_FIQ2</name>
+          <addressOffset>0xDC</addressOffset>
+          <description>PENDING_FIQ Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>PendingFIQ</name>
+              <description>FIQ status after masking</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>read-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>ITR3</name>
+          <addressOffset>0xE0</addressOffset>
+          <description>ITR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>Itr</name>
+              <description>Interrupt status before masking</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>read-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>MIR3</name>
+          <addressOffset>0xE4</addressOffset>
+          <description>MIR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>Mir</name>
+              <description>Interrupt mask</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>MIR_CLEAR3</name>
+          <addressOffset>0xE8</addressOffset>
+          <description>MIR_CLEAR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>MirClear</name>
+              <description>Write 1 clears the mask bit to 0, reads return 0</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>write-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>MIR_SET3</name>
+          <addressOffset>0xEC</addressOffset>
+          <description>MIR_SET Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>MirSet</name>
+              <description>Write 1 sets the mask bit to 1, reads return 0</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>write-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>ISR_SET3</name>
+          <addressOffset>0xF0</addressOffset>
+          <description>ISR_SET Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>IsrSet</name>
+              <description>Reads returns the currently active software interrupts, Write 1 sets the software interrupt bits to 1</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>ISR_CLEAR3</name>
+          <addressOffset>0xF4</addressOffset>
+          <description>ISR_CLEAR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>IsrClear</name>
+              <description>Write 1 clears the software interrupt bits to 0, reads return 0</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>write-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>PENDING_IRQ3</name>
+          <addressOffset>0xF8</addressOffset>
+          <description>PENDING_IRQ Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>PendingIRQ</name>
+              <description>IRQ status after masking</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>read-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>PENDING_FIQ3</name>
+          <addressOffset>0xFC</addressOffset>
+          <description>PENDING_FIQ Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>PendingFIQ</name>
+              <description>FIQ status after masking</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+              <access>read-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_0</name>
+          <addressOffset>0x100</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_1</name>
+          <addressOffset>0x104</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_2</name>
+          <addressOffset>0x108</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_3</name>
+          <addressOffset>0x10C</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_4</name>
+          <addressOffset>0x110</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_5</name>
+          <addressOffset>0x114</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_6</name>
+          <addressOffset>0x118</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_7</name>
+          <addressOffset>0x11C</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_8</name>
+          <addressOffset>0x120</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_9</name>
+          <addressOffset>0x124</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_10</name>
+          <addressOffset>0x128</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_11</name>
+          <addressOffset>0x12C</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_12</name>
+          <addressOffset>0x130</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_13</name>
+          <addressOffset>0x134</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_14</name>
+          <addressOffset>0x138</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_15</name>
+          <addressOffset>0x13C</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_16</name>
+          <addressOffset>0x140</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_17</name>
+          <addressOffset>0x144</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_18</name>
+          <addressOffset>0x148</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_19</name>
+          <addressOffset>0x14C</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_20</name>
+          <addressOffset>0x150</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_21</name>
+          <addressOffset>0x154</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_22</name>
+          <addressOffset>0x158</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_23</name>
+          <addressOffset>0x15C</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_24</name>
+          <addressOffset>0x160</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_25</name>
+          <addressOffset>0x164</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_26</name>
+          <addressOffset>0x168</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_27</name>
+          <addressOffset>0x16C</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_28</name>
+          <addressOffset>0x170</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_29</name>
+          <addressOffset>0x174</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_30</name>
+          <addressOffset>0x178</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_31</name>
+          <addressOffset>0x17C</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_32</name>
+          <addressOffset>0x180</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_33</name>
+          <addressOffset>0x184</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_34</name>
+          <addressOffset>0x188</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_35</name>
+          <addressOffset>0x18C</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_36</name>
+          <addressOffset>0x190</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_37</name>
+          <addressOffset>0x194</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_38</name>
+          <addressOffset>0x198</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_39</name>
+          <addressOffset>0x19C</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_40</name>
+          <addressOffset>0x1A0</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_41</name>
+          <addressOffset>0x1A4</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_42</name>
+          <addressOffset>0x1A8</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_43</name>
+          <addressOffset>0x1AC</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_44</name>
+          <addressOffset>0x1B0</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_45</name>
+          <addressOffset>0x1B4</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_46</name>
+          <addressOffset>0x1B8</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_47</name>
+          <addressOffset>0x1BC</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_48</name>
+          <addressOffset>0x1C0</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_49</name>
+          <addressOffset>0x1C4</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_50</name>
+          <addressOffset>0x1C8</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_51</name>
+          <addressOffset>0x1CC</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_52</name>
+          <addressOffset>0x1D0</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_53</name>
+          <addressOffset>0x1D4</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_54</name>
+          <addressOffset>0x1D8</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_55</name>
+          <addressOffset>0x1DC</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_56</name>
+          <addressOffset>0x1E0</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_57</name>
+          <addressOffset>0x1E4</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_58</name>
+          <addressOffset>0x1E8</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_59</name>
+          <addressOffset>0x1EC</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_60</name>
+          <addressOffset>0x1F0</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_61</name>
+          <addressOffset>0x1F4</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_62</name>
+          <addressOffset>0x1F8</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_63</name>
+          <addressOffset>0x1FC</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_64</name>
+          <addressOffset>0x200</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_65</name>
+          <addressOffset>0x204</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_66</name>
+          <addressOffset>0x208</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_67</name>
+          <addressOffset>0x20C</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_68</name>
+          <addressOffset>0x210</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_69</name>
+          <addressOffset>0x214</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_70</name>
+          <addressOffset>0x218</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_71</name>
+          <addressOffset>0x21C</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_72</name>
+          <addressOffset>0x220</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_73</name>
+          <addressOffset>0x224</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_74</name>
+          <addressOffset>0x228</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_75</name>
+          <addressOffset>0x22C</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_76</name>
+          <addressOffset>0x230</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_77</name>
+          <addressOffset>0x234</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_78</name>
+          <addressOffset>0x238</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_79</name>
+          <addressOffset>0x23C</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_80</name>
+          <addressOffset>0x240</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_81</name>
+          <addressOffset>0x244</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_82</name>
+          <addressOffset>0x248</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_83</name>
+          <addressOffset>0x24C</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_84</name>
+          <addressOffset>0x250</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_85</name>
+          <addressOffset>0x254</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_86</name>
+          <addressOffset>0x258</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_87</name>
+          <addressOffset>0x25C</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_88</name>
+          <addressOffset>0x260</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_89</name>
+          <addressOffset>0x264</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_90</name>
+          <addressOffset>0x268</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_91</name>
+          <addressOffset>0x26C</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_92</name>
+          <addressOffset>0x270</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_93</name>
+          <addressOffset>0x274</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_94</name>
+          <addressOffset>0x278</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_95</name>
+          <addressOffset>0x27C</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_96</name>
+          <addressOffset>0x280</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_97</name>
+          <addressOffset>0x284</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_98</name>
+          <addressOffset>0x288</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_99</name>
+          <addressOffset>0x28C</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_100</name>
+          <addressOffset>0x290</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_101</name>
+          <addressOffset>0x294</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_102</name>
+          <addressOffset>0x298</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_103</name>
+          <addressOffset>0x29C</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_104</name>
+          <addressOffset>0x2A0</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_105</name>
+          <addressOffset>0x2A4</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_106</name>
+          <addressOffset>0x2A8</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_107</name>
+          <addressOffset>0x2AC</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_108</name>
+          <addressOffset>0x2B0</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_109</name>
+          <addressOffset>0x2B4</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_110</name>
+          <addressOffset>0x2B8</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_111</name>
+          <addressOffset>0x2BC</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_112</name>
+          <addressOffset>0x2C0</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_113</name>
+          <addressOffset>0x2C4</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_114</name>
+          <addressOffset>0x2C8</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_115</name>
+          <addressOffset>0x2CC</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_116</name>
+          <addressOffset>0x2D0</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_117</name>
+          <addressOffset>0x2D4</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_118</name>
+          <addressOffset>0x2D8</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_119</name>
+          <addressOffset>0x2DC</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_120</name>
+          <addressOffset>0x2E0</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_121</name>
+          <addressOffset>0x2E4</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_122</name>
+          <addressOffset>0x2E8</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_123</name>
+          <addressOffset>0x2EC</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_124</name>
+          <addressOffset>0x2F0</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_125</name>
+          <addressOffset>0x2F4</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_126</name>
+          <addressOffset>0x2F8</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>INTC_ILR_127</name>
+          <addressOffset>0x2FC</addressOffset>
+          <description>INTC_ILR Register</description>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>FIQnIRQ</name>
+              <description>bit: 0 (RW) Interrupt IRQ FiQ mapping [0x0 = Interrupt is routed to IRQ, 0x1 = Interrupt is routed to FIQ]</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Priority</name>
+              <description>Interrupt priority</description>
+              <bitOffset>1</bitOffset>
+              <bitWidth>6</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+      </registers>
+    </peripheral>
     <peripheral>
       <name>EMIF0</name>
       <description>External Memory Interface 4D (EMIF) - DDR Controller</description>
