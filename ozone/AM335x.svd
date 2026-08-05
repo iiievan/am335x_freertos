@@ -10827,10 +10827,2318 @@
           </registers>
         </peripheral>
         <peripheral>
-              <name>EDMATC0</name>
-              <description>EDMA transfer controller module</description>
-              <baseAddress>0x49800000</baseAddress>
-              <groupName>Peripherals</groupName>
+          <name>EDMATC0</name>
+            <description>EDMA transfer controller module 0</description>
+            <baseAddress>0x49800000</baseAddress>
+            <groupName>Peripherals</groupName>
+            <registers>
+            <register>
+              <name>PID</name>
+              <addressOffset>0x00</addressOffset>
+              <description>PIDTC Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>PID</name>
+                  <description>bits 0..15 (R) Peripheral identifier uniquely identifies the EDMA3CC and the</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>TCCFG</name>
+              <addressOffset>0x04</addressOffset>
+              <description>TCCFG Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>FIFOSIZE</name>
+                  <description>bits 0..2 (R) FIFO size configuration</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>BUSWIDTH</name>
+                  <description>bits 4,5 (R) Bus width configuration</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DREGDEPTH</name>
+                  <description>bits 8,9 (R) Register file depth</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SYSCONFIG</name>
+              <addressOffset>0x10</addressOffset>
+              <description>SYSCONFIGTC Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>IDLEMODE</name>
+                  <description>bits 2,3 (RW) Idle mode configuration [see e_SYSC_IDLEMODE]</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>STANDBYMODE</name>
+                  <description>bits 4,5 (RW) Standby mode configuration [see e_SYSC_STANDBYMODE]</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>TCSTAT</name>
+              <addressOffset>0x100</addressOffset>
+              <description>TCSTAT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>PROGBUSY</name>
+                  <description>bit 0 (R) Program register set busy</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SRCACTV</name>
+                  <description>bit 1 (R) Source active state</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>WSACTV</name>
+                  <description>bit 2 (R) Write status active</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DSTACTV</name>
+                  <description>bits 4..6 (R) Destination active state. [ see e_DSTACTV_state ]</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DFSTRTPTR</name>
+                  <description>bits 12,13 (R) Destination FIFO start pointer.</description>
+                  <bitOffset>12</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>ERRSTAT</name>
+              <addressOffset>0x120</addressOffset>
+              <description>ERRSTAT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>BUSERR</name>
+                  <description>bit 0 (R) Bus error event.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TRERR</name>
+                  <description>bit 2 (R) Transfer request (TR) error event.</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>MMRAERR</name>
+                  <description>bit 3 (R) MMR address error.</description>
+                  <bitOffset>3</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>ERREN</name>
+              <addressOffset>0x124</addressOffset>
+              <description>ERREN Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>BUSERR</name>
+                  <description>bit 0 (RW) Interrupt enable for bus error (BUSERR).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TRERR</name>
+                  <description>bit 2 (RW) Interrupt enable for transfer request error (TRERR).</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>MMRAERR</name>
+                  <description>bit 3 (RW) Interrupt enable for MMR address error (MMRAERR).</description>
+                  <bitOffset>3</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>ERRCLR</name>
+              <addressOffset>0x128</addressOffset>
+              <description>ERRCLR Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>BUSERR</name>
+                  <description>bit 0 (W) Interrupt clear for the BUSERR bit in the error status register</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TRERR</name>
+                  <description>bit 2 (W) Interrupt enable clear for the TRERR bit in the error status register</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>MMRAERR</name>
+                  <description>bit 3 (W) Interrupt enable clear for the MMRAERR bit in the error status</description>
+                  <bitOffset>3</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>ERRDET</name>
+              <addressOffset>0x12C</addressOffset>
+              <description>ERRDET Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>STAT</name>
+                  <description>bits 0..3 (R) Transaction status.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>4</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCC</name>
+                  <description>bits 8..13 (R) Transfer complete code.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCINTEN</name>
+                  <description>bit 16 (R) Transfer completion interrupt enable.</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCCHEN</name>
+                  <description>bit 17 (R) Transfer completion chaining enable.</description>
+                  <bitOffset>17</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>ERRCMD</name>
+              <addressOffset>0x130</addressOffset>
+              <description>ERRCMD Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>EVAL</name>
+                  <description>bit 0 (W) Error evaluate</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>RDRATE</name>
+              <addressOffset>0x140</addressOffset>
+              <description>RDRATE Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>RDRATE</name>
+                  <description>bits 0..2 (W) Read rate.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SAOPT</name>
+              <addressOffset>0x240</addressOffset>
+              <description>SAOPT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SAM</name>
+                  <description>bit 0 (R) Source address mode within an array</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DAM</name>
+                  <description>bit 1 (R) Destination address mode within an array</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRI</name>
+                  <description>bits 4..6 (R) Transfer priority.</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>FWID</name>
+                  <description>bits 8..10 (R) FIFO width.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCC</name>
+                  <description>bits 12..17 (R) Transfer complete code.</description>
+                  <bitOffset>12</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCINTEN</name>
+                  <description>bit 20 (R) Transfer complete interrupt enable.</description>
+                  <bitOffset>20</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCCHEN</name>
+                  <description>bit 22 (R) Transfer complete chaining enable</description>
+                  <bitOffset>22</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SASRC</name>
+              <addressOffset>0x244</addressOffset>
+              <description>SASRC Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SADDR</name>
+                  <description>bits 0..31 (R) Source address for Source Active Register Set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SACNT</name>
+              <addressOffset>0x248</addressOffset>
+              <description>SACNT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ACNT</name>
+                  <description>bits 0..15 (R) A dimension count remaining for the Source Active Register Set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>BCNT</name>
+                  <description>bits 16..31 (R) B dimension count remaining for the Source Active Register Set.</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SADST</name>
+              <addressOffset>0x24C</addressOffset>
+              <description>SADST Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+            </register>
+            <register>
+              <name>SABIDX</name>
+              <addressOffset>0x250</addressOffset>
+              <description>SABIDX Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SBIDX</name>
+                  <description>bits 0..15 (R) B-Index offset between source arrays.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DBIDX</name>
+                  <description>bits 16..31 (R) B-Index offset between destination arrays.</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SAMPPRXY</name>
+              <addressOffset>0x254</addressOffset>
+              <description>SAMPPRXY Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>PRIVID</name>
+                  <description>bits 0..3 (R) Privilege ID.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>4</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRIV</name>
+                  <description>bit 8 (R) Privilege level.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SACNTRLD</name>
+              <addressOffset>0x258</addressOffset>
+              <description>SACNTRLD Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ACNTRLD</name>
+                  <description>bits 0..15 (R) A-count reload value.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SASRCBREF</name>
+              <addressOffset>0x25C</addressOffset>
+              <description>SASRCBREF Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SADDRBREF</name>
+                  <description>bits 0..31 (R) Source address B-reference.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SADSTBREF</name>
+              <addressOffset>0x260</addressOffset>
+              <description>SADSTBREF Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+            </register>
+            <register>
+              <name>DFCNTRLD</name>
+              <addressOffset>0x280</addressOffset>
+              <description>DFCNTRLD Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ACNTRLD</name>
+                  <description>bits 0..15 (R) A-count reload value for the Destination FIFO Register Set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFSRCBREF</name>
+              <addressOffset>0x284</addressOffset>
+              <description>DFSRCBREF Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+            </register>
+            <register>
+              <name>DFDSTBREF</name>
+              <addressOffset>0x288</addressOffset>
+              <description>DFDSTBREF Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>DADDRBREF</name>
+                  <description>bits 0..31 (R) Destination address reference for the destination FIFO register set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFOPT0</name>
+              <addressOffset>0x300</addressOffset>
+              <description>DFOPT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SAM</name>
+                  <description>bit 0 (R) Source address mode within an array</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DAM</name>
+                  <description>bit 1 (R) Destination address mode within an array</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRI</name>
+                  <description>bits 4..6 (R) Transfer priority [ see e_PRI ]</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>FWID</name>
+                  <description>bits 8..10 (R) FIFO width.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCC</name>
+                  <description>bits 12..17 (R) Transfer complete code.</description>
+                  <bitOffset>12</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCINTEN</name>
+                  <description>bit 20 (R) Transfer complete interrupt enable.</description>
+                  <bitOffset>20</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCCHEN</name>
+                  <description>bit 22 (R) Transfer complete chaining enable</description>
+                  <bitOffset>22</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFSRC0</name>
+              <addressOffset>0x304</addressOffset>
+              <description>DFSRC Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+            </register>
+            <register>
+              <name>DFCNT0</name>
+              <addressOffset>0x308</addressOffset>
+              <description>DFCNT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ACNT</name>
+                  <description>bits 0..15 (R) A-dimension count remaining for Destination Register Set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>BCNT</name>
+                  <description>bits 16..31 (R) B-dimension count remaining for Destination Register Set.</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFDST0</name>
+              <addressOffset>0x30C</addressOffset>
+              <description>DFDST Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>DADDR</name>
+                  <description>bits 0..31 (R) Destination address for the destination FIFO register set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFBIDX0</name>
+              <addressOffset>0x310</addressOffset>
+              <description>DFBIDX Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SBIDX</name>
+                  <description>bits 0..15 (R) B-Index offset between source arrays for the Destination FIFO</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DBIDX</name>
+                  <description>bits 16..31 (R) B-Index offset between destination arrays for the Destination FIFO</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFMPPRXY0</name>
+              <addressOffset>0x314</addressOffset>
+              <description>DFMPPRXY Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>PRIVID</name>
+                  <description>bits 0..3 (R) Privilege ID.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>4</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRIV</name>
+                  <description>bit 8 (R) Privilege level.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFOPT1</name>
+              <addressOffset>0x340</addressOffset>
+              <description>DFOPT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SAM</name>
+                  <description>bit 0 (R) Source address mode within an array</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DAM</name>
+                  <description>bit 1 (R) Destination address mode within an array</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRI</name>
+                  <description>bits 4..6 (R) Transfer priority [ see e_PRI ]</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>FWID</name>
+                  <description>bits 8..10 (R) FIFO width.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCC</name>
+                  <description>bits 12..17 (R) Transfer complete code.</description>
+                  <bitOffset>12</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCINTEN</name>
+                  <description>bit 20 (R) Transfer complete interrupt enable.</description>
+                  <bitOffset>20</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCCHEN</name>
+                  <description>bit 22 (R) Transfer complete chaining enable</description>
+                  <bitOffset>22</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFSRC1</name>
+              <addressOffset>0x344</addressOffset>
+              <description>DFSRC Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+            </register>
+            <register>
+              <name>DFCNT1</name>
+              <addressOffset>0x348</addressOffset>
+              <description>DFCNT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ACNT</name>
+                  <description>bits 0..15 (R) A-dimension count remaining for Destination Register Set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>BCNT</name>
+                  <description>bits 16..31 (R) B-dimension count remaining for Destination Register Set.</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFDST1</name>
+              <addressOffset>0x34C</addressOffset>
+              <description>DFDST Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>DADDR</name>
+                  <description>bits 0..31 (R) Destination address for the destination FIFO register set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFBIDX1</name>
+              <addressOffset>0x350</addressOffset>
+              <description>DFBIDX Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SBIDX</name>
+                  <description>bits 0..15 (R) B-Index offset between source arrays for the Destination FIFO</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DBIDX</name>
+                  <description>bits 16..31 (R) B-Index offset between destination arrays for the Destination FIFO</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFMPPRXY1</name>
+              <addressOffset>0x354</addressOffset>
+              <description>DFMPPRXY Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>PRIVID</name>
+                  <description>bits 0..3 (R) Privilege ID.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>4</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRIV</name>
+                  <description>bit 8 (R) Privilege level.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFOPT2</name>
+              <addressOffset>0x380</addressOffset>
+              <description>DFOPT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SAM</name>
+                  <description>bit 0 (R) Source address mode within an array</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DAM</name>
+                  <description>bit 1 (R) Destination address mode within an array</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRI</name>
+                  <description>bits 4..6 (R) Transfer priority [ see e_PRI ]</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>FWID</name>
+                  <description>bits 8..10 (R) FIFO width.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCC</name>
+                  <description>bits 12..17 (R) Transfer complete code.</description>
+                  <bitOffset>12</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCINTEN</name>
+                  <description>bit 20 (R) Transfer complete interrupt enable.</description>
+                  <bitOffset>20</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCCHEN</name>
+                  <description>bit 22 (R) Transfer complete chaining enable</description>
+                  <bitOffset>22</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFSRC2</name>
+              <addressOffset>0x384</addressOffset>
+              <description>DFSRC Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+            </register>
+            <register>
+              <name>DFCNT2</name>
+              <addressOffset>0x388</addressOffset>
+              <description>DFCNT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ACNT</name>
+                  <description>bits 0..15 (R) A-dimension count remaining for Destination Register Set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>BCNT</name>
+                  <description>bits 16..31 (R) B-dimension count remaining for Destination Register Set.</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFDST2</name>
+              <addressOffset>0x38C</addressOffset>
+              <description>DFDST Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>DADDR</name>
+                  <description>bits 0..31 (R) Destination address for the destination FIFO register set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFBIDX2</name>
+              <addressOffset>0x390</addressOffset>
+              <description>DFBIDX Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SBIDX</name>
+                  <description>bits 0..15 (R) B-Index offset between source arrays for the Destination FIFO</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DBIDX</name>
+                  <description>bits 16..31 (R) B-Index offset between destination arrays for the Destination FIFO</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFMPPRXY2</name>
+              <addressOffset>0x394</addressOffset>
+              <description>DFMPPRXY Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>PRIVID</name>
+                  <description>bits 0..3 (R) Privilege ID.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>4</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRIV</name>
+                  <description>bit 8 (R) Privilege level.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFOPT3</name>
+              <addressOffset>0x3C0</addressOffset>
+              <description>DFOPT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SAM</name>
+                  <description>bit 0 (R) Source address mode within an array</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DAM</name>
+                  <description>bit 1 (R) Destination address mode within an array</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRI</name>
+                  <description>bits 4..6 (R) Transfer priority [ see e_PRI ]</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>FWID</name>
+                  <description>bits 8..10 (R) FIFO width.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCC</name>
+                  <description>bits 12..17 (R) Transfer complete code.</description>
+                  <bitOffset>12</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCINTEN</name>
+                  <description>bit 20 (R) Transfer complete interrupt enable.</description>
+                  <bitOffset>20</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCCHEN</name>
+                  <description>bit 22 (R) Transfer complete chaining enable</description>
+                  <bitOffset>22</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFSRC3</name>
+              <addressOffset>0x3C4</addressOffset>
+              <description>DFSRC Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+            </register>
+            <register>
+              <name>DFCNT3</name>
+              <addressOffset>0x3C8</addressOffset>
+              <description>DFCNT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ACNT</name>
+                  <description>bits 0..15 (R) A-dimension count remaining for Destination Register Set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>BCNT</name>
+                  <description>bits 16..31 (R) B-dimension count remaining for Destination Register Set.</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFDST3</name>
+              <addressOffset>0x3CC</addressOffset>
+              <description>DFDST Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>DADDR</name>
+                  <description>bits 0..31 (R) Destination address for the destination FIFO register set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFBIDX3</name>
+              <addressOffset>0x3D0</addressOffset>
+              <description>DFBIDX Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SBIDX</name>
+                  <description>bits 0..15 (R) B-Index offset between source arrays for the Destination FIFO</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DBIDX</name>
+                  <description>bits 16..31 (R) B-Index offset between destination arrays for the Destination FIFO</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFMPPRXY3</name>
+              <addressOffset>0x3D4</addressOffset>
+              <description>DFMPPRXY Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>PRIVID</name>
+                  <description>bits 0..3 (R) Privilege ID.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>4</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRIV</name>
+                  <description>bit 8 (R) Privilege level.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+          </registers>
+        </peripheral>
+        <peripheral>
+          <name>EDMATC1</name>
+            <description>EDMA transfer controller module 1</description>
+            <baseAddress>0x49900000</baseAddress>
+            <groupName>Peripherals</groupName>
+            <registers>
+            <register>
+              <name>PID</name>
+              <addressOffset>0x00</addressOffset>
+              <description>PIDTC Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>PID</name>
+                  <description>bits 0..15 (R) Peripheral identifier uniquely identifies the EDMA3CC and the</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>TCCFG</name>
+              <addressOffset>0x04</addressOffset>
+              <description>TCCFG Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>FIFOSIZE</name>
+                  <description>bits 0..2 (R) FIFO size configuration</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>BUSWIDTH</name>
+                  <description>bits 4,5 (R) Bus width configuration</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DREGDEPTH</name>
+                  <description>bits 8,9 (R) Register file depth</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SYSCONFIG</name>
+              <addressOffset>0x10</addressOffset>
+              <description>SYSCONFIGTC Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>IDLEMODE</name>
+                  <description>bits 2,3 (RW) Idle mode configuration [see e_SYSC_IDLEMODE]</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>STANDBYMODE</name>
+                  <description>bits 4,5 (RW) Standby mode configuration [see e_SYSC_STANDBYMODE]</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>TCSTAT</name>
+              <addressOffset>0x100</addressOffset>
+              <description>TCSTAT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>PROGBUSY</name>
+                  <description>bit 0 (R) Program register set busy</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SRCACTV</name>
+                  <description>bit 1 (R) Source active state</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>WSACTV</name>
+                  <description>bit 2 (R) Write status active</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DSTACTV</name>
+                  <description>bits 4..6 (R) Destination active state. [ see e_DSTACTV_state ]</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DFSTRTPTR</name>
+                  <description>bits 12,13 (R) Destination FIFO start pointer.</description>
+                  <bitOffset>12</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>ERRSTAT</name>
+              <addressOffset>0x120</addressOffset>
+              <description>ERRSTAT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>BUSERR</name>
+                  <description>bit 0 (R) Bus error event.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TRERR</name>
+                  <description>bit 2 (R) Transfer request (TR) error event.</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>MMRAERR</name>
+                  <description>bit 3 (R) MMR address error.</description>
+                  <bitOffset>3</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>ERREN</name>
+              <addressOffset>0x124</addressOffset>
+              <description>ERREN Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>BUSERR</name>
+                  <description>bit 0 (RW) Interrupt enable for bus error (BUSERR).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TRERR</name>
+                  <description>bit 2 (RW) Interrupt enable for transfer request error (TRERR).</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>MMRAERR</name>
+                  <description>bit 3 (RW) Interrupt enable for MMR address error (MMRAERR).</description>
+                  <bitOffset>3</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>ERRCLR</name>
+              <addressOffset>0x128</addressOffset>
+              <description>ERRCLR Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>BUSERR</name>
+                  <description>bit 0 (W) Interrupt clear for the BUSERR bit in the error status register</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TRERR</name>
+                  <description>bit 2 (W) Interrupt enable clear for the TRERR bit in the error status register</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>MMRAERR</name>
+                  <description>bit 3 (W) Interrupt enable clear for the MMRAERR bit in the error status</description>
+                  <bitOffset>3</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>ERRDET</name>
+              <addressOffset>0x12C</addressOffset>
+              <description>ERRDET Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>STAT</name>
+                  <description>bits 0..3 (R) Transaction status.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>4</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCC</name>
+                  <description>bits 8..13 (R) Transfer complete code.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCINTEN</name>
+                  <description>bit 16 (R) Transfer completion interrupt enable.</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCCHEN</name>
+                  <description>bit 17 (R) Transfer completion chaining enable.</description>
+                  <bitOffset>17</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>ERRCMD</name>
+              <addressOffset>0x130</addressOffset>
+              <description>ERRCMD Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>EVAL</name>
+                  <description>bit 0 (W) Error evaluate</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>RDRATE</name>
+              <addressOffset>0x140</addressOffset>
+              <description>RDRATE Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>RDRATE</name>
+                  <description>bits 0..2 (W) Read rate.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SAOPT</name>
+              <addressOffset>0x240</addressOffset>
+              <description>SAOPT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SAM</name>
+                  <description>bit 0 (R) Source address mode within an array</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DAM</name>
+                  <description>bit 1 (R) Destination address mode within an array</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRI</name>
+                  <description>bits 4..6 (R) Transfer priority.</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>FWID</name>
+                  <description>bits 8..10 (R) FIFO width.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCC</name>
+                  <description>bits 12..17 (R) Transfer complete code.</description>
+                  <bitOffset>12</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCINTEN</name>
+                  <description>bit 20 (R) Transfer complete interrupt enable.</description>
+                  <bitOffset>20</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCCHEN</name>
+                  <description>bit 22 (R) Transfer complete chaining enable</description>
+                  <bitOffset>22</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SASRC</name>
+              <addressOffset>0x244</addressOffset>
+              <description>SASRC Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SADDR</name>
+                  <description>bits 0..31 (R) Source address for Source Active Register Set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SACNT</name>
+              <addressOffset>0x248</addressOffset>
+              <description>SACNT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ACNT</name>
+                  <description>bits 0..15 (R) A dimension count remaining for the Source Active Register Set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>BCNT</name>
+                  <description>bits 16..31 (R) B dimension count remaining for the Source Active Register Set.</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SADST</name>
+              <addressOffset>0x24C</addressOffset>
+              <description>SADST Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+            </register>
+            <register>
+              <name>SABIDX</name>
+              <addressOffset>0x250</addressOffset>
+              <description>SABIDX Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SBIDX</name>
+                  <description>bits 0..15 (R) B-Index offset between source arrays.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DBIDX</name>
+                  <description>bits 16..31 (R) B-Index offset between destination arrays.</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SAMPPRXY</name>
+              <addressOffset>0x254</addressOffset>
+              <description>SAMPPRXY Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>PRIVID</name>
+                  <description>bits 0..3 (R) Privilege ID.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>4</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRIV</name>
+                  <description>bit 8 (R) Privilege level.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SACNTRLD</name>
+              <addressOffset>0x258</addressOffset>
+              <description>SACNTRLD Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ACNTRLD</name>
+                  <description>bits 0..15 (R) A-count reload value.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SASRCBREF</name>
+              <addressOffset>0x25C</addressOffset>
+              <description>SASRCBREF Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SADDRBREF</name>
+                  <description>bits 0..31 (R) Source address B-reference.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SADSTBREF</name>
+              <addressOffset>0x260</addressOffset>
+              <description>SADSTBREF Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+            </register>
+            <register>
+              <name>DFCNTRLD</name>
+              <addressOffset>0x280</addressOffset>
+              <description>DFCNTRLD Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ACNTRLD</name>
+                  <description>bits 0..15 (R) A-count reload value for the Destination FIFO Register Set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFSRCBREF</name>
+              <addressOffset>0x284</addressOffset>
+              <description>DFSRCBREF Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+            </register>
+            <register>
+              <name>DFDSTBREF</name>
+              <addressOffset>0x288</addressOffset>
+              <description>DFDSTBREF Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>DADDRBREF</name>
+                  <description>bits 0..31 (R) Destination address reference for the destination FIFO register set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFOPT0</name>
+              <addressOffset>0x300</addressOffset>
+              <description>DFOPT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SAM</name>
+                  <description>bit 0 (R) Source address mode within an array</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DAM</name>
+                  <description>bit 1 (R) Destination address mode within an array</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRI</name>
+                  <description>bits 4..6 (R) Transfer priority [ see e_PRI ]</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>FWID</name>
+                  <description>bits 8..10 (R) FIFO width.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCC</name>
+                  <description>bits 12..17 (R) Transfer complete code.</description>
+                  <bitOffset>12</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCINTEN</name>
+                  <description>bit 20 (R) Transfer complete interrupt enable.</description>
+                  <bitOffset>20</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCCHEN</name>
+                  <description>bit 22 (R) Transfer complete chaining enable</description>
+                  <bitOffset>22</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFSRC0</name>
+              <addressOffset>0x304</addressOffset>
+              <description>DFSRC Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+            </register>
+            <register>
+              <name>DFCNT0</name>
+              <addressOffset>0x308</addressOffset>
+              <description>DFCNT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ACNT</name>
+                  <description>bits 0..15 (R) A-dimension count remaining for Destination Register Set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>BCNT</name>
+                  <description>bits 16..31 (R) B-dimension count remaining for Destination Register Set.</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFDST0</name>
+              <addressOffset>0x30C</addressOffset>
+              <description>DFDST Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>DADDR</name>
+                  <description>bits 0..31 (R) Destination address for the destination FIFO register set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFBIDX0</name>
+              <addressOffset>0x310</addressOffset>
+              <description>DFBIDX Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SBIDX</name>
+                  <description>bits 0..15 (R) B-Index offset between source arrays for the Destination FIFO</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DBIDX</name>
+                  <description>bits 16..31 (R) B-Index offset between destination arrays for the Destination FIFO</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFMPPRXY0</name>
+              <addressOffset>0x314</addressOffset>
+              <description>DFMPPRXY Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>PRIVID</name>
+                  <description>bits 0..3 (R) Privilege ID.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>4</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRIV</name>
+                  <description>bit 8 (R) Privilege level.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFOPT1</name>
+              <addressOffset>0x340</addressOffset>
+              <description>DFOPT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SAM</name>
+                  <description>bit 0 (R) Source address mode within an array</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DAM</name>
+                  <description>bit 1 (R) Destination address mode within an array</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRI</name>
+                  <description>bits 4..6 (R) Transfer priority [ see e_PRI ]</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>FWID</name>
+                  <description>bits 8..10 (R) FIFO width.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCC</name>
+                  <description>bits 12..17 (R) Transfer complete code.</description>
+                  <bitOffset>12</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCINTEN</name>
+                  <description>bit 20 (R) Transfer complete interrupt enable.</description>
+                  <bitOffset>20</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCCHEN</name>
+                  <description>bit 22 (R) Transfer complete chaining enable</description>
+                  <bitOffset>22</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFSRC1</name>
+              <addressOffset>0x344</addressOffset>
+              <description>DFSRC Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+            </register>
+            <register>
+              <name>DFCNT1</name>
+              <addressOffset>0x348</addressOffset>
+              <description>DFCNT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ACNT</name>
+                  <description>bits 0..15 (R) A-dimension count remaining for Destination Register Set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>BCNT</name>
+                  <description>bits 16..31 (R) B-dimension count remaining for Destination Register Set.</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFDST1</name>
+              <addressOffset>0x34C</addressOffset>
+              <description>DFDST Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>DADDR</name>
+                  <description>bits 0..31 (R) Destination address for the destination FIFO register set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFBIDX1</name>
+              <addressOffset>0x350</addressOffset>
+              <description>DFBIDX Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SBIDX</name>
+                  <description>bits 0..15 (R) B-Index offset between source arrays for the Destination FIFO</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DBIDX</name>
+                  <description>bits 16..31 (R) B-Index offset between destination arrays for the Destination FIFO</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFMPPRXY1</name>
+              <addressOffset>0x354</addressOffset>
+              <description>DFMPPRXY Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>PRIVID</name>
+                  <description>bits 0..3 (R) Privilege ID.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>4</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRIV</name>
+                  <description>bit 8 (R) Privilege level.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFOPT2</name>
+              <addressOffset>0x380</addressOffset>
+              <description>DFOPT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SAM</name>
+                  <description>bit 0 (R) Source address mode within an array</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DAM</name>
+                  <description>bit 1 (R) Destination address mode within an array</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRI</name>
+                  <description>bits 4..6 (R) Transfer priority [ see e_PRI ]</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>FWID</name>
+                  <description>bits 8..10 (R) FIFO width.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCC</name>
+                  <description>bits 12..17 (R) Transfer complete code.</description>
+                  <bitOffset>12</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCINTEN</name>
+                  <description>bit 20 (R) Transfer complete interrupt enable.</description>
+                  <bitOffset>20</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCCHEN</name>
+                  <description>bit 22 (R) Transfer complete chaining enable</description>
+                  <bitOffset>22</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFSRC2</name>
+              <addressOffset>0x384</addressOffset>
+              <description>DFSRC Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+            </register>
+            <register>
+              <name>DFCNT2</name>
+              <addressOffset>0x388</addressOffset>
+              <description>DFCNT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ACNT</name>
+                  <description>bits 0..15 (R) A-dimension count remaining for Destination Register Set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>BCNT</name>
+                  <description>bits 16..31 (R) B-dimension count remaining for Destination Register Set.</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFDST2</name>
+              <addressOffset>0x38C</addressOffset>
+              <description>DFDST Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>DADDR</name>
+                  <description>bits 0..31 (R) Destination address for the destination FIFO register set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFBIDX2</name>
+              <addressOffset>0x390</addressOffset>
+              <description>DFBIDX Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SBIDX</name>
+                  <description>bits 0..15 (R) B-Index offset between source arrays for the Destination FIFO</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DBIDX</name>
+                  <description>bits 16..31 (R) B-Index offset between destination arrays for the Destination FIFO</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFMPPRXY2</name>
+              <addressOffset>0x394</addressOffset>
+              <description>DFMPPRXY Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>PRIVID</name>
+                  <description>bits 0..3 (R) Privilege ID.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>4</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRIV</name>
+                  <description>bit 8 (R) Privilege level.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFOPT3</name>
+              <addressOffset>0x3C0</addressOffset>
+              <description>DFOPT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SAM</name>
+                  <description>bit 0 (R) Source address mode within an array</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DAM</name>
+                  <description>bit 1 (R) Destination address mode within an array</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRI</name>
+                  <description>bits 4..6 (R) Transfer priority [ see e_PRI ]</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>FWID</name>
+                  <description>bits 8..10 (R) FIFO width.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCC</name>
+                  <description>bits 12..17 (R) Transfer complete code.</description>
+                  <bitOffset>12</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCINTEN</name>
+                  <description>bit 20 (R) Transfer complete interrupt enable.</description>
+                  <bitOffset>20</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCCHEN</name>
+                  <description>bit 22 (R) Transfer complete chaining enable</description>
+                  <bitOffset>22</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFSRC3</name>
+              <addressOffset>0x3C4</addressOffset>
+              <description>DFSRC Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+            </register>
+            <register>
+              <name>DFCNT3</name>
+              <addressOffset>0x3C8</addressOffset>
+              <description>DFCNT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ACNT</name>
+                  <description>bits 0..15 (R) A-dimension count remaining for Destination Register Set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>BCNT</name>
+                  <description>bits 16..31 (R) B-dimension count remaining for Destination Register Set.</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFDST3</name>
+              <addressOffset>0x3CC</addressOffset>
+              <description>DFDST Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>DADDR</name>
+                  <description>bits 0..31 (R) Destination address for the destination FIFO register set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFBIDX3</name>
+              <addressOffset>0x3D0</addressOffset>
+              <description>DFBIDX Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SBIDX</name>
+                  <description>bits 0..15 (R) B-Index offset between source arrays for the Destination FIFO</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DBIDX</name>
+                  <description>bits 16..31 (R) B-Index offset between destination arrays for the Destination FIFO</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFMPPRXY3</name>
+              <addressOffset>0x3D4</addressOffset>
+              <description>DFMPPRXY Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>PRIVID</name>
+                  <description>bits 0..3 (R) Privilege ID.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>4</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRIV</name>
+                  <description>bit 8 (R) Privilege level.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+          </registers>
+        </peripheral>
+        <peripheral>
+          <name>EDMATC2</name>
+            <description>EDMA transfer controller module 2</description>
+            <baseAddress>0x49A00000</baseAddress>
+            <groupName>Peripherals</groupName>
             <registers>
             <register>
               <name>PID</name>
