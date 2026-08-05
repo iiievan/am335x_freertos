@@ -81,6 +81,12 @@ extern "C" void vApplicationIRQHandler(void)
         HAL::TIMERS::sys_time.IRQ_enable(IRQ_OVF);  // Enable the DM_Timer interrupts
         HAL::TIMERS::sys_time.sys_interrupt_enable();
         break;
+      default:
+          const auto handler = HAL::INTC::interrupt_vectors[irq_num];
+          if (handler) {
+              handler(nullptr);
+          }
+        break;
     }
 
     // Очистить прерывание в INTC

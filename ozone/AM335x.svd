@@ -7510,6 +7510,4477 @@
           </registers>
         </peripheral>
         <peripheral>
+          <name>EDMACC</name>
+          <description>EDMA channel controller module</description>
+          <baseAddress>0x49000000</baseAddress>
+          <groupName>Peripherals</groupName>
+          <registers>
+            <register>
+              <name>PID</name>
+              <addressOffset>0x00</addressOffset>
+              <description>PIDCC Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>PID</name>
+                  <description>bits 0..15 (R) Peripheral identifier uniquely identifies the EDMA3CC and the</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>CCCFG</name>
+              <addressOffset>0x04</addressOffset>
+              <description>CCCFG Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>NUM_DMACH</name>
+                  <description>bits 0..2 (R) Number of DMA channels</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>NUM_QDMACH</name>
+                  <description>bits 4..6 (R) Number of QDMA channels</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>NUM_INTCH</name>
+                  <description>bits 8..10 (R) Number of interrupt channels</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>NUM_PAENTRY</name>
+                  <description>bits 12..14 (R) Number of parameter entries</description>
+                  <bitOffset>12</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>NUM_EVQUE</name>
+                  <description>bits 16..18 (R) Number of event queues</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>NUM_REGN</name>
+                  <description>bits 20,21 (R) Number of regions</description>
+                  <bitOffset>20</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>CHMAP_EXIST</name>
+                  <description>bit 24 (R) Channel map existence</description>
+                  <bitOffset>24</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>MP_EXIST</name>
+                  <description>bit 25 (R) Memory protection existence</description>
+                  <bitOffset>25</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SYSCONFIG</name>
+              <addressOffset>0x10</addressOffset>
+              <description>SYSCONFIGCC Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>IDLEMODE</name>
+                  <description>bits 2,3 (RW) Idle mode configuration [ see e_IDLEMODE]</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>QDMAQNUM</name>
+              <addressOffset>0x260</addressOffset>
+              <description>QDMAQNUM Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>E0</name>
+                  <description>bits 0..2 (RW) Event queue number for QDMA channel 0 [see e_EVENT_QUEUE]</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>E1</name>
+                  <description>bits 4..6 (RW) Event queue number for QDMA channel 1 [see e_EVENT_QUEUE]</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>E2</name>
+                  <description>bits 8..10 (RW) Event queue number for QDMA channel 2 [see e_EVENT_QUEUE]</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>E3</name>
+                  <description>bits 12..14 (RW) Event queue number for QDMA channel 3 [see e_EVENT_QUEUE]</description>
+                  <bitOffset>12</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>E4</name>
+                  <description>bits 16..18 (RW) Event queue number for QDMA channel 4 [see e_EVENT_QUEUE]</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>E5</name>
+                  <description>bits 20..22 (RW) Event queue number for QDMA channel 5 [see e_EVENT_QUEUE]</description>
+                  <bitOffset>20</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>E6</name>
+                  <description>bits 24..26 (RW) Event queue number for QDMA channel 6 [see e_EVENT_QUEUE]</description>
+                  <bitOffset>24</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>E7</name>
+                  <description>bits 28..30 (RW) Event queue number for QDMA channel 7 [see e_EVENT_QUEUE]</description>
+                  <bitOffset>28</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>QUEPRI</name>
+              <addressOffset>0x284</addressOffset>
+              <description>QUEPRI Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>PRIQ0</name>
+                  <description>bits:0..2 (R/W) Priority level for queue 0. Dictates the priority level used by TC0 relative to other</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRIQ1</name>
+                  <description>bits:4..6 (R/W) Priority level for queue 1. Dictates the priority level used by TC1 relative to other</description>
+                  <bitOffset>3</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRIQ2</name>
+                  <description>bits:8..10 (R/W) Priority level for queue 2. Dictates the priority level used by TC2 relative to other</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>EMR</name>
+              <addressOffset>0x300</addressOffset>
+              <description>EMR Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>bits 0..31 (R) Channel 0 to 31 event missed. En is cleared by writing a 1 to the corresponding bit in</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>EMRH</name>
+              <addressOffset>0x304</addressOffset>
+              <description>EMRH Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>bits 0..31 (R) Channel 32 to 63 event missed. En is cleared by writing a 1 to the corresponding bit in</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>EMCR</name>
+              <addressOffset>0x308</addressOffset>
+              <description>EMCR Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>bits:0..31 (W) Event missed 0 to 31 clear. All error bits must be cleared before additional error</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>EMCRH</name>
+              <addressOffset>0x30C</addressOffset>
+              <description>EMCRH Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>bits:0..31 (W) Event missed 32 to 63 clear. All error bits must be cleared before additional error</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>QEMR</name>
+              <addressOffset>0x310</addressOffset>
+              <description>QEMR Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>bits:0..7 (R) Channel 0 to 7 QDMA event missed. En is cleared by writing a 1 to the corresponding bit</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>8</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>QEMCR</name>
+              <addressOffset>0x314</addressOffset>
+              <description>QEMCR Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>bits:0..7 (W) QDMA event missed clear. All error bits must be cleared before additional error</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>8</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>CCERR</name>
+              <addressOffset>0x318</addressOffset>
+              <description>CCERR Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>QTHRXCD0</name>
+                  <description>bit 0 (R) Queue 0 threshold exceeded error</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>QTHRXCD1</name>
+                  <description>bit 1 (R) Queue 1 threshold exceeded error</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>QTHRXCD2</name>
+                  <description>bit 2 (R) Queue 2 threshold exceeded error</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCCERR</name>
+                  <description>bit 16 (R) Transfer completion code error</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>CCERRCLR</name>
+              <addressOffset>0x31C</addressOffset>
+              <description>CCERRCLR Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>QTHRXCD0</name>
+                  <description>bit 0 (W) Queue 0 threshold exceeded error clear</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>QTHRXCD1</name>
+                  <description>bit 1 (W) Queue 1 threshold exceeded error clear</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>QTHRXCD2</name>
+                  <description>bit 2 (W) Queue 2 threshold exceeded error clear</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCCERR</name>
+                  <description>bit 16 (W) Transfer completion code error clear</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>EEVAL</name>
+              <addressOffset>0x320</addressOffset>
+              <description>EEVAL Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>EVAL</name>
+                  <description>bit 0 (W) Error interrupt evaluate.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DRAE0</name>
+              <addressOffset>0x340</addressOffset>
+              <description>DRAE Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>bits 0..31</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DRAEH0</name>
+              <addressOffset>0x344</addressOffset>
+              <description>DRAEH Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>bits:0..31 (R/W) DMA region access enable for bit 63 to 32 in region 0.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DRAE1</name>
+              <addressOffset>0x348</addressOffset>
+              <description>DRAE Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>bits 0..31</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DRAEH1</name>
+              <addressOffset>0x34C</addressOffset>
+              <description>DRAEH Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>bits:0..31 (R/W) DMA region access enable for bit 63 to 32 in region 0.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DRAE2</name>
+              <addressOffset>0x350</addressOffset>
+              <description>DRAE Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>bits 0..31</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DRAEH2</name>
+              <addressOffset>0x354</addressOffset>
+              <description>DRAEH Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>bits:0..31 (R/W) DMA region access enable for bit 63 to 32 in region 0.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DRAE3</name>
+              <addressOffset>0x358</addressOffset>
+              <description>DRAE Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>bits 0..31</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DRAEH3</name>
+              <addressOffset>0x35C</addressOffset>
+              <description>DRAEH Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>bits:0..31 (R/W) DMA region access enable for bit 63 to 32 in region 0.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DRAE4</name>
+              <addressOffset>0x360</addressOffset>
+              <description>DRAE Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>bits 0..31</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DRAEH4</name>
+              <addressOffset>0x364</addressOffset>
+              <description>DRAEH Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>bits:0..31 (R/W) DMA region access enable for bit 63 to 32 in region 0.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DRAE5</name>
+              <addressOffset>0x368</addressOffset>
+              <description>DRAE Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>bits 0..31</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DRAEH5</name>
+              <addressOffset>0x36C</addressOffset>
+              <description>DRAEH Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>bits:0..31 (R/W) DMA region access enable for bit 63 to 32 in region 0.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DRAE6</name>
+              <addressOffset>0x370</addressOffset>
+              <description>DRAE Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>bits 0..31</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DRAEH6</name>
+              <addressOffset>0x374</addressOffset>
+              <description>DRAEH Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>bits:0..31 (R/W) DMA region access enable for bit 63 to 32 in region 0.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DRAE7</name>
+              <addressOffset>0x378</addressOffset>
+              <description>DRAE Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>bits 0..31</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DRAEH7</name>
+              <addressOffset>0x37C</addressOffset>
+              <description>DRAEH Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>bits:0..31 (R/W) DMA region access enable for bit 63 to 32 in region 0.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q0E0</name>
+              <addressOffset>0x400</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q0E1</name>
+              <addressOffset>0x404</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q0E2</name>
+              <addressOffset>0x408</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q0E3</name>
+              <addressOffset>0x40C</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q0E4</name>
+              <addressOffset>0x410</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q0E5</name>
+              <addressOffset>0x414</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q0E6</name>
+              <addressOffset>0x418</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q0E7</name>
+              <addressOffset>0x41C</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q0E8</name>
+              <addressOffset>0x420</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q0E9</name>
+              <addressOffset>0x424</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q0E10</name>
+              <addressOffset>0x428</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q0E11</name>
+              <addressOffset>0x42C</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q0E12</name>
+              <addressOffset>0x430</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q0E13</name>
+              <addressOffset>0x434</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q0E14</name>
+              <addressOffset>0x438</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q0E15</name>
+              <addressOffset>0x43C</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q1E0</name>
+              <addressOffset>0x440</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q1E1</name>
+              <addressOffset>0x444</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q1E2</name>
+              <addressOffset>0x448</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q1E3</name>
+              <addressOffset>0x44C</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q1E4</name>
+              <addressOffset>0x450</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q1E5</name>
+              <addressOffset>0x454</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q1E6</name>
+              <addressOffset>0x458</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q1E7</name>
+              <addressOffset>0x45C</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q1E8</name>
+              <addressOffset>0x460</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q1E9</name>
+              <addressOffset>0x464</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q1E10</name>
+              <addressOffset>0x468</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q1E11</name>
+              <addressOffset>0x46C</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q1E12</name>
+              <addressOffset>0x470</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q1E13</name>
+              <addressOffset>0x474</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q1E14</name>
+              <addressOffset>0x478</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q1E15</name>
+              <addressOffset>0x47C</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q2E0</name>
+              <addressOffset>0x480</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q2E1</name>
+              <addressOffset>0x484</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q2E2</name>
+              <addressOffset>0x488</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q2E3</name>
+              <addressOffset>0x48C</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q2E4</name>
+              <addressOffset>0x490</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q2E5</name>
+              <addressOffset>0x494</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q2E6</name>
+              <addressOffset>0x498</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q2E7</name>
+              <addressOffset>0x49C</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q2E8</name>
+              <addressOffset>0x4A0</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q2E9</name>
+              <addressOffset>0x4A4</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q2E10</name>
+              <addressOffset>0x4A8</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q2E11</name>
+              <addressOffset>0x4AC</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q2E12</name>
+              <addressOffset>0x4B0</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q2E13</name>
+              <addressOffset>0x4B4</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q2E14</name>
+              <addressOffset>0x4B8</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>Q2E15</name>
+              <addressOffset>0x4BC</addressOffset>
+              <description>QmEn Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ENUM</name>
+                  <description>bits 0..5 (R) Events entry n(0..15) in queues m(0..3).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ETYPE</name>
+                  <description>bits 6,7 (R) Event entry 0 in queue 1. Specifies the specific event type for the given entry in the</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>QSTAT_0</name>
+              <addressOffset>0x600</addressOffset>
+              <description>QSTAT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>STRTPTR</name>
+                  <description>bits 0..3 (R) Start pointer.Indicates the start of the queue.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>4</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>NUMVAL</name>
+                  <description>bits 8..12 (R) Number of valid entries</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>5</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>WM</name>
+                  <description>bits 16..20 (R) Watermark level.Indicates the watermark level of the queue.</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>5</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>THRXCD</name>
+                  <description>bit 24 (R) Threshold crossed.Indicates if the queue threshold was crossed.</description>
+                  <bitOffset>24</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>QSTAT_1</name>
+              <addressOffset>0x604</addressOffset>
+              <description>QSTAT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>STRTPTR</name>
+                  <description>bits 0..3 (R) Start pointer.Indicates the start of the queue.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>4</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>NUMVAL</name>
+                  <description>bits 8..12 (R) Number of valid entries</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>5</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>WM</name>
+                  <description>bits 16..20 (R) Watermark level.Indicates the watermark level of the queue.</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>5</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>THRXCD</name>
+                  <description>bit 24 (R) Threshold crossed.Indicates if the queue threshold was crossed.</description>
+                  <bitOffset>24</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>QSTAT_2</name>
+              <addressOffset>0x608</addressOffset>
+              <description>QSTAT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>STRTPTR</name>
+                  <description>bits 0..3 (R) Start pointer.Indicates the start of the queue.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>4</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>NUMVAL</name>
+                  <description>bits 8..12 (R) Number of valid entries</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>5</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>WM</name>
+                  <description>bits 16..20 (R) Watermark level.Indicates the watermark level of the queue.</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>5</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>THRXCD</name>
+                  <description>bit 24 (R) Threshold crossed.Indicates if the queue threshold was crossed.</description>
+                  <bitOffset>24</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>QWMTHRA</name>
+              <addressOffset>0x620</addressOffset>
+              <description>QWMTHRA Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>Q0</name>
+                  <description>bits 0..4 (RW) Watermark threshold for queue 0</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>5</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>Q1</name>
+                  <description>bits 8..12 (RW) Watermark threshold for queue 1</description>
+                  <bitOffset>5</bitOffset>
+                  <bitWidth>5</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>Q2</name>
+                  <description>bits 16..20 (RW) Watermark threshold for queue 2</description>
+                  <bitOffset>10</bitOffset>
+                  <bitWidth>5</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>CCSTAT</name>
+              <addressOffset>0x640</addressOffset>
+              <description>CCSTAT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>EVTACTV</name>
+                  <description>bit 0 (R) Event active</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>QEVTACTV</name>
+                  <description>bit 1 (R) QDMA event active</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TRACTV</name>
+                  <description>bit 2 (R) Transfer active</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>ACTV</name>
+                  <description>bit 4 (R) Channel controller active.</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>COMPACTV</name>
+                  <description>bits 8..13 (R) Completion request active.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>QUEACTV0</name>
+                  <description>bit 16 (R) Queue 0 active</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>QUEACTV1</name>
+                  <description>bit 17 (R) Queue 1 active</description>
+                  <bitOffset>17</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>QUEACTV2</name>
+                  <description>bit 18 (R) Queue 2 active</description>
+                  <bitOffset>18</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>MPFAR</name>
+              <addressOffset>0x800</addressOffset>
+              <description>MPFAR Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>FADDR</name>
+                  <description>bits 0..31 (R) Fault address</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>MPFSR</name>
+              <addressOffset>0x804</addressOffset>
+              <description>MPFSR Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>UXE</name>
+                  <description>bit 0 (R) User execute fault</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>UWE</name>
+                  <description>bit 1 (R) User write fault</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>URE</name>
+                  <description>bit 2 (R) User read fault</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SXE</name>
+                  <description>bit 3 (R) Supervisor execute fault</description>
+                  <bitOffset>3</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SWE</name>
+                  <description>bit 4 (R) Supervisor write fault</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SRE</name>
+                  <description>bit 5 (R) Supervisor read fault</description>
+                  <bitOffset>5</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>FID</name>
+                  <description>bits 9..12 (R) Faulted identification.</description>
+                  <bitOffset>9</bitOffset>
+                  <bitWidth>4</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>MPFCR</name>
+              <addressOffset>0x808</addressOffset>
+              <description>MPFCR Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>MPFCLR</name>
+                  <description>bit 0 (W) Memory protection fault clear</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>MPPAG</name>
+              <addressOffset>0x80C</addressOffset>
+              <description>MPPAG Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>UX</name>
+                  <description>bit: 0 (RW) User execute permission</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>UW</name>
+                  <description>bit: 1 (RW) User write permission</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>UR</name>
+                  <description>bit: 2 (RW) User read permission</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SX</name>
+                  <description>bit: 3 (RW) Supervisor execute permission</description>
+                  <bitOffset>3</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SW</name>
+                  <description>bit: 4 (RW) Supervisor write permission</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SR</name>
+                  <description>bit: 5 (RW) Supervisor read permission</description>
+                  <bitOffset>5</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>EXT</name>
+                  <description>bit: 9 (RW) Extended attribute</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>AIDm</name>
+                  <description>Access ID mask</description>
+                  <bitOffset>7</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>MPPA_0</name>
+              <addressOffset>0x810</addressOffset>
+              <description>MPPA Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>UX</name>
+                  <description>bit: 0 (RW) User execute permission</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>UW</name>
+                  <description>bit: 1 (RW) User write permission</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>UR</name>
+                  <description>bit: 2 (RW) User read permission</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SX</name>
+                  <description>bit: 3 (RW) Supervisor execute permission</description>
+                  <bitOffset>3</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SW</name>
+                  <description>bit: 4 (RW) Supervisor write permission</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SR</name>
+                  <description>bit: 5 (RW) Supervisor read permission</description>
+                  <bitOffset>5</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>EXT</name>
+                  <description>bit: 9 (RW) Extended attribute</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>AIDm</name>
+                  <description>Access ID mask</description>
+                  <bitOffset>7</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>MPPA_1</name>
+              <addressOffset>0x814</addressOffset>
+              <description>MPPA Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>UX</name>
+                  <description>bit: 0 (RW) User execute permission</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>UW</name>
+                  <description>bit: 1 (RW) User write permission</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>UR</name>
+                  <description>bit: 2 (RW) User read permission</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SX</name>
+                  <description>bit: 3 (RW) Supervisor execute permission</description>
+                  <bitOffset>3</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SW</name>
+                  <description>bit: 4 (RW) Supervisor write permission</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SR</name>
+                  <description>bit: 5 (RW) Supervisor read permission</description>
+                  <bitOffset>5</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>EXT</name>
+                  <description>bit: 9 (RW) Extended attribute</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>AIDm</name>
+                  <description>Access ID mask</description>
+                  <bitOffset>7</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>MPPA_2</name>
+              <addressOffset>0x818</addressOffset>
+              <description>MPPA Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>UX</name>
+                  <description>bit: 0 (RW) User execute permission</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>UW</name>
+                  <description>bit: 1 (RW) User write permission</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>UR</name>
+                  <description>bit: 2 (RW) User read permission</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SX</name>
+                  <description>bit: 3 (RW) Supervisor execute permission</description>
+                  <bitOffset>3</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SW</name>
+                  <description>bit: 4 (RW) Supervisor write permission</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SR</name>
+                  <description>bit: 5 (RW) Supervisor read permission</description>
+                  <bitOffset>5</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>EXT</name>
+                  <description>bit: 9 (RW) Extended attribute</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>AIDm</name>
+                  <description>Access ID mask</description>
+                  <bitOffset>7</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>MPPA_3</name>
+              <addressOffset>0x81C</addressOffset>
+              <description>MPPA Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>UX</name>
+                  <description>bit: 0 (RW) User execute permission</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>UW</name>
+                  <description>bit: 1 (RW) User write permission</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>UR</name>
+                  <description>bit: 2 (RW) User read permission</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SX</name>
+                  <description>bit: 3 (RW) Supervisor execute permission</description>
+                  <bitOffset>3</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SW</name>
+                  <description>bit: 4 (RW) Supervisor write permission</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SR</name>
+                  <description>bit: 5 (RW) Supervisor read permission</description>
+                  <bitOffset>5</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>EXT</name>
+                  <description>bit: 9 (RW) Extended attribute</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>AIDm</name>
+                  <description>Access ID mask</description>
+                  <bitOffset>7</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>MPPA_4</name>
+              <addressOffset>0x820</addressOffset>
+              <description>MPPA Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>UX</name>
+                  <description>bit: 0 (RW) User execute permission</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>UW</name>
+                  <description>bit: 1 (RW) User write permission</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>UR</name>
+                  <description>bit: 2 (RW) User read permission</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SX</name>
+                  <description>bit: 3 (RW) Supervisor execute permission</description>
+                  <bitOffset>3</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SW</name>
+                  <description>bit: 4 (RW) Supervisor write permission</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SR</name>
+                  <description>bit: 5 (RW) Supervisor read permission</description>
+                  <bitOffset>5</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>EXT</name>
+                  <description>bit: 9 (RW) Extended attribute</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>AIDm</name>
+                  <description>Access ID mask</description>
+                  <bitOffset>7</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>MPPA_5</name>
+              <addressOffset>0x824</addressOffset>
+              <description>MPPA Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>UX</name>
+                  <description>bit: 0 (RW) User execute permission</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>UW</name>
+                  <description>bit: 1 (RW) User write permission</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>UR</name>
+                  <description>bit: 2 (RW) User read permission</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SX</name>
+                  <description>bit: 3 (RW) Supervisor execute permission</description>
+                  <bitOffset>3</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SW</name>
+                  <description>bit: 4 (RW) Supervisor write permission</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SR</name>
+                  <description>bit: 5 (RW) Supervisor read permission</description>
+                  <bitOffset>5</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>EXT</name>
+                  <description>bit: 9 (RW) Extended attribute</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>AIDm</name>
+                  <description>Access ID mask</description>
+                  <bitOffset>7</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>MPPA_6</name>
+              <addressOffset>0x828</addressOffset>
+              <description>MPPA Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>UX</name>
+                  <description>bit: 0 (RW) User execute permission</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>UW</name>
+                  <description>bit: 1 (RW) User write permission</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>UR</name>
+                  <description>bit: 2 (RW) User read permission</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SX</name>
+                  <description>bit: 3 (RW) Supervisor execute permission</description>
+                  <bitOffset>3</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SW</name>
+                  <description>bit: 4 (RW) Supervisor write permission</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SR</name>
+                  <description>bit: 5 (RW) Supervisor read permission</description>
+                  <bitOffset>5</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>EXT</name>
+                  <description>bit: 9 (RW) Extended attribute</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>AIDm</name>
+                  <description>Access ID mask</description>
+                  <bitOffset>7</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>MPPA_7</name>
+              <addressOffset>0x82C</addressOffset>
+              <description>MPPA Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>UX</name>
+                  <description>bit: 0 (RW) User execute permission</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>UW</name>
+                  <description>bit: 1 (RW) User write permission</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>UR</name>
+                  <description>bit: 2 (RW) User read permission</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SX</name>
+                  <description>bit: 3 (RW) Supervisor execute permission</description>
+                  <bitOffset>3</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SW</name>
+                  <description>bit: 4 (RW) Supervisor write permission</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SR</name>
+                  <description>bit: 5 (RW) Supervisor read permission</description>
+                  <bitOffset>5</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>EXT</name>
+                  <description>bit: 9 (RW) Extended attribute</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>AIDm</name>
+                  <description>Access ID mask</description>
+                  <bitOffset>7</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>ER</name>
+              <addressOffset>0x1000</addressOffset>
+              <description>ER Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>Event 0 to 31.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>ERH</name>
+              <addressOffset>0x1004</addressOffset>
+              <description>ERH Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>Event pending status</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>ECR</name>
+              <addressOffset>0x1008</addressOffset>
+              <description>ECR Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>Event clear for event 0 to 31.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>write-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>ECRH</name>
+              <addressOffset>0x100C</addressOffset>
+              <description>ECRH Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>Event clear control</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>write-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>ESR</name>
+              <addressOffset>0x1010</addressOffset>
+              <description>ESR Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>Event set for event 0 to 31.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>ESRH</name>
+              <addressOffset>0x1014</addressOffset>
+              <description>ESRH Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>Event set for event 32 to 63.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>CER</name>
+              <addressOffset>0x1018</addressOffset>
+              <description>CER Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>Chained event for event 0 to 31.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>CERH</name>
+              <addressOffset>0x101C</addressOffset>
+              <description>CERH Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>Chained event set for event 32 to 63.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>EER</name>
+              <addressOffset>0x1020</addressOffset>
+              <description>EER Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>Event enable for events 0 to 31.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>EERH</name>
+              <addressOffset>0x1024</addressOffset>
+              <description>EERH Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>Event enable for events 32 to 63.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>EECR</name>
+              <addressOffset>0x1028</addressOffset>
+              <description>EECR Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>Event enable clear for events 0 to 31.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>write-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>EECRH</name>
+              <addressOffset>0x102C</addressOffset>
+              <description>EECRH Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>Event enable clear for events 32 to 63.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>write-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>EESR</name>
+              <addressOffset>0x1030</addressOffset>
+              <description>EESR Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>Event enable set for events 0 to 31.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>write-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>EESRH</name>
+              <addressOffset>0x1034</addressOffset>
+              <description>EESRH Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>Event enable set for events 32 to 63.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>write-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SER</name>
+              <addressOffset>0x1038</addressOffset>
+              <description>SER Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>Secondary event register.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SERH</name>
+              <addressOffset>0x103C</addressOffset>
+              <description>SERH Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>Secondary event register.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SECR</name>
+              <addressOffset>0x1040</addressOffset>
+              <description>SECR Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>Secondary event clear register.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>write-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SECRH</name>
+              <addressOffset>0x1044</addressOffset>
+              <description>SECRH Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>Secondary event clear register.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>write-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>IER</name>
+              <addressOffset>0x1050</addressOffset>
+              <description>IER Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>In_</name>
+                  <description>Interrupt enable for channels 0 to 31.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>IERH</name>
+              <addressOffset>0x1054</addressOffset>
+              <description>IERH Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>In</name>
+                  <description>Interrupt enable for channels 32 to 63.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>IECR</name>
+              <addressOffset>0x1058</addressOffset>
+              <description>IECR Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>In</name>
+                  <description>Interrupt enable clear for channels 0 to 31.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>IECRH</name>
+              <addressOffset>0x105C</addressOffset>
+              <description>IECRH Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>In</name>
+                  <description>Interrupt enable clear for channels 32 to 63.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>write-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>IESR</name>
+              <addressOffset>0x1060</addressOffset>
+              <description>IESR Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>In</name>
+                  <description>Interrupt enable set for channels 0 to 31.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>write-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>IESRH</name>
+              <addressOffset>0x1064</addressOffset>
+              <description>IESRH Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>In</name>
+                  <description>Interrupt enable clear for channels 32 to 63.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>write-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>IPR</name>
+              <addressOffset>0x1068</addressOffset>
+              <description>IPR Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>In</name>
+                  <description>Interrupt pending for TCC = 0 to 31.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>IPRH</name>
+              <addressOffset>0x106C</addressOffset>
+              <description>IPRH Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>In</name>
+                  <description>Interrupt pending for TCC = 32 to 63.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>ICR</name>
+              <addressOffset>0x1070</addressOffset>
+              <description>ICR Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>In</name>
+                  <description>Interrupt clear register for TCC = 0 to 31.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>write-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>ICRH</name>
+              <addressOffset>0x1074</addressOffset>
+              <description>ICRH Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>In</name>
+                  <description>Interrupt clear register for TCC = 32 to 63.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>write-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>IEVAL</name>
+              <addressOffset>0x1078</addressOffset>
+              <description>IEVAL Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>EVAL</name>
+                  <description>bit: 0 (W) Interrupt evaluate.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>QER</name>
+              <addressOffset>0x1080</addressOffset>
+              <description>QER Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>QDMA event for channels 0 to 7.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>8</bitWidth>
+                  <access>read-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>QEER</name>
+              <addressOffset>0x1084</addressOffset>
+              <description>QEER Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>QDMA event enable for channels 0 to 7.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>8</bitWidth>
+                  <access>read-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>QEECR</name>
+              <addressOffset>0x1088</addressOffset>
+              <description>QEECR Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>QDMA event enable clear for channels 0 to 7.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>8</bitWidth>
+                  <access>read-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>QEESR</name>
+              <addressOffset>0x108C</addressOffset>
+              <description>QEESR Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>QDMA event enable set for channels 0 to 7.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>8</bitWidth>
+                  <access>read-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>QSER</name>
+              <addressOffset>0x1090</addressOffset>
+              <description>QSER Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>QDMA secondary event register for channels 0 to 7.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>8</bitWidth>
+                  <access>read-only</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>QSECR</name>
+              <addressOffset>0x1094</addressOffset>
+              <description>QSECR Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>En</name>
+                  <description>QDMA secondary event clear register for channels 0 to 7.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>8</bitWidth>
+                  <access>write-only</access>
+                </field>
+              </fields>
+            </register>
+          </registers>
+        </peripheral>
+        <peripheral>
+              <name>EDMATC0</name>
+              <description>EDMA transfer controller module</description>
+              <baseAddress>0x49800000</baseAddress>
+              <groupName>Peripherals</groupName>
+            <registers>
+            <register>
+              <name>PID</name>
+              <addressOffset>0x00</addressOffset>
+              <description>PIDTC Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>PID</name>
+                  <description>bits 0..15 (R) Peripheral identifier uniquely identifies the EDMA3CC and the</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>TCCFG</name>
+              <addressOffset>0x04</addressOffset>
+              <description>TCCFG Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>FIFOSIZE</name>
+                  <description>bits 0..2 (R) FIFO size configuration</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>BUSWIDTH</name>
+                  <description>bits 4,5 (R) Bus width configuration</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DREGDEPTH</name>
+                  <description>bits 8,9 (R) Register file depth</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SYSCONFIG</name>
+              <addressOffset>0x10</addressOffset>
+              <description>SYSCONFIGTC Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>IDLEMODE</name>
+                  <description>bits 2,3 (RW) Idle mode configuration [see e_SYSC_IDLEMODE]</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>STANDBYMODE</name>
+                  <description>bits 4,5 (RW) Standby mode configuration [see e_SYSC_STANDBYMODE]</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>2</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>TCSTAT</name>
+              <addressOffset>0x100</addressOffset>
+              <description>TCSTAT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>PROGBUSY</name>
+                  <description>bit 0 (R) Program register set busy</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>SRCACTV</name>
+                  <description>bit 1 (R) Source active state</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>WSACTV</name>
+                  <description>bit 2 (R) Write status active</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DSTACTV</name>
+                  <description>bits 4..6 (R) Destination active state. [ see e_DSTACTV_state ]</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DFSTRTPTR</name>
+                  <description>bits 12,13 (R) Destination FIFO start pointer.</description>
+                  <bitOffset>12</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>ERRSTAT</name>
+              <addressOffset>0x120</addressOffset>
+              <description>ERRSTAT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>BUSERR</name>
+                  <description>bit 0 (R) Bus error event.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TRERR</name>
+                  <description>bit 2 (R) Transfer request (TR) error event.</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>MMRAERR</name>
+                  <description>bit 3 (R) MMR address error.</description>
+                  <bitOffset>3</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>ERREN</name>
+              <addressOffset>0x124</addressOffset>
+              <description>ERREN Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>BUSERR</name>
+                  <description>bit 0 (RW) Interrupt enable for bus error (BUSERR).</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TRERR</name>
+                  <description>bit 2 (RW) Interrupt enable for transfer request error (TRERR).</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>MMRAERR</name>
+                  <description>bit 3 (RW) Interrupt enable for MMR address error (MMRAERR).</description>
+                  <bitOffset>3</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>ERRCLR</name>
+              <addressOffset>0x128</addressOffset>
+              <description>ERRCLR Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>BUSERR</name>
+                  <description>bit 0 (W) Interrupt clear for the BUSERR bit in the error status register</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TRERR</name>
+                  <description>bit 2 (W) Interrupt enable clear for the TRERR bit in the error status register</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>MMRAERR</name>
+                  <description>bit 3 (W) Interrupt enable clear for the MMRAERR bit in the error status</description>
+                  <bitOffset>3</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>ERRDET</name>
+              <addressOffset>0x12C</addressOffset>
+              <description>ERRDET Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>STAT</name>
+                  <description>bits 0..3 (R) Transaction status.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>4</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCC</name>
+                  <description>bits 8..13 (R) Transfer complete code.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCINTEN</name>
+                  <description>bit 16 (R) Transfer completion interrupt enable.</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCCHEN</name>
+                  <description>bit 17 (R) Transfer completion chaining enable.</description>
+                  <bitOffset>17</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>ERRCMD</name>
+              <addressOffset>0x130</addressOffset>
+              <description>ERRCMD Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>EVAL</name>
+                  <description>bit 0 (W) Error evaluate</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>RDRATE</name>
+              <addressOffset>0x140</addressOffset>
+              <description>RDRATE Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>RDRATE</name>
+                  <description>bits 0..2 (W) Read rate.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SAOPT</name>
+              <addressOffset>0x240</addressOffset>
+              <description>SAOPT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SAM</name>
+                  <description>bit 0 (R) Source address mode within an array</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DAM</name>
+                  <description>bit 1 (R) Destination address mode within an array</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRI</name>
+                  <description>bits 4..6 (R) Transfer priority.</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>FWID</name>
+                  <description>bits 8..10 (R) FIFO width.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCC</name>
+                  <description>bits 12..17 (R) Transfer complete code.</description>
+                  <bitOffset>12</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCINTEN</name>
+                  <description>bit 20 (R) Transfer complete interrupt enable.</description>
+                  <bitOffset>20</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCCHEN</name>
+                  <description>bit 22 (R) Transfer complete chaining enable</description>
+                  <bitOffset>22</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SASRC</name>
+              <addressOffset>0x244</addressOffset>
+              <description>SASRC Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SADDR</name>
+                  <description>bits 0..31 (R) Source address for Source Active Register Set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SACNT</name>
+              <addressOffset>0x248</addressOffset>
+              <description>SACNT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ACNT</name>
+                  <description>bits 0..15 (R) A dimension count remaining for the Source Active Register Set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>BCNT</name>
+                  <description>bits 16..31 (R) B dimension count remaining for the Source Active Register Set.</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SADST</name>
+              <addressOffset>0x24C</addressOffset>
+              <description>SADST Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+            </register>
+            <register>
+              <name>SABIDX</name>
+              <addressOffset>0x250</addressOffset>
+              <description>SABIDX Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SBIDX</name>
+                  <description>bits 0..15 (R) B-Index offset between source arrays.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DBIDX</name>
+                  <description>bits 16..31 (R) B-Index offset between destination arrays.</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SAMPPRXY</name>
+              <addressOffset>0x254</addressOffset>
+              <description>SAMPPRXY Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>PRIVID</name>
+                  <description>bits 0..3 (R) Privilege ID.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>4</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRIV</name>
+                  <description>bit 8 (R) Privilege level.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SACNTRLD</name>
+              <addressOffset>0x258</addressOffset>
+              <description>SACNTRLD Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ACNTRLD</name>
+                  <description>bits 0..15 (R) A-count reload value.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SASRCBREF</name>
+              <addressOffset>0x25C</addressOffset>
+              <description>SASRCBREF Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SADDRBREF</name>
+                  <description>bits 0..31 (R) Source address B-reference.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>SADSTBREF</name>
+              <addressOffset>0x260</addressOffset>
+              <description>SADSTBREF Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+            </register>
+            <register>
+              <name>DFCNTRLD</name>
+              <addressOffset>0x280</addressOffset>
+              <description>DFCNTRLD Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ACNTRLD</name>
+                  <description>bits 0..15 (R) A-count reload value for the Destination FIFO Register Set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFSRCBREF</name>
+              <addressOffset>0x284</addressOffset>
+              <description>DFSRCBREF Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+            </register>
+            <register>
+              <name>DFDSTBREF</name>
+              <addressOffset>0x288</addressOffset>
+              <description>DFDSTBREF Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>DADDRBREF</name>
+                  <description>bits 0..31 (R) Destination address reference for the destination FIFO register set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFOPT0</name>
+              <addressOffset>0x300</addressOffset>
+              <description>DFOPT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SAM</name>
+                  <description>bit 0 (R) Source address mode within an array</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DAM</name>
+                  <description>bit 1 (R) Destination address mode within an array</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRI</name>
+                  <description>bits 4..6 (R) Transfer priority [ see e_PRI ]</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>FWID</name>
+                  <description>bits 8..10 (R) FIFO width.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCC</name>
+                  <description>bits 12..17 (R) Transfer complete code.</description>
+                  <bitOffset>12</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCINTEN</name>
+                  <description>bit 20 (R) Transfer complete interrupt enable.</description>
+                  <bitOffset>20</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCCHEN</name>
+                  <description>bit 22 (R) Transfer complete chaining enable</description>
+                  <bitOffset>22</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFSRC0</name>
+              <addressOffset>0x304</addressOffset>
+              <description>DFSRC Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+            </register>
+            <register>
+              <name>DFCNT0</name>
+              <addressOffset>0x308</addressOffset>
+              <description>DFCNT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ACNT</name>
+                  <description>bits 0..15 (R) A-dimension count remaining for Destination Register Set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>BCNT</name>
+                  <description>bits 16..31 (R) B-dimension count remaining for Destination Register Set.</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFDST0</name>
+              <addressOffset>0x30C</addressOffset>
+              <description>DFDST Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>DADDR</name>
+                  <description>bits 0..31 (R) Destination address for the destination FIFO register set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFBIDX0</name>
+              <addressOffset>0x310</addressOffset>
+              <description>DFBIDX Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SBIDX</name>
+                  <description>bits 0..15 (R) B-Index offset between source arrays for the Destination FIFO</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DBIDX</name>
+                  <description>bits 16..31 (R) B-Index offset between destination arrays for the Destination FIFO</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFMPPRXY0</name>
+              <addressOffset>0x314</addressOffset>
+              <description>DFMPPRXY Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>PRIVID</name>
+                  <description>bits 0..3 (R) Privilege ID.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>4</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRIV</name>
+                  <description>bit 8 (R) Privilege level.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFOPT1</name>
+              <addressOffset>0x340</addressOffset>
+              <description>DFOPT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SAM</name>
+                  <description>bit 0 (R) Source address mode within an array</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DAM</name>
+                  <description>bit 1 (R) Destination address mode within an array</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRI</name>
+                  <description>bits 4..6 (R) Transfer priority [ see e_PRI ]</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>FWID</name>
+                  <description>bits 8..10 (R) FIFO width.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCC</name>
+                  <description>bits 12..17 (R) Transfer complete code.</description>
+                  <bitOffset>12</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCINTEN</name>
+                  <description>bit 20 (R) Transfer complete interrupt enable.</description>
+                  <bitOffset>20</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCCHEN</name>
+                  <description>bit 22 (R) Transfer complete chaining enable</description>
+                  <bitOffset>22</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFSRC1</name>
+              <addressOffset>0x344</addressOffset>
+              <description>DFSRC Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+            </register>
+            <register>
+              <name>DFCNT1</name>
+              <addressOffset>0x348</addressOffset>
+              <description>DFCNT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ACNT</name>
+                  <description>bits 0..15 (R) A-dimension count remaining for Destination Register Set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>BCNT</name>
+                  <description>bits 16..31 (R) B-dimension count remaining for Destination Register Set.</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFDST1</name>
+              <addressOffset>0x34C</addressOffset>
+              <description>DFDST Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>DADDR</name>
+                  <description>bits 0..31 (R) Destination address for the destination FIFO register set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFBIDX1</name>
+              <addressOffset>0x350</addressOffset>
+              <description>DFBIDX Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SBIDX</name>
+                  <description>bits 0..15 (R) B-Index offset between source arrays for the Destination FIFO</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DBIDX</name>
+                  <description>bits 16..31 (R) B-Index offset between destination arrays for the Destination FIFO</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFMPPRXY1</name>
+              <addressOffset>0x354</addressOffset>
+              <description>DFMPPRXY Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>PRIVID</name>
+                  <description>bits 0..3 (R) Privilege ID.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>4</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRIV</name>
+                  <description>bit 8 (R) Privilege level.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFOPT2</name>
+              <addressOffset>0x380</addressOffset>
+              <description>DFOPT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SAM</name>
+                  <description>bit 0 (R) Source address mode within an array</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DAM</name>
+                  <description>bit 1 (R) Destination address mode within an array</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRI</name>
+                  <description>bits 4..6 (R) Transfer priority [ see e_PRI ]</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>FWID</name>
+                  <description>bits 8..10 (R) FIFO width.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCC</name>
+                  <description>bits 12..17 (R) Transfer complete code.</description>
+                  <bitOffset>12</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCINTEN</name>
+                  <description>bit 20 (R) Transfer complete interrupt enable.</description>
+                  <bitOffset>20</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCCHEN</name>
+                  <description>bit 22 (R) Transfer complete chaining enable</description>
+                  <bitOffset>22</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFSRC2</name>
+              <addressOffset>0x384</addressOffset>
+              <description>DFSRC Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+            </register>
+            <register>
+              <name>DFCNT2</name>
+              <addressOffset>0x388</addressOffset>
+              <description>DFCNT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ACNT</name>
+                  <description>bits 0..15 (R) A-dimension count remaining for Destination Register Set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>BCNT</name>
+                  <description>bits 16..31 (R) B-dimension count remaining for Destination Register Set.</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFDST2</name>
+              <addressOffset>0x38C</addressOffset>
+              <description>DFDST Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>DADDR</name>
+                  <description>bits 0..31 (R) Destination address for the destination FIFO register set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFBIDX2</name>
+              <addressOffset>0x390</addressOffset>
+              <description>DFBIDX Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SBIDX</name>
+                  <description>bits 0..15 (R) B-Index offset between source arrays for the Destination FIFO</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DBIDX</name>
+                  <description>bits 16..31 (R) B-Index offset between destination arrays for the Destination FIFO</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFMPPRXY2</name>
+              <addressOffset>0x394</addressOffset>
+              <description>DFMPPRXY Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>PRIVID</name>
+                  <description>bits 0..3 (R) Privilege ID.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>4</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRIV</name>
+                  <description>bit 8 (R) Privilege level.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFOPT3</name>
+              <addressOffset>0x3C0</addressOffset>
+              <description>DFOPT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SAM</name>
+                  <description>bit 0 (R) Source address mode within an array</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DAM</name>
+                  <description>bit 1 (R) Destination address mode within an array</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRI</name>
+                  <description>bits 4..6 (R) Transfer priority [ see e_PRI ]</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>FWID</name>
+                  <description>bits 8..10 (R) FIFO width.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>3</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCC</name>
+                  <description>bits 12..17 (R) Transfer complete code.</description>
+                  <bitOffset>12</bitOffset>
+                  <bitWidth>6</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCINTEN</name>
+                  <description>bit 20 (R) Transfer complete interrupt enable.</description>
+                  <bitOffset>20</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>TCCHEN</name>
+                  <description>bit 22 (R) Transfer complete chaining enable</description>
+                  <bitOffset>22</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFSRC3</name>
+              <addressOffset>0x3C4</addressOffset>
+              <description>DFSRC Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+            </register>
+            <register>
+              <name>DFCNT3</name>
+              <addressOffset>0x3C8</addressOffset>
+              <description>DFCNT Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>ACNT</name>
+                  <description>bits 0..15 (R) A-dimension count remaining for Destination Register Set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>BCNT</name>
+                  <description>bits 16..31 (R) B-dimension count remaining for Destination Register Set.</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFDST3</name>
+              <addressOffset>0x3CC</addressOffset>
+              <description>DFDST Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>DADDR</name>
+                  <description>bits 0..31 (R) Destination address for the destination FIFO register set.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>32</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFBIDX3</name>
+              <addressOffset>0x3D0</addressOffset>
+              <description>DFBIDX Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>SBIDX</name>
+                  <description>bits 0..15 (R) B-Index offset between source arrays for the Destination FIFO</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>DBIDX</name>
+                  <description>bits 16..31 (R) B-Index offset between destination arrays for the Destination FIFO</description>
+                  <bitOffset>16</bitOffset>
+                  <bitWidth>16</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DFMPPRXY3</name>
+              <addressOffset>0x3D4</addressOffset>
+              <description>DFMPPRXY Register</description>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <fields>
+                <field>
+                  <name>PRIVID</name>
+                  <description>bits 0..3 (R) Privilege ID.</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>4</bitWidth>
+                  <access>read-write</access>
+                </field>
+                <field>
+                  <name>PRIV</name>
+                  <description>bit 8 (R) Privilege level.</description>
+                  <bitOffset>8</bitOffset>
+                  <bitWidth>1</bitWidth>
+                  <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+          </registers>
+        </peripheral>
+        <peripheral>
           <name>  UART</name>
           <description>UART0 module</description>
           <baseAddress>0x44E09000</baseAddress>

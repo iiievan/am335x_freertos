@@ -1,35 +1,14 @@
-#ifndef AM335X_FREERTOS_EDMA_TEST_H
-#define AM335X_FREERTOS_EDMA_TEST_H
+#ifndef EDMA_TEST_H
+#define EDMA_TEST_H
 
-#define EDMAAPP_MAX_ACOUNT        (10u)
-#define EDMAAPP_MAX_BCOUNT        (1u)
-#define EDMAAPP_MAX_CCOUNT        (1u)
-#define EDMAAPP_MAX_BUFFER_SIZE   (EDMAAPP_MAX_ACOUNT * EDMAAPP_MAX_BCOUNT * EDMAAPP_MAX_CCOUNT)
-
-#define EDMAAPP_IRQ_STATUS_XFER_INPROG     (0u)
-#define EDMAAPP_IRQ_STATUS_XFER_COMP       (1u)
-#define EDMAAPP_IRQ_STATUS_DMA_EVT_MISS    (-1)
-#define EDMAAPP_IRQ_STATUS_QDMA_EVT_MISS   (-2)
-
-#ifdef CH_TYPE_DMA
-#define EDMAAPP_DMA_CH_TYPE     REGS::EDMA::CHANNEL_TYPE_DMA
-#define EDMAAPP_DMA_CH_NUM      (63u)
-#define EDMAAPP_DMA_TCC_NUM     (63u)
-#define EDMAAPP_DMA_SYNC_TYPE   EDMA3_SYNC_A
-#define EDMAAPP_DMA_TRIG_MODE   EDMA3_TRIG_MODE_MANUAL
-#define EDMAAPP_DMA_EVTQ        (0u)
-#else
-#define EDMAAPP_DMA_CH_TYPE     REGS::EDMA::CHANNEL_TYPE_QDMA
-#define EDMAAPP_DMA_CH_NUM      (0u)
-#define EDMAAPP_DMA_TCC_NUM     (0u)
-#define EDMAAPP_DMA_SYNC_TYPE   REGS::EDMA::SYNC_A
-#define EDMAAPP_DMA_TRIG_MODE   REGS::EDMA::TRIG_MODE_QDMA
-#define EDMAAPP_DMA_EVTQ        (0u)
+#ifdef __cplusplus
+extern "C" {
 #endif
 
-void edma_setup();
-void app_qdma_test();
-void edma_cc_compl_isr(void * param);
-void edma_cc_err_isr(void * param);
+void edma_test(void);
 
-#endif //AM335X_FREERTOS_EDMA_TEST_H
+#ifdef __cplusplus
+}
+#endif
+
+#endif //EDMA_TEST_H

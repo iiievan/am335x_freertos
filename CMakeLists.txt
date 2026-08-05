@@ -31,8 +31,8 @@ add_subdirectory(freertos_kernel)
 
 set(APP_SOURCES app/init.cpp
                 app/main.cpp
-        app/edma_test.cpp
-        app/edma_test.h)
+                app/edma_test.cpp
+                app/edma_test.h)
 
 add_executable(${APP}.elf ${APP_SOURCES})
 

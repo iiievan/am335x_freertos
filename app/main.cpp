@@ -6,7 +6,7 @@
 #include "hal/sysTimer.hpp"
 #include "FreeRTOS.h"
 #include "task.h"
-#include "hal/EDMA.hpp"
+#include "hal/EDMA/EDMA.hpp"
 #include "edma_test.h"
 
 #define TAG "main"
@@ -24,7 +24,6 @@ void vTask1(void *pvParameters)
     for(;;)
     {
         Board::USR0.toggle();
-        app_qdma_test();
         vTaskDelay(1250);
         RTT_LOG_I(TAG, "USR2.LED toggle!");
     }
@@ -41,13 +40,20 @@ void vTask2(void *pvParameters)
     }
 }
 
+void vEdmaTask(void *pvParameters)
+{
+    (void)pvParameters;
+
+    edma_test();
+
+    vTaskDelete(NULL);
+}
+
 int main ()
 {
     bool init_sts = false;
 
     init_sts = init_board();
-
-    edma_setup();
 
     if (!init_sts)
     {
@@ -56,6 +62,7 @@ int main ()
     }
     RTT_LOG_I(TAG, "Board initialization done!");
 
+    xTaskCreate(vEdmaTask, "EDMA_Task", 1024, NULL, 2, NULL);
     xTaskCreate(vTask1, "Task1", 512, NULL, 1, NULL);
     xTaskCreate(vTask2, "Task2", 512, NULL, 1, NULL);
 
