@@ -3,6 +3,7 @@
 #include "edma_test.h"
 #include "hal/EDMA/EDMA.hpp"
 #include "hal/EDMA/DmaChannel.hpp"
+#include "hal/EDMA/QdmaChannel.hpp"
 #include "hal/EDMA/ParamBuilder.hpp"
 #include "hal/INTC.hpp"
 #include "rtt/rtt_log.h"
@@ -97,7 +98,7 @@ extern "C" void edma_test(void)
     dma.start(HAL::EDMA::TriggerMode::TRIG_MODE_MANUAL);
 
     // 8. Ожидаем завершения в прерывании
-    uint32_t timeout = 100000000;
+    uint32_t timeout = 10000000;
     while (!transfer_complete.load(std::memory_order_acquire) && --timeout > 0) {
         __asm volatile("nop");
     }
@@ -127,5 +128,68 @@ extern "C" void edma_test(void)
         RTT_LOG_I(TAG, "EDMA Loopback Test PASSED successfully!");
     }
 
-    // При выходе из функции dma (DmaChannel) автоматически освободит ресурсы в своём деструкторе!
+    // -------------------------------------------------------------------------
+    // 10. Тестирование QDMA (Канал 0, TCC 10)
+    // -------------------------------------------------------------------------
+    constexpr uint8_t QDMA_CH = 0;
+    constexpr uint8_t TCC_NUM = 10;
+
+    // Сбрасываем приемный буфер в 0, чтобы убедиться, что QDMA действительно записал данные
+    for (size_t i = 0; i < BUFFER_SIZE; ++i) {
+        dst_buf[i] = 0x00;
+    }
+
+    // Подготавливаем кэш перед стартом QDMA
+    cp15_D_cache_flush_buff(reinterpret_cast<unsigned int>(dst_buf), BUFFER_SIZE);
+    cp15_DSB_barrier();
+
+    HAL::EDMA::QdmaChannel qdma(QDMA_CH, TCC_NUM, HAL::EDMA::QdmaTrigWord::CCNT);
+
+    if (!qdma.init()) {
+        RTT_LOG_E(TAG, "Failed to init QDMA channel %d", QDMA_CH);
+        return;
+    }
+
+    qdma.setCallback(on_edma_complete, on_edma_error, const_cast<std::atomic<bool>*>(&transfer_complete));
+
+    param = HAL::EDMA::ParamBuilder()
+                 .setSource(reinterpret_cast<uintptr_t>(src_buf), BUFFER_SIZE, BUFFER_SIZE)
+                 .setDest(reinterpret_cast<uintptr_t>(dst_buf), BUFFER_SIZE, BUFFER_SIZE)
+                 .setTransferParams(BUFFER_SIZE, 1, 1)
+                 .setSyncType(false)
+                 .enableCompletionInterrupt(TCC_NUM) // Прерывание по TCC_NUM
+                 .build();
+
+    transfer_complete.store(false);
+
+    // Запись PaRAM структуры автоматически активирует QDMA передачу
+    qdma.configureAndTrigger(param);
+
+    timeout = 10000000;
+    while (!transfer_complete.load(std::memory_order_acquire) && --timeout > 0) {
+        __asm volatile("nop");
+    }
+
+    if (timeout == 0) {
+        RTT_LOG_E(TAG, "QDMA Transfer TIMEOUT!");
+        return;
+    }
+
+    // Синхронизируем память и инвалидируем D-кэш для приёмника
+    cp15_DSB_barrier();
+    cp15_D_cache_flush_buff(reinterpret_cast<unsigned int>(dst_buf), BUFFER_SIZE);
+
+    // Проверяем целостность данных после QDMA
+    match = true;
+    for (size_t i = 0; i < BUFFER_SIZE; ++i) {
+        if (src_buf[i] != dst_buf[i]) {
+            match = false;
+            RTT_LOG_E(TAG, "QDMA Data mismatch at index %d: src 0x%02X != dst 0x%02X", i, src_buf[i], dst_buf[i]);
+            break;
+        }
+    }
+
+    if (match) {
+        RTT_LOG_I(TAG, "QDMA Loopback Test PASSED successfully!");
+    }
 }
