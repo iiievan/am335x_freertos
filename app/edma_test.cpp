@@ -132,7 +132,7 @@ extern "C" void edma_test(void)
     // 10. Тестирование QDMA (Канал 0, TCC 10)
     // -------------------------------------------------------------------------
     constexpr uint8_t QDMA_CH = 0;
-    constexpr uint8_t TCC_NUM = 10;
+    constexpr uint8_t TCC_NUM = 0;
 
     // Сбрасываем приемный буфер в 0, чтобы убедиться, что QDMA действительно записал данные
     for (size_t i = 0; i < BUFFER_SIZE; ++i) {
@@ -143,7 +143,7 @@ extern "C" void edma_test(void)
     cp15_D_cache_flush_buff(reinterpret_cast<unsigned int>(dst_buf), BUFFER_SIZE);
     cp15_DSB_barrier();
 
-    HAL::EDMA::QdmaChannel qdma(QDMA_CH, TCC_NUM, HAL::EDMA::QdmaTrigWord::CCNT);
+    HAL::EDMA::QdmaChannel qdma(QDMA_CH, TCC_NUM, HAL::EDMA::QdmaTrigWord::DST);
 
     if (!qdma.init()) {
         RTT_LOG_E(TAG, "Failed to init QDMA channel %d", QDMA_CH);
@@ -158,12 +158,15 @@ extern "C" void edma_test(void)
                  .setTransferParams(BUFFER_SIZE, 1, 1)
                  .setSyncType(false)
                  .enableCompletionInterrupt(TCC_NUM) // Прерывание по TCC_NUM
+                 .enableIntermediateCompletionInterrupt()
+                 .setStatic()
+                 .setSrcDstDestinationMode(false,false)
                  .build();
 
     transfer_complete.store(false);
 
-    // Запись PaRAM структуры автоматически активирует QDMA передачу
-    qdma.configureAndTrigger(param);
+    qdma.configure(param);
+    //qdma.start();
 
     timeout = 10000000;
     while (!transfer_complete.load(std::memory_order_acquire) && --timeout > 0) {

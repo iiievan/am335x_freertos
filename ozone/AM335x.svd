@@ -11476,6 +11476,71 @@
               </fields>
             </register>
             <register>
+              <name>DCHMAP[%s]</name>
+              <description>DMA Channel Mapping Register 0..63</description>
+              <addressOffset>0x100</addressOffset>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <dim>64</dim>
+              <dimIncrement>4</dimIncrement>
+              <dimIndex>0-63</dimIndex>
+              <fields>
+                <field>
+                  <name>PAENTRY</name>
+                  <description>Parameter entry number</description>
+                  <bitOffset>5</bitOffset>
+                  <bitWidth>9</bitWidth>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>QCHMAP[%s]</name>
+              <description>QDMA Channel Mapping Register 0..7</description>
+              <addressOffset>0x200</addressOffset>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <dim>8</dim>
+              <dimIncrement>4</dimIncrement>
+              <dimIndex>0-7</dimIndex>
+              <fields>
+                <field>
+                  <name>TRWORD</name>
+                  <description>Trigger word selection</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                  <name>PAENTRY</name>
+                  <description>Parameter entry number</description>
+                  <bitOffset>5</bitOffset>
+                  <bitWidth>9</bitWidth>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>DMAQNUM[%s]</name>
+              <description>DMA Queue Number Register 0..7</description>
+              <addressOffset>0x240</addressOffset>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <dim>8</dim>
+              <dimIncrement>4</dimIncrement>
+              <dimIndex>0-7</dimIndex>
+              <fields>
+                <field> <name>E0</name> <bitOffset>0</bitOffset> <bitWidth>3</bitWidth> </field>
+                <field> <name>E1</name> <bitOffset>4</bitOffset> <bitWidth>3</bitWidth> </field>
+                <field> <name>E2</name> <bitOffset>8</bitOffset> <bitWidth>3</bitWidth> </field>
+                <field> <name>E3</name> <bitOffset>12</bitOffset> <bitWidth>3</bitWidth> </field>
+                <field> <name>E4</name> <bitOffset>16</bitOffset> <bitWidth>3</bitWidth> </field>
+                <field> <name>E5</name> <bitOffset>20</bitOffset> <bitWidth>3</bitWidth> </field>
+                <field> <name>E6</name> <bitOffset>24</bitOffset> <bitWidth>3</bitWidth> </field>
+                <field> <name>E7</name> <bitOffset>28</bitOffset> <bitWidth>3</bitWidth> </field>
+              </fields>
+            </register>
+            <register>
               <name>QDMAQNUM</name>
               <addressOffset>0x260</addressOffset>
               <description>QDMAQNUM Register</description>
@@ -12036,6 +12101,67 @@
                   <bitOffset>0</bitOffset>
                   <bitWidth>32</bitWidth>
                   <access>read-write</access>
+                </field>
+              </fields>
+            </register>
+            <register>
+              <name>QRAE[%s]</name>
+              <description>QDMA Region Access Enable Register 0..7</description>
+              <addressOffset>0x380</addressOffset>
+              <size>32</size>
+              <access>read-write</access>
+              <resetValue>0x00000000</resetValue>
+              <dim>8</dim>
+              <dimIncrement>4</dimIncrement>
+              <dimIndex>0-7</dimIndex>
+              <fields>
+                <field>
+                  <name>E0</name>
+                  <description>QDMA channel 0 region access enable</description>
+                  <bitOffset>0</bitOffset>
+                  <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                  <name>E1</name>
+                  <description>QDMA channel 1 region access enable</description>
+                  <bitOffset>1</bitOffset>
+                  <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                  <name>E2</name>
+                  <description>QDMA channel 2 region access enable</description>
+                  <bitOffset>2</bitOffset>
+                  <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                  <name>E3</name>
+                  <description>QDMA channel 3 region access enable</description>
+                  <bitOffset>3</bitOffset>
+                  <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                  <name>E4</name>
+                  <description>QDMA channel 4 region access enable</description>
+                  <bitOffset>4</bitOffset>
+                  <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                  <name>E5</name>
+                  <description>QDMA channel 5 region access enable</description>
+                  <bitOffset>5</bitOffset>
+                  <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                  <name>E6</name>
+                  <description>QDMA channel 6 region access enable</description>
+                  <bitOffset>6</bitOffset>
+                  <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                  <name>E7</name>
+                  <description>QDMA channel 7 region access enable</description>
+                  <bitOffset>7</bitOffset>
+                  <bitWidth>1</bitWidth>
                 </field>
               </fields>
             </register>
@@ -14685,6 +14811,354 @@
               </fields>
             </register>
           </registers>
+        </peripheral>
+        <peripheral>
+          <name>PARAM_00</name>
+          <description>PaRAM Set 00</description>
+          <groupName>EDMA_PARAMS</groupName>
+          <baseAddress>0x49004000</baseAddress> <!-- 0x49004000 + 0x00 -->
+          <addressBlock>
+            <offset>0x0</offset>
+            <size>0x20</size>
+            <usage>registers</usage>
+          </addressBlock>
+          <registers>
+            <register>
+              <name>OPT</name>
+              <description>Channel Options</description>
+              <addressOffset>0x00</addressOffset>
+              <size>32</size>
+                <fields>
+                   <field><name>SAM</name><bitOffset>0</bitOffset><bitWidth>1</bitWidth></field>
+                   <field><name>DAM</name><bitOffset>1</bitOffset><bitWidth>1</bitWidth></field>
+                   <field><name>SYNCDIM</name><bitOffset>2</bitOffset><bitWidth>1</bitWidth></field>
+                   <field><name>STATIC</name><bitOffset>3</bitOffset><bitWidth>1</bitWidth></field>
+                   <field><name>FWID</name><bitOffset>8</bitOffset><bitWidth>3</bitWidth></field>
+                   <field><name>TCCMODE</name><bitOffset>11</bitOffset><bitWidth>1</bitWidth></field>
+                   <field><name>TCC</name><bitOffset>12</bitOffset><bitWidth>6</bitWidth></field>
+                   <field><name>TCINTEN</name><bitOffset>20</bitOffset><bitWidth>1</bitWidth></field>
+                   <field><name>ITCINTEN</name><bitOffset>21</bitOffset><bitWidth>1</bitWidth></field>
+                   <field><name>TCCHEN</name><bitOffset>22</bitOffset><bitWidth>1</bitWidth></field>
+                   <field><name>ITCCHEN</name><bitOffset>23</bitOffset><bitWidth>1</bitWidth></field>
+                   <field><name>PRIVID</name><bitOffset>24</bitOffset><bitWidth>4</bitWidth></field>
+                   <field><name>PRIV</name><bitOffset>31</bitOffset><bitWidth>1</bitWidth></field>
+                </fields>
+            </register>
+            <register>
+              <name>SRC</name>
+              <description>Source Address</description>
+              <addressOffset>0x04</addressOffset>
+              <size>32</size>
+            </register>
+            <register>
+              <name>A_B_CNT</name>
+              <description>A Count and B Count</description>
+              <addressOffset>0x08</addressOffset>
+              <size>32</size>
+              <fields>
+                <field><name>ACNT</name><bitOffset>0</bitOffset><bitWidth>16</bitWidth></field>
+                <field><name>BCNT</name><bitOffset>16</bitOffset><bitWidth>16</bitWidth></field>
+              </fields>
+            </register>
+            <register>
+              <name>DST</name>
+              <description>Destination Address</description>
+              <addressOffset>0x0C</addressOffset>
+              <size>32</size>
+            </register>
+            <register>
+              <name>SRC_DST_BIDX</name>
+              <description>B-Index (Src/Dst)</description>
+              <addressOffset>0x10</addressOffset>
+              <size>32</size>
+              <fields>
+                <field><name>SRCBIDX</name><bitOffset>0</bitOffset><bitWidth>16</bitWidth></field>
+                <field><name>DSTBIDX</name><bitOffset>16</bitOffset><bitWidth>16</bitWidth></field>
+              </fields>
+            </register>
+            <register>
+              <name>LINK_BCNTRLD</name>
+              <description>Link Address and B Count Reload</description>
+              <addressOffset>0x14</addressOffset>
+              <size>32</size>
+              <fields>
+                <field><name>LINK</name><bitOffset>0</bitOffset><bitWidth>16</bitWidth></field>
+                <field><name>BCNTRLD</name><bitOffset>16</bitOffset><bitWidth>16</bitWidth></field>
+              </fields>
+            </register>
+            <register>
+              <name>SRC_DST_CIDX</name>
+              <description>C-Index (Src/Dst)</description>
+              <addressOffset>0x18</addressOffset>
+              <size>32</size>
+              <fields>
+                <field><name>SRCCIDX</name><bitOffset>0</bitOffset><bitWidth>16</bitWidth></field>
+                <field><name>DSTCIDX</name><bitOffset>16</bitOffset><bitWidth>16</bitWidth></field>
+              </fields>
+            </register>
+            <register>
+              <name>CCNT</name>
+              <description>C Count</description>
+              <addressOffset>0x1C</addressOffset>
+              <size>32</size>
+              <fields>
+                <field><name>CCNT</name><bitOffset>0</bitOffset><bitWidth>16</bitWidth></field>
+                <field><name>RESRVD</name><bitOffset>16</bitOffset><bitWidth>16</bitWidth></field>
+              </fields>
+            </register>
+          </registers>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_01</name>
+          <baseAddress>0x49004020</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_02</name>
+          <baseAddress>0x49004040</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_03</name>
+          <baseAddress>0x49004060</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_04</name>
+          <baseAddress>0x49004080</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_05</name>
+          <baseAddress>0x490040A0</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_06</name>
+          <baseAddress>0x490040C0</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_07</name>
+          <baseAddress>0x490040E0</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_08</name>
+          <baseAddress>0x49004100</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_09</name>
+          <baseAddress>0x49004120</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_10</name>
+          <baseAddress>0x49004140</baseAddress>
+        </peripheral> 
+        <peripheral derivedFrom="PARAM_00">
+            <name>PARAM_11</name>
+            <baseAddress>0x49004160</baseAddress>   
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+            <name>PARAM_12</name>
+            <baseAddress>0x49004180</baseAddress>   
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+            <name>PARAM_13</name>
+            <baseAddress>0x490041A0</baseAddress>   
+        </peripheral> 
+        <peripheral derivedFrom="PARAM_00">
+            <name>PARAM_14</name>
+            <baseAddress>0x490041C0</baseAddress>   
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+            <name>PARAM_15</name>
+            <baseAddress>0x490041E0</baseAddress>   
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_16</name>
+          <baseAddress>0x49004200</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_17</name>
+          <baseAddress>0x49004220</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_18</name>
+          <baseAddress>0x49004240</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_19</name>
+          <baseAddress>0x49004260</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_20</name>
+          <baseAddress>0x49004280</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_21</name>
+          <baseAddress>0x490042A0</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_22</name>
+          <baseAddress>0x490042C0</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_23</name>
+          <baseAddress>0x490042E0</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_24</name>
+          <baseAddress>0x49004300</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_25</name>
+          <baseAddress>0x49004320</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_26</name>
+          <baseAddress>0x49004340</baseAddress>
+        </peripheral> 
+        <peripheral derivedFrom="PARAM_00">
+            <name>PARAM_27</name>
+            <baseAddress>0x49004360</baseAddress>   
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+            <name>PARAM_28</name>
+            <baseAddress>0x49004380</baseAddress>   
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+            <name>PARAM_29</name>
+            <baseAddress>0x490043A0</baseAddress>   
+        </peripheral> 
+        <peripheral derivedFrom="PARAM_00">
+            <name>PARAM_30</name>
+            <baseAddress>0x490043C0</baseAddress>   
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+            <name>PARAM_31</name>
+            <baseAddress>0x490043E0</baseAddress>   
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_32</name>
+          <baseAddress>0x49004400</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_33</name>
+          <baseAddress>0x49004420</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_34</name>
+          <baseAddress>0x49004440</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_35</name>
+          <baseAddress>0x49004460</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_36</name>
+          <baseAddress>0x49004480</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_37</name>
+          <baseAddress>0x490044A0</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_38</name>
+          <baseAddress>0x490044C0</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_39</name>
+          <baseAddress>0x490044E0</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_40</name>
+          <baseAddress>0x49004500</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_41</name>
+          <baseAddress>0x49004520</baseAddress>
+        </peripheral> 
+        <peripheral derivedFrom="PARAM_00">
+            <name>PARAM_42</name>
+            <baseAddress>0x49004540</baseAddress>   
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+            <name>PARAM_43</name>
+            <baseAddress>0x49004560</baseAddress>   
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+            <name>PARAM_44</name>
+            <baseAddress>0x49004580</baseAddress>   
+        </peripheral> 
+        <peripheral derivedFrom="PARAM_00">
+            <name>PARAM_45</name>
+            <baseAddress>0x490045A0</baseAddress>   
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+            <name>PARAM_46</name>
+            <baseAddress>0x490045C0</baseAddress>   
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_47</name>
+          <baseAddress>0x490045E0</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_48</name>
+          <baseAddress>0x49004600</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_49</name>
+          <baseAddress>0x49004620</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_50</name>
+          <baseAddress>0x49004640</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_51</name>
+          <baseAddress>0x49004660</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_52</name>
+          <baseAddress>0x49004680</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_53</name>
+          <baseAddress>0x490046A0</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_54</name>
+          <baseAddress>0x490046C0</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_55</name>
+          <baseAddress>0x490046E0</baseAddress>
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+          <name>PARAM_56</name>
+          <baseAddress>0x49004700</baseAddress>
+        </peripheral> 
+        <peripheral derivedFrom="PARAM_00">
+            <name>PARAM_57</name>
+            <baseAddress>0x49004720</baseAddress>   
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+            <name>PARAM_58</name>
+            <baseAddress>0x49004740</baseAddress>   
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+            <name>PARAM_59</name>
+            <baseAddress>0x49004760</baseAddress>   
+        </peripheral> 
+        <peripheral derivedFrom="PARAM_00">
+            <name>PARAM_60</name>
+            <baseAddress>0x49004780</baseAddress>   
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+            <name>PARAM_61</name>
+            <baseAddress>0x490047A0</baseAddress>   
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+            <name>PARAM_62</name>
+            <baseAddress>0x490047C0</baseAddress>   
+        </peripheral>
+        <peripheral derivedFrom="PARAM_00">
+            <name>PARAM_63</name>
+            <baseAddress>0x490047E0</baseAddress>   
         </peripheral>
         <peripheral>
           <name>EDMATC0</name>
