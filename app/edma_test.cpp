@@ -1,6 +1,4 @@
 #include "edma_test.h"
-
-#include "edma_test.h"
 #include "hal/EDMA/EDMA.hpp"
 #include "hal/EDMA/DmaChannel.hpp"
 #include "hal/EDMA/QdmaChannel.hpp"
@@ -23,7 +21,6 @@ namespace
 
     // Синхронизация прерывания для bare-metal/setup фазы
     std::atomic<bool> transfer_complete{false};
-    std::atomic<bool> transfer_error{false};
 
     void on_edma_complete(void* context)
     {
@@ -46,11 +43,10 @@ namespace
 extern "C" void edma_test(void)
 {
     using namespace HAL::INTC;
-    // 1. Включаем тактирование и инициализируем модуль EDMA3
+    // Включаем тактирование и инициализируем модуль EDMA3
     HAL::EDMA::module_clock_config();
     HAL::EDMA::init(REGS::EDMA::EVENT_Q0);
 
-    // 2. Регистрируем обработчики EDMA3 в контроллере прерываний AINTC (AINTC_HOSTINT_ROUTE_IRQ)
     register_handler(REGS::INTC::EDMACOMPINT , reinterpret_cast<isr_handler_t>(EDMA_Completion_ISR));
     priority_set(REGS::INTC::EDMACOMPINT,0,REGS::INTC::HOSTINT_ROUTE_IRQ);
     unmask_interrupt(REGS::INTC::EDMACOMPINT);
@@ -58,7 +54,6 @@ extern "C" void edma_test(void)
     priority_set(REGS::INTC::EDMAERRINT,0,REGS::INTC::HOSTINT_ROUTE_IRQ);
     unmask_interrupt(REGS::INTC::EDMAERRINT);
 
-    // 3. Заполняем тестовые данные
     for (size_t i = 0; i < BUFFER_SIZE; ++i) {
         src_buf[i] = static_cast<uint8_t>(i + 0xA5);
         dst_buf[i] = 0x00;
@@ -69,7 +64,6 @@ extern "C" void edma_test(void)
     cp15_D_cache_flush_buff(reinterpret_cast<unsigned int>(dst_buf), BUFFER_SIZE);
     cp15_DSB_barrier(); // Гарантируем завершение всех операций записи перед стартом DMA
 
-    // 4. Создаем канал DMA (выбираем канал 63, как в примере StarterWare)
     constexpr uint8_t TEST_CHANNEL = 63;
     HAL::EDMA::DmaChannel dma(TEST_CHANNEL, REGS::EDMA::EVENT_Q0);
 
@@ -78,10 +72,9 @@ extern "C" void edma_test(void)
         return;
     }
 
-    // 5. Настраиваем Callback через InterruptDispatcher
+    // Настраиваем Callback через InterruptDispatcher
     dma.setCallback(on_edma_complete, on_edma_error, const_cast<std::atomic<bool>*>(&transfer_complete));
 
-    // 6. Формируем PaRAM запись с помощью ParamBuilder
     // Передаем A-Sync трансфер (1 фрейм из BUFFER_SIZE байт)
     auto param = HAL::EDMA::ParamBuilder()
                      .setSource(reinterpret_cast<uintptr_t>(src_buf), static_cast<int16_t>(BUFFER_SIZE), static_cast<int16_t>(BUFFER_SIZE))
@@ -93,11 +86,10 @@ extern "C" void edma_test(void)
 
     dma.configure(param);
 
-    // 7. Запускаем передачу (Manual Trigger)
+    // Запускаем передачу (Manual Trigger)
     transfer_complete.store(false);
     dma.start(HAL::EDMA::TriggerMode::TRIG_MODE_MANUAL);
 
-    // 8. Ожидаем завершения в прерывании
     uint32_t timeout = 10000000;
     while (!transfer_complete.load(std::memory_order_acquire) && --timeout > 0) {
         __asm volatile("nop");
@@ -114,7 +106,6 @@ extern "C" void edma_test(void)
     // Инвалидируем D-кэш приёмника, чтобы ЦП прочитал новые данные прямо из RAM
     cp15_D_cache_flush_buff(reinterpret_cast<unsigned int>(dst_buf), BUFFER_SIZE);
 
-    // 9. Проверяем целостность данных
     bool match = true;
     for (size_t i = 0; i < BUFFER_SIZE; ++i) {
         if (src_buf[i] != dst_buf[i]) {
@@ -129,7 +120,7 @@ extern "C" void edma_test(void)
     }
 
     // -------------------------------------------------------------------------
-    // 10. Тестирование QDMA (Канал 0, TCC 10)
+    // Тестирование QDMA (Канал 0, TCC 10)
     // -------------------------------------------------------------------------
     constexpr uint8_t QDMA_CH = 0;
     constexpr uint8_t TCC_NUM = 0;
@@ -143,7 +134,7 @@ extern "C" void edma_test(void)
     cp15_D_cache_flush_buff(reinterpret_cast<unsigned int>(dst_buf), BUFFER_SIZE);
     cp15_DSB_barrier();
 
-    HAL::EDMA::QdmaChannel qdma(QDMA_CH, TCC_NUM, HAL::EDMA::QdmaTrigWord::DST);
+    HAL::EDMA::QdmaChannel qdma(QDMA_CH, TCC_NUM, REGS::EDMA::e_paRAM_entry_field::DST);
 
     if (!qdma.init()) {
         RTT_LOG_E(TAG, "Failed to init QDMA channel %d", QDMA_CH);
@@ -166,7 +157,7 @@ extern "C" void edma_test(void)
     transfer_complete.store(false);
 
     qdma.configure(param);
-    //qdma.start();
+    qdma.start();
 
     timeout = 10000000;
     while (!transfer_complete.load(std::memory_order_acquire) && --timeout > 0) {
@@ -182,7 +173,6 @@ extern "C" void edma_test(void)
     cp15_DSB_barrier();
     cp15_D_cache_flush_buff(reinterpret_cast<unsigned int>(dst_buf), BUFFER_SIZE);
 
-    // Проверяем целостность данных после QDMA
     match = true;
     for (size_t i = 0; i < BUFFER_SIZE; ++i) {
         if (src_buf[i] != dst_buf[i]) {
