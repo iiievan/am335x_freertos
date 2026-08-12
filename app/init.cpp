@@ -11,6 +11,7 @@
 #include "hal/sysTimer.hpp"
 #include "hal/boards/beaglebone_black.hpp"
 #include "hal/MMU.hpp"
+#include <cstdint>
 
 
 #define TAG "brd_ini"
@@ -103,6 +104,30 @@ extern "C" void vApplicationStackOverflowHook(TaskHandle_t xTask, const char *pc
     // Вход сюда означает, что стек задачи pcTaskName зажван!
     __asm volatile("bkpt #0");
     while(true){}
+}
+
+extern "C" void c_prefetch_abort_handler(uint32_t spsr, uint32_t ifsr, uint32_t ifar, uint32_t fault_pc)
+{
+    uint32_t status_code = (ifsr & 0x0F) | ((ifsr >> 6) & 0x10);
+    bool is_thumb = (spsr & (1u << 5)) != 0;
+
+    RTT_LOG_E("ABORT", "=== PREFETCH ABORT DETECTED ===");
+    RTT_LOG_E("ABORT", "Faulting PC : 0x%08x", (unsigned)fault_pc);
+    RTT_LOG_E("ABORT", "IFAR        : 0x%08x", (unsigned)ifar);
+    RTT_LOG_E("ABORT", "IFSR        : 0x%08x (Status Code: 0x%02x)", (unsigned)ifsr, (unsigned)status_code);
+    RTT_LOG_E("ABORT", "SPSR        : 0x%08x (Mode: %s)", (unsigned)spsr, (unsigned)is_thumb ? "Thumb" : "ARM");
+
+    if (status_code != 0b00101 && status_code != 0b00111)
+    {
+        uint32_t opcode = *reinterpret_cast<volatile uint32_t*>(fault_pc);
+        RTT_LOG_E("ABORT", "Opcode @ PC : 0x%08x", (unsigned int)opcode);
+    }
+    else
+    {
+        RTT_LOG_E("ABORT", "Opcode      : [UNMAPPED MEMORY - Read Skipped]");
+    }
+
+    while (true) { __asm volatile("nop"); } // Зависаем для анализа в GDB
 }
 
 static void copy_vector_table()

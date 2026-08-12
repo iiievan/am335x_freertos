@@ -14,6 +14,7 @@
 
 namespace
 {
+    static HAL::EDMA::EDMA_DiagnosticSnapshot snapshot;
     constexpr size_t BUFFER_SIZE = 64;
     alignas(64) uint8_t src_buf[BUFFER_SIZE];
     alignas(64) uint8_t dst_buf[BUFFER_SIZE];
@@ -67,29 +68,29 @@ namespace
         using namespace HAL::EDMA;
 
         char log_buf[256];
-        auto snap = EDMA_Diagnostics::capture();
+        EDMA_Diagnostics::capture(&snapshot);
 
         RTT_LOG_E(TAG, "=== EDMA DIAGNOSTIC DUMP [%s] (%s CH %u) ===",
                   reason, is_qdma ? "QDMA" : "DMA", channel);
 
         // 1. Декодируем канал и его PaRAM
-        EDMA_Diagnostics::decodeChannel(snap, log_buf, sizeof(log_buf), channel, is_qdma);
+        EDMA_Diagnostics::decodeChannel(snapshot, log_buf, sizeof(log_buf), channel, is_qdma);
         RTT_LOG_E(TAG, "CH STAT: %s", log_buf);
 
         // 2. Проверяем ошибки контроллера каналов (CC)
-        EDMA_Diagnostics::decodeCC(snap, log_buf, sizeof(log_buf));
+        EDMA_Diagnostics::decodeCC(snapshot, log_buf, sizeof(log_buf));
         RTT_LOG_E(TAG, "CC STAT: %s", log_buf);
 
         // 3. Трассировка пути TCC
         uint32_t tcc = is_qdma ? channel : channel;
-        auto trace = EDMA_Diagnostics::findChannelByTCC(snap, tcc);
+        auto trace = EDMA_Diagnostics::findChannelByTCC(snapshot, tcc);
         RTT_LOG_E(TAG, "TRACE: TCC=%u -> Mapped Queue=%d, PaRAM=%d, Channel Match=%s",
                   (unsigned)tcc, (unsigned)trace.mapped_queue, (unsigned)trace.param_id,
                   trace.is_tcc_channel_matching ? "YES" : "NO");
 
         // 4. Дамп состояния Transfer Controllers (TC0..TC2)
         for (uint8_t tc = 0; tc < REGS::EDMA::AM335x_TCS_MAX; ++tc) {
-            EDMA_Diagnostics::decodeTC(snap, log_buf, sizeof(log_buf), channel, tc, is_qdma);
+            EDMA_Diagnostics::decodeTC(snapshot, log_buf, sizeof(log_buf), channel, tc, is_qdma);
             RTT_LOG_E(TAG, "TC%u STAT: %s", tc, log_buf);
         }
 

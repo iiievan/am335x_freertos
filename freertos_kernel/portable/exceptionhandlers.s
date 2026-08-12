@@ -23,6 +23,7 @@
 	.global SVC_Handler
 	.global UndefInstHandler
 	.global CPUAbortHandler
+	.extern c_prefetch_abort_handler
 
 .section .text, "ax"
 .code 32
@@ -324,19 +325,18 @@ AbortHandler:
 @ Вызывается при ошибке выборки инструкции
 @********************************************************************
 PrefetchAbortHandler:
-    @ Сохраняем рабочие регистры и адрес возврата
-    STMFD   sp!, {r0-r3, r12, lr}
-    @ Сохраняем SPSR_abt для анализа причины ошибки
-    MRS     r0, spsr                @ Читаем SPSR режима Abort
-    STMFD   sp!, {r0}               @ Сохраняем на стеке
-    @ Получаем адрес инструкции, вызвавшей ошибку
-    SUB     r0, lr, #4              @ lr в Abort режиме указывает на 
-    @ Вызываем C-обработчик (если нужно)
-    @ BL     CPU_PrefetchAbortHandler
-    @ Восстанавливаем контекст и возвращаемся
-    LDMFD   sp!, {r0}               @ Восстанавливаем SPSR
-    MSR     spsr_cxsf, r0           @ Записываем обратно в SPSR
-    LDMFD   sp!, {r0-r3, r12, pc}^  @ Восстанавливаем и возвращаемся
+    SUB     lr, lr, #4              @ r0/LR = Адрес инструкции, вызвавшей Abort
+    STMFD   sp!, {r0-r12, lr}       @ Сохраняем полный контекст R0-R12 и PC
+
+    MRS     r0, spsr                @ 1-й аргумент (r0): SPSR (состояние процессора)
+    MRC     p15, 0, r1, c5, c0, 1   @ 2-й аргумент (r1): IFSR (Instruction Fault Status)
+    MRC     p15, 0, r2, c6, c0, 2   @ 3-й аргумент (r2): IFAR (Instruction Fault Address)
+    MOV     r3, lr                  @ 4-й аргумент (r3): Faulting PC (адрес инструкции)
+
+    BL      c_prefetch_abort_handler @ Вызов C-функции
+
+    LDMFD   sp!, {r0-r12, lr}
+    MOVS    pc, lr                  @ Бесконечный цикл/зависание, если C-обработчик вернул управление
 @********************************************************************
 @ Data Abort Handler
 @ Вызывается при ошибке доступа к данным
