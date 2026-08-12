@@ -3,23 +3,21 @@
 #include "hal/EDMA/DmaChannel.hpp"
 #include "hal/EDMA/QdmaChannel.hpp"
 #include "hal/EDMA/ParamBuilder.hpp"
+#include "hal/EDMA/EDMA_diagnostics.hpp"
 #include "hal/INTC.hpp"
 #include "rtt/rtt_log.h"
 #include "startup/cp15.h"
 
-#include <array>
 #include <atomic>
 
 #define TAG "EDMA_TEST"
 
 namespace
 {
-    // Буферы выравниваем по кэш-линии Cortex-A8 (64 байта)
     constexpr size_t BUFFER_SIZE = 64;
     alignas(64) uint8_t src_buf[BUFFER_SIZE];
     alignas(64) uint8_t dst_buf[BUFFER_SIZE];
 
-    // Синхронизация прерывания для bare-metal/setup фазы
     std::atomic<bool> transfer_complete{false};
 
     void on_edma_complete(void* context)
@@ -38,151 +36,240 @@ namespace
             flag->store(true, std::memory_order_release);
         }
     }
+
+    void prepare_buffers()
+    {
+        for (size_t i = 0; i < BUFFER_SIZE; ++i) {
+            dst_buf[i] = 0x00;
+        }
+        cp15_D_cache_clean_buff(reinterpret_cast<unsigned int>(src_buf), BUFFER_SIZE);
+        cp15_D_cache_flush_buff(reinterpret_cast<unsigned int>(dst_buf), BUFFER_SIZE);
+        cp15_DSB_barrier();
+    }
+
+    bool verify_buffers(const char* who, const uint8_t ch)
+    {
+        cp15_DSB_barrier();
+        cp15_D_cache_flush_buff(reinterpret_cast<unsigned int>(dst_buf), BUFFER_SIZE);
+
+        for (size_t i = 0; i < BUFFER_SIZE; ++i) {
+            if (src_buf[i] != dst_buf[i]) {
+                RTT_LOG_E(TAG, "%s ch%u mismatch @%u: src=0x%02X dst=0x%02X",
+                          who, ch, static_cast<unsigned>(i), src_buf[i], dst_buf[i]);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    void dump_edma_diagnostics(uint8_t channel, bool is_qdma, const char* reason)
+    {
+        using namespace HAL::EDMA;
+
+        char log_buf[256];
+        auto snap = EDMA_Diagnostics::capture();
+
+        RTT_LOG_E(TAG, "=== EDMA DIAGNOSTIC DUMP [%s] (%s CH %u) ===",
+                  reason, is_qdma ? "QDMA" : "DMA", channel);
+
+        // 1. Декодируем канал и его PaRAM
+        EDMA_Diagnostics::decodeChannel(snap, log_buf, sizeof(log_buf), channel, is_qdma);
+        RTT_LOG_E(TAG, "CH STAT: %s", log_buf);
+
+        // 2. Проверяем ошибки контроллера каналов (CC)
+        EDMA_Diagnostics::decodeCC(snap, log_buf, sizeof(log_buf));
+        RTT_LOG_E(TAG, "CC STAT: %s", log_buf);
+
+        // 3. Трассировка пути TCC
+        uint32_t tcc = is_qdma ? channel : channel;
+        auto trace = EDMA_Diagnostics::findChannelByTCC(snap, tcc);
+        RTT_LOG_E(TAG, "TRACE: TCC=%u -> Mapped Queue=%d, PaRAM=%d, Channel Match=%s",
+                  (unsigned)tcc, (unsigned)trace.mapped_queue, (unsigned)trace.param_id,
+                  trace.is_tcc_channel_matching ? "YES" : "NO");
+
+        // 4. Дамп состояния Transfer Controllers (TC0..TC2)
+        for (uint8_t tc = 0; tc < REGS::EDMA::AM335x_TCS_MAX; ++tc) {
+            EDMA_Diagnostics::decodeTC(snap, log_buf, sizeof(log_buf), channel, tc, is_qdma);
+            RTT_LOG_E(TAG, "TC%u STAT: %s", tc, log_buf);
+        }
+
+        // 5. Очищаем ошибки для предотвращения блокировки следующих тестов
+        EDMA_Diagnostics::clearCCErrors(0xFFFFFFFF);
+        for (uint8_t tc = 0; tc < REGS::EDMA::AM335x_TCS_MAX; ++tc) {
+            EDMA_Diagnostics::clearTCError(tc, 0xFFFFFFFF);
+        }
+        RTT_LOG_E(TAG, "===============================================");
+    }
 }
 
-extern "C" void edma_test(void)
+// ---------------------------------------------------------------------------
+// DMA-канал (manual trigger)
+// ---------------------------------------------------------------------------
+bool test_dma_channel(uint8_t channel)
 {
-    using namespace HAL::INTC;
-    // Включаем тактирование и инициализируем модуль EDMA3
-    HAL::EDMA::module_clock_config();
-    HAL::EDMA::init(REGS::EDMA::EVENT_Q0);
+    using namespace HAL::EDMA;
 
-    register_handler(REGS::INTC::EDMACOMPINT , reinterpret_cast<isr_handler_t>(EDMA_Completion_ISR));
-    priority_set(REGS::INTC::EDMACOMPINT,0,REGS::INTC::HOSTINT_ROUTE_IRQ);
-    unmask_interrupt(REGS::INTC::EDMACOMPINT);
-    register_handler(REGS::INTC::EDMAERRINT, reinterpret_cast<isr_handler_t>(EDMA_Error_ISR));
-    priority_set(REGS::INTC::EDMAERRINT,0,REGS::INTC::HOSTINT_ROUTE_IRQ);
-    unmask_interrupt(REGS::INTC::EDMAERRINT);
+    prepare_buffers();
 
-    for (size_t i = 0; i < BUFFER_SIZE; ++i) {
-        src_buf[i] = static_cast<uint8_t>(i + 0xA5);
-        dst_buf[i] = 0x00;
+    DmaChannel dma(channel, REGS::EDMA::EVENT_Q0);
+    if (!dma.init())
+    {
+        RTT_LOG_E(TAG, "DMA ch%u: request failed", channel);
+        dump_edma_diagnostics(channel, false, "INIT_FAILED");
+        return false;
     }
 
-    // Выталкиваем исходный буфер из L1D кэша в RAM и Сбрасываем возможные dirty-строки целевого буфера
-    cp15_D_cache_clean_buff(reinterpret_cast<unsigned int>(src_buf), BUFFER_SIZE);
-    cp15_D_cache_flush_buff(reinterpret_cast<unsigned int>(dst_buf), BUFFER_SIZE);
-    cp15_DSB_barrier(); // Гарантируем завершение всех операций записи перед стартом DMA
+    dma.setCallback(on_edma_complete, on_edma_error,
+                    const_cast<std::atomic<bool>*>(&transfer_complete));
 
-    constexpr uint8_t TEST_CHANNEL = 63;
-    HAL::EDMA::DmaChannel dma(TEST_CHANNEL, REGS::EDMA::EVENT_Q0);
-
-    if (!dma.init()) {
-        RTT_LOG_E(TAG, "Failed to request EDMA channel %d", TEST_CHANNEL);
-        return;
-    }
-
-    // Настраиваем Callback через InterruptDispatcher
-    dma.setCallback(on_edma_complete, on_edma_error, const_cast<std::atomic<bool>*>(&transfer_complete));
-
-    // Передаем A-Sync трансфер (1 фрейм из BUFFER_SIZE байт)
-    auto param = HAL::EDMA::ParamBuilder()
-                     .setSource(reinterpret_cast<uintptr_t>(src_buf), static_cast<int16_t>(BUFFER_SIZE), static_cast<int16_t>(BUFFER_SIZE))
-                     .setDest(reinterpret_cast<uintptr_t>(dst_buf), static_cast<int16_t>(BUFFER_SIZE), static_cast<int16_t>(BUFFER_SIZE))
+    auto param = ParamBuilder()
+                     .setSource(reinterpret_cast<uintptr_t>(src_buf),
+                                static_cast<int16_t>(BUFFER_SIZE),
+                                static_cast<int16_t>(BUFFER_SIZE))
+                     .setDest(reinterpret_cast<uintptr_t>(dst_buf),
+                              static_cast<int16_t>(BUFFER_SIZE),
+                              static_cast<int16_t>(BUFFER_SIZE))
                      .setTransferParams(static_cast<uint16_t>(BUFFER_SIZE), 1, 1)
-                     .setSyncType(false) // A-Sync
-                     .enableCompletionInterrupt(TEST_CHANNEL)
+                     .setSyncType(false)                    // A-Sync
+                     .enableCompletionInterrupt(channel)
                      .build();
 
     dma.configure(param);
 
-    // Запускаем передачу (Manual Trigger)
-    transfer_complete.store(false);
-    dma.start(HAL::EDMA::TriggerMode::TRIG_MODE_MANUAL);
+    transfer_complete.store(false, std::memory_order_release);
+    dma.start(TriggerMode::TRIG_MODE_MANUAL);
 
-    uint32_t timeout = 10000000;
-    while (!transfer_complete.load(std::memory_order_acquire) && --timeout > 0) {
+    uint32_t timeout = 5'000'000;
+    while (!transfer_complete.load(std::memory_order_acquire) && --timeout) {
         __asm volatile("nop");
     }
 
-    if (timeout == 0) {
-        RTT_LOG_E(TAG, "EDMA Transfer TIMEOUT!");
-        return;
+    if (timeout == 0)
+    {
+        RTT_LOG_E(TAG, "DMA ch%u: TIMEOUT", channel);
+        dump_edma_diagnostics(channel, false, "TIMEOUT");
+        return false;
     }
 
-    // Ждем завершения выгрузки шины DMA и синхронизируем память
-    cp15_DSB_barrier();
-
-    // Инвалидируем D-кэш приёмника, чтобы ЦП прочитал новые данные прямо из RAM
-    cp15_D_cache_flush_buff(reinterpret_cast<unsigned int>(dst_buf), BUFFER_SIZE);
-
-    bool match = true;
-    for (size_t i = 0; i < BUFFER_SIZE; ++i) {
-        if (src_buf[i] != dst_buf[i]) {
-            match = false;
-            RTT_LOG_E(TAG, "Data mismatch at index %d: src 0x%02X != dst 0x%02X", i, src_buf[i], dst_buf[i]);
-            break;
-        }
+    if (!verify_buffers("DMA", channel))
+    {
+        dump_edma_diagnostics(channel, false, "DATA_MISMATCH");
+        return false;
     }
 
-    if (match) {
-        RTT_LOG_I(TAG, "EDMA Loopback Test PASSED successfully!");
+    RTT_LOG_I(TAG, "DMA ch%u: PASSED", channel);
+    return true;
+}
+
+// ---------------------------------------------------------------------------
+// QDMA-канал (trigger word = DST)
+// ---------------------------------------------------------------------------
+bool test_qdma_channel(uint8_t qch)
+{
+    using namespace HAL::EDMA;
+
+    prepare_buffers();
+
+    // TCC = номер QDMA-канала (0..7) — безопасно, т.к. тесты идут последовательно
+    const uint8_t tcc = qch;
+
+    QdmaChannel qdma(qch, tcc, REGS::EDMA::e_paRAM_entry_field::DST);
+
+    if (!qdma.init())
+    {
+        RTT_LOG_E(TAG, "QDMA ch%u: init failed", qch);
+        dump_edma_diagnostics(qch, true, "INIT_FAILED");
+        return false;
     }
 
-    // -------------------------------------------------------------------------
-    // Тестирование QDMA (Канал 0, TCC 10)
-    // -------------------------------------------------------------------------
-    constexpr uint8_t QDMA_CH = 0;
-    constexpr uint8_t TCC_NUM = 0;
+    qdma.setCallback(on_edma_complete, on_edma_error,
+                     const_cast<std::atomic<bool>*>(&transfer_complete));
 
-    // Сбрасываем приемный буфер в 0, чтобы убедиться, что QDMA действительно записал данные
-    for (size_t i = 0; i < BUFFER_SIZE; ++i) {
-        dst_buf[i] = 0x00;
-    }
+    auto param = ParamBuilder()
+                     .setSource(reinterpret_cast<uintptr_t>(src_buf),
+                                static_cast<int16_t>(BUFFER_SIZE),
+                                static_cast<int16_t>(BUFFER_SIZE))
+                     .setDest(reinterpret_cast<uintptr_t>(dst_buf),
+                              static_cast<int16_t>(BUFFER_SIZE),
+                              static_cast<int16_t>(BUFFER_SIZE))
+                     .setTransferParams(static_cast<uint16_t>(BUFFER_SIZE), 1, 1)
+                     .setSyncType(false)                    // A-Sync
+                     .enableCompletionInterrupt(tcc)
+                     .setStatic()
+                     .setSrcDstDestinationMode(false, false)
+                     .build();
 
-    // Подготавливаем кэш перед стартом QDMA
-    cp15_D_cache_flush_buff(reinterpret_cast<unsigned int>(dst_buf), BUFFER_SIZE);
-    cp15_DSB_barrier();
+    transfer_complete.store(false, std::memory_order_release);
 
-    HAL::EDMA::QdmaChannel qdma(QDMA_CH, TCC_NUM, REGS::EDMA::e_paRAM_entry_field::DST);
+    //HAL::EDMA::revaluateInterruptLine();
+    qdma.configure(param);   // пишет PaRAM + enable QEER
+    qdma.start();            // повторная запись trigger word → старт
 
-    if (!qdma.init()) {
-        RTT_LOG_E(TAG, "Failed to init QDMA channel %d", QDMA_CH);
-        return;
-    }
-
-    qdma.setCallback(on_edma_complete, on_edma_error, const_cast<std::atomic<bool>*>(&transfer_complete));
-
-    param = HAL::EDMA::ParamBuilder()
-                 .setSource(reinterpret_cast<uintptr_t>(src_buf), BUFFER_SIZE, BUFFER_SIZE)
-                 .setDest(reinterpret_cast<uintptr_t>(dst_buf), BUFFER_SIZE, BUFFER_SIZE)
-                 .setTransferParams(BUFFER_SIZE, 1, 1)
-                 .setSyncType(false)
-                 .enableCompletionInterrupt(TCC_NUM) // Прерывание по TCC_NUM
-                 .enableIntermediateCompletionInterrupt()
-                 .setStatic()
-                 .setSrcDstDestinationMode(false,false)
-                 .build();
-
-    transfer_complete.store(false);
-
-    qdma.configure(param);
-    qdma.start();
-
-    timeout = 10000000;
-    while (!transfer_complete.load(std::memory_order_acquire) && --timeout > 0) {
+    uint32_t timeout = 5'000'000;
+    while (!transfer_complete.load(std::memory_order_acquire) && --timeout) {
         __asm volatile("nop");
     }
 
-    if (timeout == 0) {
-        RTT_LOG_E(TAG, "QDMA Transfer TIMEOUT!");
-        return;
+    if (timeout == 0)
+    {
+        RTT_LOG_E(TAG, "QDMA ch%u: TIMEOUT", qch);
+        dump_edma_diagnostics(qch, true, "TIMEOUT");
+        return false;
     }
 
-    // Синхронизируем память и инвалидируем D-кэш для приёмника
-    cp15_DSB_barrier();
-    cp15_D_cache_flush_buff(reinterpret_cast<unsigned int>(dst_buf), BUFFER_SIZE);
+    if (!verify_buffers("QDMA", qch))
+    {
+        dump_edma_diagnostics(qch, true, "DATA_MISMATCH");
+        return false;
+    }
 
-    match = true;
+    RTT_LOG_I(TAG, "QDMA ch%u: PASSED", qch);
+    return true;
+}
+
+// ---------------------------------------------------------------------------
+// Главная точка входа
+// ---------------------------------------------------------------------------
+extern "C" void edma_test(void)
+{
+    using namespace HAL::INTC;
+
+    // Одноразовая инициализация модуля и прерываний
+    HAL::EDMA::module_clock_config();
+    HAL::EDMA::init(REGS::EDMA::EVENT_Q0);
+
+    register_handler(REGS::INTC::EDMACOMPINT, reinterpret_cast<isr_handler_t>(EDMA_Completion_ISR));
+    priority_set(REGS::INTC::EDMACOMPINT, 0, REGS::INTC::HOSTINT_ROUTE_IRQ);
+    unmask_interrupt(REGS::INTC::EDMACOMPINT);
+
+    register_handler(REGS::INTC::EDMAERRINT, reinterpret_cast<isr_handler_t>(EDMA_Error_ISR));
+    priority_set(REGS::INTC::EDMAERRINT, 0, REGS::INTC::HOSTINT_ROUTE_IRQ);
+    unmask_interrupt(REGS::INTC::EDMAERRINT);
+
+    // Исходный буфер заполняем один раз
     for (size_t i = 0; i < BUFFER_SIZE; ++i) {
-        if (src_buf[i] != dst_buf[i]) {
-            match = false;
-            RTT_LOG_E(TAG, "QDMA Data mismatch at index %d: src 0x%02X != dst 0x%02X", i, src_buf[i], dst_buf[i]);
-            break;
+        src_buf[i] = static_cast<uint8_t>(i + 0xA5);
+    }
+
+    // --- Все 64 DMA-канала ---
+    RTT_LOG_I(TAG, "=== DMA channels test (0..63) ===");
+    uint32_t dma_ok = 0;
+    for (uint8_t ch = 0; ch < 64; ++ch) {
+        if (test_dma_channel(ch)) {
+            ++dma_ok;
         }
     }
+    RTT_LOG_I(TAG, "DMA: %u/64 passed", static_cast<unsigned>(dma_ok));
 
-    if (match) {
-        RTT_LOG_I(TAG, "QDMA Loopback Test PASSED successfully!");
+    // --- Все 8 QDMA-каналов ---
+    RTT_LOG_I(TAG, "=== QDMA channels test (0..7) ===");
+    uint32_t qdma_ok = 0;
+    for (uint8_t qch = 0; qch < 8; ++qch) {
+        if (test_qdma_channel(qch)) {
+            ++qdma_ok;
+        }
     }
+    RTT_LOG_I(TAG, "QDMA: %u/8 passed", static_cast<unsigned>(qdma_ok));
+
+    RTT_LOG_I(TAG, "=== EDMA test finished ===");
 }

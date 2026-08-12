@@ -2,6 +2,8 @@
 /*  Includes                                                             */
 /*=======================================================================*/
 #include "init.h"
+#include "FreeRTOS.h"
+#include "task.h"
 #include "startup/cp15.h"
 #include "regs/REGS.hpp"
 #include "rtt/rtt_log.h"
@@ -92,6 +94,15 @@ extern "C" void vApplicationIRQHandler(void)
     // Очистить прерывание в INTC
     volatile uint32_t *control = (volatile uint32_t *)0x48200048;
     *control = 0x1; // NEWIRQAGR
+}
+
+extern "C" void vApplicationStackOverflowHook(TaskHandle_t xTask, const char *pcTaskName)
+{
+    (void)xTask;
+    (void)pcTaskName;
+    // Вход сюда означает, что стек задачи pcTaskName зажван!
+    __asm volatile("bkpt #0");
+    while(true){}
 }
 
 static void copy_vector_table()
