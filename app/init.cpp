@@ -18,27 +18,29 @@ extern "C"
     void Entry(void);
     void UndefInstHandler(void);
     void FreeRTOS_SWI_Handler(void);
-    void AbortHandler(void);
+    void PrefetchAbortHandler(void);
+    void DataAbortHandler(void);
     void FreeRTOS_IRQ_Handler(void);
     void FIQHandler(void);
 }
 
-static uint32_t const vec_tbl[14] =
+static uint32_t const vec_tbl[15] =
 {
-    0xE59FF018,    /* Opcode for loading PC with the contents of [PC + 0x18] */
-    0xE59FF018,    /* Opcode for loading PC with the contents of [PC + 0x18] */
-    0xE59FF018,    /* Opcode for loading PC with the contents of [PC + 0x18] */
-    0xE59FF018,    /* Opcode for loading PC with the contents of [PC + 0x18] */
-    0xE59FF014,    /* Opcode for loading PC with the contents of [PC + 0x14] */
-    0xE24FF008,    /* Opcode for loading PC with (PC - 8) (eq. to while(1)) */
-    0xE59FF010,    /* Opcode for loading PC with the contents of [PC + 0x10] */
-    0xE59FF010,    /* Opcode for loading PC with the contents of [PC + 0x10] */
-    (uint32_t)Entry,
-    (uint32_t)UndefInstHandler,
-    (uint32_t)FreeRTOS_SWI_Handler,
-    (uint32_t)AbortHandler,
-    (uint32_t)FreeRTOS_IRQ_Handler,
-    (uint32_t)FIQHandler
+    0xE59FF018,    /* 0x00 Reset           -> Index 8  (0x20) */
+    0xE59FF018,    /* 0x04 Undef           -> Index 9  (0x24) */
+    0xE59FF018,    /* 0x08 SWI             -> Index 10 (0x28) */
+    0xE59FF018,    /* 0x0C Prefetch Abort  -> Index 11 (0x2C) */
+    0xE59FF018,    /* 0x10 Data Abort      -> Index 12 (0x30) [ИСПРАВЛЕНО] */
+    0xE24FF008,    /* 0x14 Reserved        -> while(1) */
+    0xE59FF014,    /* 0x18 IRQ             -> Index 13 (0x34) [ИСПРАВЛЕНО] */
+    0xE59FF014,    /* 0x1C FIQ             -> Index 14 (0x38) [ИСПРАВЛЕНО] */
+    (uint32_t)Entry,                // [8]
+    (uint32_t)UndefInstHandler,     // [9]
+    (uint32_t)FreeRTOS_SWI_Handler, // [10]
+    (uint32_t)PrefetchAbortHandler, // [11]
+    (uint32_t)DataAbortHandler,     // [12]
+    (uint32_t)FreeRTOS_IRQ_Handler, // [13]
+    (uint32_t)FIQHandler            // [14]
 };
 
 extern HAL::TIMERS::sysTimer<SYST_t> sys_time;
@@ -92,6 +94,84 @@ extern "C" void vApplicationIRQHandler(void)
     // Очистить прерывание в INTC
     volatile uint32_t *control = (volatile uint32_t *)0x48200048;
     *control = 0x1; // NEWIRQAGR
+}
+
+struct alignas(8) FaultContext
+{
+    uint32_t r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12;
+    uint32_t fault_pc;
+    uint32_t spsr;
+    uint32_t dfsr_ifsr;
+    uint32_t dfar_ifar;
+};
+
+extern "C" __attribute__((noinline)) void c_data_abort_handler(const FaultContext* ctx)
+{
+    uint32_t dfsr = ctx->dfsr_ifsr;
+    uint32_t status_code = (dfsr & 0x0F) | ((dfsr >> 6) & 0x10);
+
+    RTT_LOG_E("ABORT",
+        "\n=== DATA ABORT DETECTED ===\n"
+        "Faulting PC : 0x%08x\n"
+        "DFAR (Addr) : 0x%08x\n"
+        "DFSR        : 0x%08x (Status: 0x%02x)\n"
+        "SPSR        : 0x%08x",
+        (unsigned)ctx->fault_pc,
+        (unsigned)ctx->dfar_ifar,
+        (unsigned)dfsr,
+        (unsigned)status_code,
+        (unsigned)ctx->spsr
+    );
+
+    while (true) {
+        __asm volatile("nop");
+    }
+}
+
+extern "C" __attribute__((noinline)) void c_prefetch_abort_handler(const FaultContext* ctx)
+{
+    uint32_t ifsr = ctx->dfsr_ifsr;
+    uint32_t status_code = (ifsr & 0x0F) | ((ifsr >> 6) & 0x10);
+    bool is_thumb = (ctx->spsr & (1u << 5)) != 0;
+
+    char opcode_str[32];
+    if (status_code != 0b00101 && status_code != 0b00111) // Не Translation Fault
+    {
+        if (is_thumb)
+        {
+            uint16_t opcode = *reinterpret_cast<volatile uint16_t*>(ctx->fault_pc);
+            snprintf(opcode_str, sizeof(opcode_str), "0x%04X (16-bit)", (unsigned)opcode);
+        }
+        else
+        {
+            uint32_t opcode = *reinterpret_cast<volatile uint32_t*>(ctx->fault_pc);
+            snprintf(opcode_str, sizeof(opcode_str), "0x%08X (32-bit)", (unsigned)opcode);
+        }
+    }
+    else
+    {
+        snprintf(opcode_str, sizeof(opcode_str), "[UNMAPPED MEMORY]");
+    }
+
+    RTT_LOG_E("ABORT",
+        "\n=== PREFETCH ABORT DETECTED ===\n"
+        "Faulting PC : 0x%08x\n"
+        "IFAR        : 0x%08x\n"
+        "IFSR        : 0x%08x (Status: 0x%02x)\n"
+        "SPSR        : 0x%08x (Mode: %s)\n"
+        "Opcode @ PC : %s",
+        (unsigned)ctx->fault_pc,
+        (unsigned)ctx->dfar_ifar,
+        (unsigned)ifsr,
+        (unsigned)status_code,
+        (unsigned)ctx->spsr,
+        is_thumb ? "Thumb" : "ARM",
+        opcode_str
+    );
+
+    while (true) {
+        __asm volatile("nop");
+    }
 }
 
 static void copy_vector_table()

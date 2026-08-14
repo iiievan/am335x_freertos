@@ -63,7 +63,7 @@ int main ()
     }
     RTT_LOG_I(TAG, "Board initialization done!");
 
-    xTaskCreate(vEdmaTask, "EDMA_Task", 1024, NULL, 2, NULL);
+    xTaskCreate(vEdmaTask, "EDMA_Task", 8192, NULL, 2, NULL);
     xTaskCreate(vTask1, "Task1", 512, NULL, 1, NULL);
     xTaskCreate(vTask2, "Task2", 512, NULL, 1, NULL);
 
