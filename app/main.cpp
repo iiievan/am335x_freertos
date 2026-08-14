@@ -8,6 +8,7 @@
 #include "task.h"
 #include "hal/EDMA/EDMA.hpp"
 #include "edma_test.h"
+#include "hal/PERF.hpp"
 
 #define TAG "main"
 
@@ -40,14 +41,27 @@ void vTask2(void *pvParameters)
     }
 }
 
-void vEdmaTask(void *pvParameters)
+void vPerfBenchmarkTask(void *pvParameters)
 {
     (void)pvParameters;
 
-    edma_test();
+    // 1. Настройка PMU на отслеживание промахов Data TLB и сбоев предсказателя переходов
+    HAL::PERF::configure_event(HAL::PERF::Counter::COUNTER_0, HAL::PERF::EventType::L1D_TLB_REFILL);
+    HAL::PERF::configure_event(HAL::PERF::Counter::COUNTER_1, HAL::PERF::EventType::BRANCH_MISPRED);
 
-    //vTaskDelete(NULL);
-    vTaskSuspend(NULL);
+    // 2. Запуск синтетического теста производительности оперативной памяти
+    HAL::PERF::run_ddr_benchmark();
+
+    for(;;)
+    {
+        {
+            HAL::PERF::ScopedProfiler prof("EDMA_EXEC");
+
+            edma_test();
+        }
+
+        vTaskDelay(pdMS_TO_TICKS(5000));
+    }
 }
 
 int main ()
@@ -63,7 +77,7 @@ int main ()
     }
     RTT_LOG_I(TAG, "Board initialization done!");
 
-    xTaskCreate(vEdmaTask, "EDMA_Task", 8192, NULL, 2, NULL);
+    xTaskCreate(vPerfBenchmarkTask, "PerfTask", 8192, NULL, 2, NULL);
     xTaskCreate(vTask1, "Task1", 512, NULL, 1, NULL);
     xTaskCreate(vTask2, "Task2", 512, NULL, 1, NULL);
 
