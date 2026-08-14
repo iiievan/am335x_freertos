@@ -14,7 +14,6 @@ set(FREERTOS_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/portable/MemMang/heap_4.c
 )
 
-
 # ARM Cortex-A8 specific port files
 set(FREERTOS_PORT_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/portable/port.c

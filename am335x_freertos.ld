@@ -70,17 +70,18 @@ SECTIONS
         __data_end = .;
     } > DDR
 
-/* BSS (неинициализированные данные) */
     .bss : ALIGN(4) {
         __bss_start = .;
         *(.bss)
         *(.bss.*)
+        *(.perf_data)    /* data for performance testing with PMU and etc.*/
+        *(.perf_data.*)
         *(COMMON)
-        . = ALIGN(8);
+        . = ALIGN(64);
         __bss_end = .;
     } > DDR
 
-    /* C++ конструкторы/деструкторы */
+        /* C++ конструкторы/деструкторы */
     .preinit_array : ALIGN(4) {
         PROVIDE_HIDDEN(__preinit_array_start = .);
         KEEP(*(.preinit_array*))
