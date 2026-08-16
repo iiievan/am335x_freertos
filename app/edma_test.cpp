@@ -213,7 +213,10 @@ bool test_qdma_channel(uint8_t qch)
         return false;
     }
 
+
     RTT_LOG_I(TAG, "QDMA ch%u: PASSED", qch);
+    disable_QDMA_event(qch);
+
     return true;
 }
 
@@ -256,8 +259,11 @@ extern "C" void edma_test(void)
     REGS::EDMA::AM335X_EDMA3CC->QDMAQNUM.reg = 0x00000000;
 
     // Разрешаем Shadow Region access для QDMA (если не было включено)
+    // Восстанавливаем сброшенные тестом DMA регистры доступа:
     const auto region = HAL::EDMA::get_region_id();
-    REGS::EDMA::AM335X_EDMA3CC->QRAE[region].reg = 0xFF;
+    REGS::EDMA::AM335X_EDMA3CC->DRAE(region).reg  = 0xFFFFFFFF;
+    REGS::EDMA::AM335X_EDMA3CC->DRAEH(region).reg = 0xFFFFFFFF;
+    REGS::EDMA::AM335X_EDMA3CC->QRAE[region].reg  = 0xFF;
 
     uint32_t qdma_ok = 0;
     for (uint8_t qch = 0; qch < 8; ++qch) {
