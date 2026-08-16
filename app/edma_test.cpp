@@ -15,6 +15,7 @@
 namespace
 {
     static HAL::EDMA::EDMA_DiagnosticSnapshot snapshot;
+
     constexpr size_t BUFFER_SIZE = 64;
     alignas(64) uint8_t src_buf[BUFFER_SIZE];
     alignas(64) uint8_t dst_buf[BUFFER_SIZE];
@@ -62,34 +63,6 @@ namespace
         }
         return true;
     }
-
-    void dump_edma_diagnostics(const uint8_t channel, const bool is_qdma, const char* reason)
-    {
-        using namespace HAL::EDMA;
-
-        EDMA_Diagnostics::capture(&snapshot);
-
-        RTT_LOG_E(TAG, "=== EDMA DIAGNOSTIC DUMP [%s] (%s CH %u) ===",
-                  reason, is_qdma ? "QDMA" : "DMA", channel);
-
-        EDMA_Diagnostics::decodeChannel(snapshot, channel, is_qdma);
-        EDMA_Diagnostics::decodeCC(snapshot);
-
-        const uint32_t tcc = channel;
-        EDMA_Diagnostics::findChannelByTCC(snapshot, tcc);
-
-        for (uint8_t tc = 0; tc < REGS::EDMA::AM335x_TCS_MAX; ++tc)
-        {
-            EDMA_Diagnostics::decodeTC(snapshot, channel, tc, is_qdma);
-        }
-
-        EDMA_Diagnostics::clearCCErrors(0xFFFFFFFF);
-        for (uint8_t tc = 0; tc < REGS::EDMA::AM335x_TCS_MAX; ++tc)
-        {
-            EDMA_Diagnostics::clearTCError(tc, 0xFFFFFFFF);
-        }
-        RTT_LOG_E(TAG, "===============================================");
-    }
 }
 
 // ---------------------------------------------------------------------------
@@ -105,7 +78,7 @@ bool test_dma_channel(uint8_t channel)
     if (!dma.init())
     {
         RTT_LOG_E(TAG, "DMA ch%u: request failed", channel);
-        dump_edma_diagnostics(channel, false, "INIT_FAILED");
+        EDMA_Diagnostics::dump_full_diagnostics(snapshot, channel, false, "INIT_FAILED");
         return false;
     }
 
@@ -137,13 +110,13 @@ bool test_dma_channel(uint8_t channel)
     if (timeout == 0)
     {
         RTT_LOG_E(TAG, "DMA ch%u: TIMEOUT", channel);
-        dump_edma_diagnostics(channel, false, "TIMEOUT");
+        EDMA_Diagnostics::dump_full_diagnostics(snapshot, channel, false, "TIMEOUT");
         return false;
     }
 
     if (!verify_buffers("DMA", channel))
     {
-        dump_edma_diagnostics(channel, false, "DATA_MISMATCH");
+        EDMA_Diagnostics::dump_full_diagnostics(snapshot, channel, false, "DATA_MISMATCH");
         return false;
     }
 
@@ -160,7 +133,6 @@ bool test_qdma_channel(uint8_t qch)
 
     prepare_buffers();
 
-    // TCC = номер QDMA-канала (0..7) — безопасно, т.к. тесты идут последовательно
     const uint8_t tcc = qch;
 
     QdmaChannel qdma(qch, tcc, REGS::EDMA::e_paRAM_entry_field::DST);
@@ -168,7 +140,7 @@ bool test_qdma_channel(uint8_t qch)
     if (!qdma.init())
     {
         RTT_LOG_E(TAG, "QDMA ch%u: init failed", qch);
-        dump_edma_diagnostics(qch, true, "INIT_FAILED");
+        EDMA_Diagnostics::dump_full_diagnostics(snapshot, qch, true, "INIT_FAILED");
         return false;
     }
 
@@ -191,7 +163,6 @@ bool test_qdma_channel(uint8_t qch)
 
     transfer_complete.store(false, std::memory_order_release);
 
-    //HAL::EDMA::revaluateInterruptLine();
     qdma.configure(param);   // пишет PaRAM + enable QEER
     qdma.start();            // повторная запись trigger word → старт
 
@@ -203,13 +174,13 @@ bool test_qdma_channel(uint8_t qch)
     if (timeout == 0)
     {
         RTT_LOG_E(TAG, "QDMA ch%u: TIMEOUT", qch);
-        dump_edma_diagnostics(qch, true, "TIMEOUT");
+        EDMA_Diagnostics::dump_full_diagnostics(snapshot, qch, true, "TIMEOUT");
         return false;
     }
 
     if (!verify_buffers("QDMA", qch))
     {
-        dump_edma_diagnostics(qch, true, "DATA_MISMATCH");
+        EDMA_Diagnostics::dump_full_diagnostics(snapshot, qch, true, "DATA_MISMATCH");
         return false;
     }
 
@@ -220,9 +191,6 @@ bool test_qdma_channel(uint8_t qch)
     return true;
 }
 
-// ---------------------------------------------------------------------------
-// Главная точка входа
-// ---------------------------------------------------------------------------
 extern "C" void edma_test(void)
 {
     using namespace HAL::INTC;
