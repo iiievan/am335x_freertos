@@ -42,6 +42,41 @@ namespace
         }
         return true;
     }
+
+    // Контекст для передачи в ISR callback
+    struct PingPongContext
+    {
+        uint8_t channel{0};
+        volatile uint32_t completed_transfers{0};
+        uint32_t target_transfers{0};
+    };
+
+    static PingPongContext g_pingpong_ctx;
+
+    // Callback, вызываемый из InterruptDispatcher при каждом завершении (IPR)
+    void on_pingpong_completion(void* context) noexcept
+    {
+        auto* ctx = static_cast<PingPongContext*>(context);
+        if (!ctx) return;
+
+        ctx->completed_transfers++;
+
+        // Если достигли целевого количества итераций — отключаем событие EDMA
+        if (ctx->completed_transfers >= ctx->target_transfers)
+        {
+            HAL::EDMA::disable_transfer(ctx->channel, REGS::EDMA::TRIG_MODE_EVENT);
+        }
+    }
+
+    void on_pingpong_error(HAL::EDMA::ErrorType err, void* context) noexcept
+    {
+        (void)err;
+        auto* ctx = static_cast<PingPongContext*>(context);
+        if (ctx)
+        {
+            HAL::EDMA::disable_transfer(ctx->channel, REGS::EDMA::TRIG_MODE_EVENT);
+        }
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -152,9 +187,6 @@ bool test_dma_channel_chain(const uint8_t channel)
 
     prepare_buffers();
 
-    // Используем два PaRAM: основной (channel) и следующий (channel+1)
-    // На AM335x первые 64 PaRAM жёстко привязаны к каналам 0..63,
-    // поэтому для простоты берём канал N и PaRAM N+1 (убедитесь, что N+1 свободен).
     const uint8_t param0 = channel;
     const uint8_t param1 = (channel + 1)%64;          // следующий набор
     constexpr uint16_t HALF = BUFFER_SIZE / 2;   // 32
@@ -211,6 +243,184 @@ bool test_dma_channel_chain(const uint8_t channel)
         EDMA_Diagnostics::dump_full_diagnostics(snapshot, channel, false, "DATA_MISMATCH");
         return false;
     }
+    return true;
+}
+
+bool test_dma_channel_pingpong(const uint8_t channel, const uint32_t repetitions)
+{
+    using namespace HAL::EDMA;
+    constexpr uint16_t HALF = 32;
+    constexpr char who[] = "DMA-PINGPONG";
+    const uint8_t NUM_TRANSFERS = repetitions;
+
+    alignas(64) static uint8_t bufA[HALF];
+    alignas(64) static uint8_t bufB[HALF];
+
+    // Готовим источник
+    for (size_t i = 0; i < BUFFER_SIZE; ++i)
+        src_buf[i] = static_cast<uint8_t>(0xA0 + i);
+
+    // Чистим приёмники
+    for (size_t i = 0; i < HALF; ++i) {
+        bufA[i] = 0;
+        bufB[i] = 0;
+    }
+    cp15_D_cache_clean_buff(reinterpret_cast<unsigned int>(src_buf), BUFFER_SIZE);
+    cp15_D_cache_flush_buff(reinterpret_cast<unsigned int>(bufA), HALF);
+    cp15_D_cache_flush_buff(reinterpret_cast<unsigned int>(bufB), HALF);
+    cp15_DSB_barrier();
+
+    const uint8_t ping_param_id = channel;
+    const uint8_t pong_param_id = (channel + 1) % 64;
+
+    DmaChannel dma(channel, REGS::EDMA::EVENT_Q0);
+    if (!dma.init()) {
+        RTT_LOG_E(TAG, "%s ch%u: request failed", who, channel);
+        EDMA_Diagnostics::dump_full_diagnostics(snapshot, channel, false, "INIT_FAILED");
+        return false;
+    }
+
+    g_pingpong_ctx.channel = channel;
+    g_pingpong_ctx.completed_transfers = 0;
+    g_pingpong_ctx.target_transfers = NUM_TRANSFERS;
+
+    InterruptDispatcher::registerHandler(channel, on_pingpong_completion, on_pingpong_error, &g_pingpong_ctx);
+
+    // PaRAM PONG (STATIC = false, LINK -> Ping)
+    auto param_pong = ParamBuilder()
+        .setSource(reinterpret_cast<uintptr_t>(src_buf + HALF), HALF, 0)
+        .setDest  (reinterpret_cast<uintptr_t>(bufB), HALF, 0)
+        .setTransferParams(HALF, 1, 1)
+        .setSyncType(false)                                    // A-Sync
+        .enableCompletionInterrupt(channel)                    // Прерывание TCC
+        .setStatic(false)                                      // STATIC = 0: разрешает авто-апдейт и Link
+        .setLink(static_cast<uint16_t>(ping_param_id * 0x20))  // Зацикливание PONG -> PING
+        .build();
+
+    // PaRAM PING (STATIC = false, LINK -> Pong)
+    auto param_ping = ParamBuilder()
+        .setSource(reinterpret_cast<uintptr_t>(src_buf), HALF, 0)
+        .setDest  (reinterpret_cast<uintptr_t>(bufA), HALF, 0)
+        .setTransferParams(HALF, 1, 1)
+        .setSyncType(false)
+        .enableCompletionInterrupt(channel)
+        .setStatic(false)                                     // STATIC = 0
+        .setLink(static_cast<uint16_t>(pong_param_id * 0x20)) // Переход PING -> PONG[cite: 4]
+        .build();
+
+    set_paRAM(ping_param_id, param_ping);
+    set_paRAM(pong_param_id, param_pong);
+
+    dma.trigger(TriggerMode::TRIG_MODE_MANUAL);
+
+    // 6. Ожидание завершения требуемого количества итераций NUM_TRANSFERS
+    uint32_t timeout_loops = 10'000'000;
+    while (g_pingpong_ctx.completed_transfers < NUM_TRANSFERS && --timeout_loops)
+    {
+        // Если в реальном проекте Ping-Pong триггерится периферией (I2S/Timer/Event),
+        // вызов dma.trigger() категорически НЕ НУЖЕН и даже вреден.
+        if (g_pingpong_ctx.completed_transfers < NUM_TRANSFERS) {
+            dma.trigger(TriggerMode::TRIG_MODE_MANUAL);
+        }
+        for (volatile int i = 0; i < 1000; ++i) { asm volatile("nop"); }
+    }
+
+    if (timeout_loops == 0) {
+        RTT_LOG_E(TAG, "%s ch%u: TIMEOUT, done %u/%u transfers", who, channel,
+                  (unsigned)g_pingpong_ctx.completed_transfers, NUM_TRANSFERS);
+        return false;
+    }
+
+    cp15_DSB_barrier();
+    cp15_D_cache_flush_buff(reinterpret_cast<unsigned int>(bufA), HALF);
+    cp15_D_cache_flush_buff(reinterpret_cast<unsigned int>(bufB), HALF);
+
+    bool ok = true;
+    for (size_t i = 0; i < HALF; ++i)
+    {
+        if (bufA[i] != src_buf[i] && bufA[i] != src_buf[i + HALF])
+        {
+            RTT_LOG_E(TAG, "%s ch%u mismatch @%u: A=0x%02X B=0x%02X", who,
+                      channel, static_cast<unsigned>(i), bufA[i], bufB[i]);
+            ok = false;
+            break;
+        }
+    }
+
+    if (!ok) {
+        EDMA_Diagnostics::dump_full_diagnostics(snapshot, channel, false, "DATA_MISMATCH");
+        return false;
+    }
+
+    RTT_LOG_I(TAG, "Hardware Ping-Pong test (%u transfers) for ch%u PASSED.", NUM_TRANSFERS, channel);
+    return true;
+}
+
+bool test_dma_channel_selflink(const uint8_t channel, const uint32_t repetitions)
+{
+    using namespace HAL::EDMA;
+    constexpr char who[] = "DMA-SELFLINK";
+    const uint32_t NUM_TRANSFERS = repetitions;
+
+    prepare_buffers();
+
+    DmaChannel dma(channel, REGS::EDMA::EVENT_Q0);
+    if (!dma.init()) {
+        RTT_LOG_E(TAG, "%s ch%u: request failed", who, channel);
+        EDMA_Diagnostics::dump_full_diagnostics(snapshot, channel, false, "INIT_FAILED");
+        return false;
+    }
+
+    // 1. Инициализация контекста для ISR
+    g_pingpong_ctx.channel = channel;
+    g_pingpong_ctx.completed_transfers = 0;
+    g_pingpong_ctx.target_transfers = NUM_TRANSFERS;
+
+    // Перехватываем прерывания канала нашим ISR-счетчиком
+    InterruptDispatcher::registerHandler(channel, on_pingpong_completion, on_pingpong_error, &g_pingpong_ctx);
+
+    // 2. Расчет Self-Link адреса (смещение в байтах внутри PaRAM)
+    const auto self_link = static_cast<uint16_t>(channel * 0x20);
+
+    // 3. Формирование PaRAM: STATIC обязательно false, LINK указывает на себя
+    auto param = ParamBuilder()
+        .setSource(reinterpret_cast<uintptr_t>(src_buf),
+                   static_cast<int16_t>(BUFFER_SIZE), 0)
+        .setDest  (reinterpret_cast<uintptr_t>(dst_buf),
+                   static_cast<int16_t>(BUFFER_SIZE), 0)
+        .setTransferParams(BUFFER_SIZE, 1, 1)
+        .setSyncType(false)                       // A-Sync
+        .enableCompletionInterrupt(channel)       // Прерывание TCC на каждый кадр
+        .setStatic(false)                         // STATIC = 0 для авто-релоада из LINK
+        .setLink(self_link)                       // Самолинк (перезагружает сам себя)
+        .build();
+
+    dma.configure(param);
+
+    dma.trigger(TriggerMode::TRIG_MODE_MANUAL);
+
+    uint32_t timeout_loops = 10'000'000;
+    while (g_pingpong_ctx.completed_transfers < NUM_TRANSFERS && --timeout_loops)
+    {
+        // Каждое событие Manual Trigger отрабатывает один перезагруженный кадр
+        if (g_pingpong_ctx.completed_transfers < NUM_TRANSFERS) {
+            dma.trigger(TriggerMode::TRIG_MODE_MANUAL);
+        }
+        for (volatile int i = 0; i < 1000; ++i) { asm volatile("nop"); }
+    }
+
+    if (timeout_loops == 0) {
+        RTT_LOG_E(TAG, "%s ch%u: TIMEOUT, done %u/%u transfers", who, channel,
+                  static_cast<unsigned>(g_pingpong_ctx.completed_transfers), (unsigned)NUM_TRANSFERS);
+        return false;
+    }
+
+    if (!verify_buffers(who, channel)) {
+        EDMA_Diagnostics::dump_full_diagnostics(snapshot, channel, false, "DATA_MISMATCH");
+        return false;
+    }
+
+    RTT_LOG_I(TAG, "%s ch%u: PASSED (%u transfers)", who, channel, (unsigned)NUM_TRANSFERS);
     return true;
 }
 
@@ -458,6 +668,14 @@ extern "C" void edma_test(void)
         }
     }
     RTT_LOG_I(TAG, "QDMA: %u/8 passed", static_cast<unsigned>(qdma_ok));
+
+    RTT_LOG_I(TAG, "=== DMA channels Ping-Pong test ===");
+    test_dma_channel_pingpong(0,8);
+    test_dma_channel_pingpong(1,9);
+
+    RTT_LOG_I(TAG, "=== DMA channels Selflink test ===");
+    test_dma_channel_selflink(0, 5);
+    test_dma_channel_selflink(1, 10);
 
     RTT_LOG_I(TAG, "=== EDMA test finished ===");
 }
