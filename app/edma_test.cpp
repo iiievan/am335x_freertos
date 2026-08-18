@@ -47,16 +47,17 @@ namespace
 // ---------------------------------------------------------------------------
 // DMA-канал (manual trigger)
 // ---------------------------------------------------------------------------
-bool test_dma_channel(uint8_t channel)
+bool test_dma_channel_a(const uint8_t channel)
 {
     using namespace HAL::EDMA;
+    constexpr char who[] = "DMA-At";
 
     prepare_buffers();
 
     DmaChannel dma(channel, REGS::EDMA::EVENT_Q0);
     if (!dma.init())
     {
-        RTT_LOG_E(TAG, "DMA ch%u: request failed", channel);
+        RTT_LOG_E(TAG, "%s ch%u: request failed",who, channel);
         EDMA_Diagnostics::dump_full_diagnostics(snapshot, channel, false, "INIT_FAILED");
         return false;
     }
@@ -78,13 +79,64 @@ bool test_dma_channel(uint8_t channel)
 
     if (!dma.wait_completion())
     {
-        RTT_LOG_E(TAG, "DMA ch%u: %s", channel, dma.has_error() ? "ERROR" : "TIMEOUT");
+        RTT_LOG_E(TAG, "%s ch%u: %s", who, channel, dma.has_error() ? "ERROR" : "TIMEOUT");
         EDMA_Diagnostics::dump_full_diagnostics(snapshot, channel, false,
                                                  dma.has_error() ? "ERROR" : "TIMEOUT");
         return false;
     }
 
-    if (!verify_buffers("DMA", channel))
+    if (!verify_buffers(who, channel))
+    {
+        EDMA_Diagnostics::dump_full_diagnostics(snapshot, channel, false, "DATA_MISMATCH");
+        return false;
+    }
+
+    return true;
+}
+
+bool test_dma_channel_ab(const uint8_t channel)
+{
+    using namespace HAL::EDMA;
+    constexpr char who[] = "DMA-ABt";
+
+    prepare_buffers();
+
+    DmaChannel dma(channel, REGS::EDMA::EVENT_Q0);
+    if (!dma.init())
+    {
+        RTT_LOG_E(TAG, "%s ch%u: request failed", who, channel);
+        EDMA_Diagnostics::dump_full_diagnostics(snapshot, channel, false, "INIT_FAILED");
+        return false;
+    }
+
+    constexpr uint16_t ACNT = 16;
+    constexpr uint16_t BCNT = 4;
+    static_assert(ACNT * BCNT == BUFFER_SIZE);
+
+    auto param = ParamBuilder()
+                     .setSource(reinterpret_cast<uintptr_t>(src_buf),
+                                static_cast<int16_t>(ACNT),   // SRCBIDX = ACNT
+                                0)                            // SRCCIDX не нужен (CCNT=1)
+                     .setDest(reinterpret_cast<uintptr_t>(dst_buf),
+                              static_cast<int16_t>(ACNT),     // DSTBIDX = ACNT
+                              0)
+                     .setTransferParams(ACNT, BCNT, 1)
+                     .setSyncType(true)                       // ← AB-Sync
+                     .enableCompletionInterrupt(channel)
+                     .build();
+
+    dma.configure(param);
+    dma.trigger(TriggerMode::TRIG_MODE_MANUAL);
+
+    if (!dma.wait_completion())
+    {
+        RTT_LOG_E(TAG, "%s ch%u: %s", who, channel, dma.has_error() ? "ERROR" : "TIMEOUT");
+        EDMA_Diagnostics::dump_full_diagnostics(snapshot, channel, false,
+                                                 dma.has_error() ? "ERROR" : "TIMEOUT");
+        return false;
+    }
+
+    if (!verify_buffers(who, channel))
     {
         EDMA_Diagnostics::dump_full_diagnostics(snapshot, channel, false, "DATA_MISMATCH");
         return false;
@@ -96,9 +148,10 @@ bool test_dma_channel(uint8_t channel)
 // ---------------------------------------------------------------------------
 // QDMA-канал (trigger word = DST)
 // ---------------------------------------------------------------------------
-bool test_qdma_channel(uint8_t qch)
+bool test_qdma_channel_a(const uint8_t qch)
 {
     using namespace HAL::EDMA;
+    constexpr char who[] = "QDMA-At";
 
     prepare_buffers();
 
@@ -108,7 +161,7 @@ bool test_qdma_channel(uint8_t qch)
 
     if (!qdma.init())
     {
-        RTT_LOG_E(TAG, "QDMA ch%u: init failed", qch);
+        RTT_LOG_E(TAG, "%s ch%u: init failed", who, qch);
         EDMA_Diagnostics::dump_full_diagnostics(snapshot, qch, true, "INIT_FAILED");
         return false;
     }
@@ -132,13 +185,67 @@ bool test_qdma_channel(uint8_t qch)
 
     if (!qdma.wait_completion())
     {
-        RTT_LOG_E(TAG, "QDMA ch%u: %s", qch, qdma.has_error() ? "ERROR" : "TIMEOUT");
+        RTT_LOG_E(TAG, "%s ch%u: %s", who, qch, qdma.has_error() ? "ERROR" : "TIMEOUT");
         EDMA_Diagnostics::dump_full_diagnostics(snapshot, qch, true,
                                                  qdma.has_error() ? "ERROR" : "TIMEOUT");
         return false;
     }
 
-    if (!verify_buffers("QDMA", qch))
+    if (!verify_buffers(who, qch))
+    {
+        EDMA_Diagnostics::dump_full_diagnostics(snapshot, qch, true, "DATA_MISMATCH");
+        return false;
+    }
+
+    return true;
+}
+
+bool test_qdma_channel_ab(const uint8_t qch)
+{
+    using namespace HAL::EDMA;
+    constexpr char who[] = "QDMA-ABt";
+
+    prepare_buffers();
+
+    const uint8_t tcc = qch;
+
+    QdmaChannel qdma(qch, tcc, REGS::EDMA::e_paRAM_entry_field::DST);
+
+    if (!qdma.init())
+    {
+        RTT_LOG_E(TAG, "%s ch%u: init failed", who, qch);
+        EDMA_Diagnostics::dump_full_diagnostics(snapshot, qch, true, "INIT_FAILED");
+        return false;
+    }
+
+    constexpr uint16_t ACNT = 16;
+    constexpr uint16_t BCNT = 4;
+    static_assert(ACNT * BCNT == BUFFER_SIZE);
+
+    auto param = ParamBuilder()
+                     .setSource(reinterpret_cast<uintptr_t>(src_buf),
+                                static_cast<int16_t>(ACNT), 0)
+                     .setDest(reinterpret_cast<uintptr_t>(dst_buf),
+                              static_cast<int16_t>(ACNT), 0)
+                     .setTransferParams(ACNT, BCNT, 1)
+                     .setSyncType(true)                       // ← AB-Sync
+                     .enableCompletionInterrupt(tcc)
+                     .setStatic()
+                     .setSrcDstDestinationMode(false, false)
+                     .build();
+
+    qdma.configure(param);   // пишет PaRAM + разрешает QER
+    qdma.trigger();          // запись в trigger word запускает передачу
+
+    if (!qdma.wait_completion())
+    {
+        RTT_LOG_E(TAG, "%s ch%u: %s", who, qch, qdma.has_error() ? "ERROR" : "TIMEOUT");
+        EDMA_Diagnostics::dump_full_diagnostics(snapshot, qch, true,
+                                                 qdma.has_error() ? "ERROR" : "TIMEOUT");
+        return false;
+    }
+
+    if (!verify_buffers(who, qch))
     {
         EDMA_Diagnostics::dump_full_diagnostics(snapshot, qch, true, "DATA_MISMATCH");
         return false;
@@ -157,21 +264,37 @@ extern "C" void edma_test(void)
         src_buf[i] = static_cast<uint8_t>(i + 0xA5);
     }
 
-    // --- DMA каналы (0..63) ---
     RTT_LOG_I(TAG, "=== DMA channels A-transfer test (0..63) ===");
     uint32_t dma_ok = 0;
     for (uint8_t ch = 0; ch < 64; ++ch) {
-        if (test_dma_channel(ch)) {
+        if (test_dma_channel_a(ch)) {
             ++dma_ok;
         }
     }
     RTT_LOG_I(TAG, "DMA: %u/64 passed", static_cast<unsigned>(dma_ok));
 
-    // --- QDMA каналы (0..7) ---
     RTT_LOG_I(TAG, "=== QDMA channels A-transfer test (0..7) ===");
     uint32_t qdma_ok = 0;
     for (uint8_t qch = 0; qch < 8; ++qch) {
-        if (test_qdma_channel(qch)) {
+        if (test_qdma_channel_a(qch)) {
+            ++qdma_ok;
+        }
+    }
+    RTT_LOG_I(TAG, "QDMA: %u/8 passed", static_cast<unsigned>(qdma_ok));
+
+    RTT_LOG_I(TAG, "=== DMA channels AB-transfer test (0..63) ===");
+    dma_ok = 0;
+    for (uint8_t ch = 0; ch < 64; ++ch) {
+        if (test_dma_channel_ab(ch)) {
+            ++dma_ok;
+        }
+    }
+    RTT_LOG_I(TAG, "DMA: %u/64 passed", static_cast<unsigned>(dma_ok));
+
+    RTT_LOG_I(TAG, "=== QDMA channels AB-transfer test (0..7) ===");
+    qdma_ok = 0;
+    for (uint8_t qch = 0; qch < 8; ++qch) {
+        if (test_qdma_channel_ab(qch)) {
             ++qdma_ok;
         }
     }
