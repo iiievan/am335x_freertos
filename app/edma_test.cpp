@@ -191,9 +191,8 @@ bool test_dma_channel_chain(const uint8_t channel)
                                                                                                    param1,
                                                                                                    channel);
 
-    // Программируем оба набора
-    HAL::EDMA::set_paRAM(param0, param_first);
-    HAL::EDMA::set_paRAM(param1, param_last);
+    dma.configure({{param0,param_first},
+                          {param1,param_last}});
 
     dma.trigger(TriggerMode::TRIG_MODE_MANUAL);
 
@@ -237,21 +236,21 @@ bool test_dma_channel_pingpong(const uint8_t channel, const uint32_t repetitions
     cp15_D_cache_flush_buff(reinterpret_cast<unsigned int>(bufB), HALF);
     cp15_DSB_barrier();
 
+    DmaChannel dma(channel, REGS::EDMA::EVENT_Q0);
+
     const uint8_t ping_param_id = channel;
     const uint8_t pong_param_id = (channel + 1) % REGS::EDMA::AM335X_DMACH_MAX;
-
-    DmaChannel dma(channel, REGS::EDMA::EVENT_Q0);
-    if (!dma.init()) {
-        RTT_LOG_E(TAG, "%s ch%u: request failed", who, channel);
-        EDMA_Diagnostics::dump_full_diagnostics(snapshot, channel, false, "INIT_FAILED");
-        return false;
-    }
 
     g_pingpong_ctx.channel = channel;
     g_pingpong_ctx.completed_transfers = 0;
     g_pingpong_ctx.target_transfers = NUM_TRANSFERS;
 
-    InterruptDispatcher::registerHandler(channel, on_pingpong_completion, on_pingpong_error, &g_pingpong_ctx);
+    if (!dma.init(on_pingpong_completion, on_pingpong_error, &g_pingpong_ctx))
+    {
+        RTT_LOG_E(TAG, "%s ch%u: request failed", who, channel);
+        EDMA_Diagnostics::dump_full_diagnostics(snapshot, channel, false, "INIT_FAILED");
+        return false;
+    }
 
     const auto [param_ping, param_pong] = PaRAMFactory::makePingPong(reinterpret_cast<uintptr_t>(src_buf),
                                                                                                      reinterpret_cast<uintptr_t>(bufA),
@@ -261,12 +260,11 @@ bool test_dma_channel_pingpong(const uint8_t channel, const uint32_t repetitions
                                                                                                      pong_param_id,
                                                                                                      channel);
 
-    set_paRAM(ping_param_id, param_ping);
-    set_paRAM(pong_param_id, param_pong);
+    dma.configure({{ ping_param_id, param_ping },
+                          { pong_param_id, param_pong } });
 
     dma.trigger(TriggerMode::TRIG_MODE_MANUAL);
 
-    // 6. Ожидание завершения требуемого количества итераций NUM_TRANSFERS
     uint32_t timeout_loops = 10'000'000;
     while (g_pingpong_ctx.completed_transfers < NUM_TRANSFERS && --timeout_loops)
     {
@@ -318,19 +316,16 @@ bool test_dma_channel_selflink(const uint8_t channel, const uint32_t repetitions
     prepare_buffers();
 
     DmaChannel dma(channel, REGS::EDMA::EVENT_Q0);
-    if (!dma.init()) {
-        RTT_LOG_E(TAG, "%s ch%u: request failed", who, channel);
-        EDMA_Diagnostics::dump_full_diagnostics(snapshot, channel, false, "INIT_FAILED");
-        return false;
-    }
 
-    // 1. Инициализация контекста для ISR
     g_pingpong_ctx.channel = channel;
     g_pingpong_ctx.completed_transfers = 0;
     g_pingpong_ctx.target_transfers = NUM_TRANSFERS;
 
-    // Перехватываем прерывания канала нашим ISR-счетчиком
-    InterruptDispatcher::registerHandler(channel, on_pingpong_completion, on_pingpong_error, &g_pingpong_ctx);
+    if (!dma.init(on_pingpong_completion, on_pingpong_error, &g_pingpong_ctx)) {
+        RTT_LOG_E(TAG, "%s ch%u: request failed", who, channel);
+        EDMA_Diagnostics::dump_full_diagnostics(snapshot, channel, false, "INIT_FAILED");
+        return false;
+    }
 
     const auto param = PaRAMFactory::makeSelfLink(reinterpret_cast<uintptr_t>(src_buf),
                                                               reinterpret_cast<uintptr_t>(dst_buf),
@@ -440,8 +435,8 @@ bool test_qdma_channel_ab(const uint8_t qch)
                                                             BCNT,
                                                             qch);
 
-    qdma.configure(param);   // пишет PaRAM + разрешает QER
-    qdma.trigger();          // запись в trigger word запускает передачу
+    qdma.configure(param);
+    qdma.trigger();
 
     if (!qdma.wait_completion())
     {
@@ -468,8 +463,8 @@ bool test_qdma_channel_chain(const uint8_t qch)
     prepare_buffers();
 
     const uint8_t tcc     = qch;
-    const uint32_t param0 = (32 + qch) % REGS::EDMA::AM335X_DMACH_MAX;          // основной (как в QdmaChannel)
-    const uint32_t param1 = (33 + qch) % REGS::EDMA::AM335X_DMACH_MAX;          // свободный набор для цепочки
+    const uint32_t param0 = (32 + qch) % REGS::EDMA::AM335X_DMACH_MAX;
+    const uint32_t param1 = (33 + qch) % REGS::EDMA::AM335X_DMACH_MAX;
     constexpr uint16_t HALF = BUFFER_SIZE / 2;
 
     QdmaChannel qdma(qch, tcc, REGS::EDMA::e_paRAM_entry_field::DST);
@@ -481,8 +476,6 @@ bool test_qdma_channel_chain(const uint8_t qch)
         return false;
     }
 
-    map_QDMA_ch_to_paRAM(qch, const_cast<uint32_t&>(param0));
-
     const auto [param_first, param_last] = PaRAMFactory::makeChain(reinterpret_cast<uintptr_t>(src_buf),
                                                                                                    reinterpret_cast<uintptr_t>(dst_buf),
                                                                                                    HALF,
@@ -490,13 +483,9 @@ bool test_qdma_channel_chain(const uint8_t qch)
                                                                                                    param1,
                                                                                                    qch);
 
-    disable_QDMA_event(qch);
-    QDMA_clr_miss_evt(qch);
-    QDMA_set_paRAM(param0, param_first);
-    QDMA_set_paRAM(param1, param_last);
-    enable_QDMA_event(qch);
-
-    qdma.trigger();          // запись в trigger word запускает передачу
+    qdma.configure({{ param0, param_first },
+                           { param1, param_last } });
+    qdma.trigger();
 
     if (!qdma.wait_completion())
     {
@@ -532,7 +521,7 @@ extern "C" void edma_test(void)
             ++dma_ok;
         }
     }
-    RTT_LOG_I(TAG, "DMA: %u/64 passed", static_cast<unsigned>(dma_ok));
+    RTT_LOG_I(TAG, "DMA: %u/64 PASSED", static_cast<unsigned>(dma_ok));
 
     RTT_LOG_I(TAG, "=== QDMA channels A-transfer test (0..7) ===");
     uint32_t qdma_ok = 0;
@@ -541,7 +530,7 @@ extern "C" void edma_test(void)
             ++qdma_ok;
         }
     }
-    RTT_LOG_I(TAG, "QDMA: %u/8 passed", static_cast<unsigned>(qdma_ok));
+    RTT_LOG_I(TAG, "QDMA: %u/8 PASSED", static_cast<unsigned>(qdma_ok));
 
     RTT_LOG_I(TAG, "=== DMA channels AB-transfer test (0..63) ===");
     dma_ok = 0;
@@ -550,7 +539,7 @@ extern "C" void edma_test(void)
             ++dma_ok;
         }
     }
-    RTT_LOG_I(TAG, "DMA: %u/64 passed", static_cast<unsigned>(dma_ok));
+    RTT_LOG_I(TAG, "DMA: %u/64 PASSED", static_cast<unsigned>(dma_ok));
 
     RTT_LOG_I(TAG, "=== QDMA channels AB-transfer test (0..7) ===");
     qdma_ok = 0;
@@ -559,7 +548,7 @@ extern "C" void edma_test(void)
             ++qdma_ok;
         }
     }
-    RTT_LOG_I(TAG, "QDMA: %u/8 passed", static_cast<unsigned>(qdma_ok));
+    RTT_LOG_I(TAG, "QDMA: %u/8 PASSED", static_cast<unsigned>(qdma_ok));
 
     RTT_LOG_I(TAG, "=== DMA channels Chain-transfer test (0..63) ===");
     dma_ok = 0;
@@ -568,7 +557,7 @@ extern "C" void edma_test(void)
             ++dma_ok;
         }
     }
-    RTT_LOG_I(TAG, "DMA: %u/64 passed", static_cast<unsigned>(dma_ok));
+    RTT_LOG_I(TAG, "DMA: %u/64 PASSED", static_cast<unsigned>(dma_ok));
 
     RTT_LOG_I(TAG, "=== QDMA channels Chain-transfer test (0..7) ===");
     qdma_ok = 0;
@@ -577,7 +566,7 @@ extern "C" void edma_test(void)
             ++qdma_ok;
         }
     }
-    RTT_LOG_I(TAG, "QDMA: %u/8 passed", static_cast<unsigned>(qdma_ok));
+    RTT_LOG_I(TAG, "QDMA: %u/8 PASSED", static_cast<unsigned>(qdma_ok));
 
     RTT_LOG_I(TAG, "=== DMA channels Ping-Pong test ===");
     test_dma_channel_pingpong(0,8);
