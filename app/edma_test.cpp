@@ -97,17 +97,10 @@ bool test_dma_channel_a(const uint8_t channel)
         return false;
     }
 
-    auto param = ParamBuilder()
-                     .setSource(reinterpret_cast<uintptr_t>(src_buf),
-                                static_cast<int16_t>(BUFFER_SIZE),
-                                static_cast<int16_t>(BUFFER_SIZE))
-                     .setDest(reinterpret_cast<uintptr_t>(dst_buf),
-                              static_cast<int16_t>(BUFFER_SIZE),
-                              static_cast<int16_t>(BUFFER_SIZE))
-                     .setTransferParams(static_cast<uint16_t>(BUFFER_SIZE), 1, 1)
-                     .setSyncType(false)                    // A-Sync
-                     .enableCompletionInterrupt(channel)
-                     .build();
+    const auto param = PaRAMFactory::makeASync(reinterpret_cast<uintptr_t>(src_buf),
+                                                           reinterpret_cast<uintptr_t>(dst_buf),
+                                                           BUFFER_SIZE,
+                                                           channel);
 
     dma.configure(param);
     dma.trigger(TriggerMode::TRIG_MODE_MANUAL);
@@ -146,19 +139,12 @@ bool test_dma_channel_ab(const uint8_t channel)
 
     constexpr uint16_t ACNT = 16;
     constexpr uint16_t BCNT = 4;
-    static_assert(ACNT * BCNT == BUFFER_SIZE);
 
-    auto param = ParamBuilder()
-                     .setSource(reinterpret_cast<uintptr_t>(src_buf),
-                                static_cast<int16_t>(ACNT),   // SRCBIDX = ACNT
-                                0)                            // SRCCIDX не нужен (CCNT=1)
-                     .setDest(reinterpret_cast<uintptr_t>(dst_buf),
-                              static_cast<int16_t>(ACNT),     // DSTBIDX = ACNT
-                              0)
-                     .setTransferParams(ACNT, BCNT, 1)
-                     .setSyncType(true)                       // ← AB-Sync
-                     .enableCompletionInterrupt(channel)
-                     .build();
+    const auto param = PaRAMFactory::makeABSync(reinterpret_cast<uintptr_t>(src_buf),
+                                                            reinterpret_cast<uintptr_t>(dst_buf),
+                                                            ACNT,
+                                                            BCNT,
+                                                            channel);
 
     dma.configure(param);
     dma.trigger(TriggerMode::TRIG_MODE_MANUAL);
@@ -188,7 +174,7 @@ bool test_dma_channel_chain(const uint8_t channel)
     prepare_buffers();
 
     const uint8_t param0 = channel;
-    const uint8_t param1 = (channel + 1)%64;          // следующий набор
+    const uint8_t param1 = (channel + 1) % REGS::EDMA::AM335X_DMACH_MAX;          // следующий набор
     constexpr uint16_t HALF = BUFFER_SIZE / 2;   // 32
 
     DmaChannel dma(channel, REGS::EDMA::EVENT_Q0);
@@ -198,31 +184,12 @@ bool test_dma_channel_chain(const uint8_t channel)
         return false;
     }
 
-    // Второй PaRAM (конечный)
-    auto param_last = ParamBuilder()
-                          .setSource(reinterpret_cast<uintptr_t>(src_buf + HALF),
-                                     static_cast<int16_t>(HALF), 0)
-                          .setDest(reinterpret_cast<uintptr_t>(dst_buf + HALF),
-                                   static_cast<int16_t>(HALF), 0)
-                          .setTransferParams(HALF, 1, 1)
-                          .setSyncType(false)
-                          .enableCompletionInterrupt(channel)   // прерывание только в конце
-                          .setStatic(true)
-                          .setLink(0xFFFF)                      // конец цепочки
-                          .build();
-
-    // Первый PaRAM (линкуется на второй)
-    auto param_first = ParamBuilder()
-                           .setSource(reinterpret_cast<uintptr_t>(src_buf),
-                                      static_cast<int16_t>(HALF), 0)
-                           .setDest(reinterpret_cast<uintptr_t>(dst_buf),
-                                    static_cast<int16_t>(HALF), 0)
-                           .setTransferParams(HALF, 1, 1)
-                           .setSyncType(false)                          // ← A-Sync
-                           .enableTransferCompleteChaining(channel,true)
-                           .setLink(static_cast<uint16_t>(param1 * 0x20))  // адрес следующего PaRAM
-                           .setStatic(false)            // for chaining static must be set 0
-                           .build();
+    const auto [param_first, param_last] = PaRAMFactory::makeChain(reinterpret_cast<uintptr_t>(src_buf),
+                                                                                                   reinterpret_cast<uintptr_t>(dst_buf),
+                                                                                                   HALF,
+                                                                                                   param0,
+                                                                                                   param1,
+                                                                                                   channel);
 
     // Программируем оба набора
     HAL::EDMA::set_paRAM(param0, param_first);
@@ -271,7 +238,7 @@ bool test_dma_channel_pingpong(const uint8_t channel, const uint32_t repetitions
     cp15_DSB_barrier();
 
     const uint8_t ping_param_id = channel;
-    const uint8_t pong_param_id = (channel + 1) % 64;
+    const uint8_t pong_param_id = (channel + 1) % REGS::EDMA::AM335X_DMACH_MAX;
 
     DmaChannel dma(channel, REGS::EDMA::EVENT_Q0);
     if (!dma.init()) {
@@ -286,27 +253,13 @@ bool test_dma_channel_pingpong(const uint8_t channel, const uint32_t repetitions
 
     InterruptDispatcher::registerHandler(channel, on_pingpong_completion, on_pingpong_error, &g_pingpong_ctx);
 
-    // PaRAM PONG (STATIC = false, LINK -> Ping)
-    auto param_pong = ParamBuilder()
-        .setSource(reinterpret_cast<uintptr_t>(src_buf + HALF), HALF, 0)
-        .setDest  (reinterpret_cast<uintptr_t>(bufB), HALF, 0)
-        .setTransferParams(HALF, 1, 1)
-        .setSyncType(false)                                    // A-Sync
-        .enableCompletionInterrupt(channel)                    // Прерывание TCC
-        .setStatic(false)                                      // STATIC = 0: разрешает авто-апдейт и Link
-        .setLink(static_cast<uint16_t>(ping_param_id * 0x20))  // Зацикливание PONG -> PING
-        .build();
-
-    // PaRAM PING (STATIC = false, LINK -> Pong)
-    auto param_ping = ParamBuilder()
-        .setSource(reinterpret_cast<uintptr_t>(src_buf), HALF, 0)
-        .setDest  (reinterpret_cast<uintptr_t>(bufA), HALF, 0)
-        .setTransferParams(HALF, 1, 1)
-        .setSyncType(false)
-        .enableCompletionInterrupt(channel)
-        .setStatic(false)                                     // STATIC = 0
-        .setLink(static_cast<uint16_t>(pong_param_id * 0x20)) // Переход PING -> PONG[cite: 4]
-        .build();
+    const auto [param_ping, param_pong] = PaRAMFactory::makePingPong(reinterpret_cast<uintptr_t>(src_buf),
+                                                                                                     reinterpret_cast<uintptr_t>(bufA),
+                                                                                                     reinterpret_cast<uintptr_t>(bufB),
+                                                                                                     HALF,
+                                                                                                     ping_param_id,
+                                                                                                     pong_param_id,
+                                                                                                     channel);
 
     set_paRAM(ping_param_id, param_ping);
     set_paRAM(pong_param_id, param_pong);
@@ -379,21 +332,11 @@ bool test_dma_channel_selflink(const uint8_t channel, const uint32_t repetitions
     // Перехватываем прерывания канала нашим ISR-счетчиком
     InterruptDispatcher::registerHandler(channel, on_pingpong_completion, on_pingpong_error, &g_pingpong_ctx);
 
-    // 2. Расчет Self-Link адреса (смещение в байтах внутри PaRAM)
-    const auto self_link = static_cast<uint16_t>(channel * 0x20);
-
-    // 3. Формирование PaRAM: STATIC обязательно false, LINK указывает на себя
-    auto param = ParamBuilder()
-        .setSource(reinterpret_cast<uintptr_t>(src_buf),
-                   static_cast<int16_t>(BUFFER_SIZE), 0)
-        .setDest  (reinterpret_cast<uintptr_t>(dst_buf),
-                   static_cast<int16_t>(BUFFER_SIZE), 0)
-        .setTransferParams(BUFFER_SIZE, 1, 1)
-        .setSyncType(false)                       // A-Sync
-        .enableCompletionInterrupt(channel)       // Прерывание TCC на каждый кадр
-        .setStatic(false)                         // STATIC = 0 для авто-релоада из LINK
-        .setLink(self_link)                       // Самолинк (перезагружает сам себя)
-        .build();
+    const auto param = PaRAMFactory::makeSelfLink(reinterpret_cast<uintptr_t>(src_buf),
+                                                              reinterpret_cast<uintptr_t>(dst_buf),
+                                                              BUFFER_SIZE,
+                                                              channel,          // param_id == channel
+                                                              channel);
 
     dma.configure(param);
 
@@ -445,22 +388,13 @@ bool test_qdma_channel_a(const uint8_t qch)
         return false;
     }
 
-    auto param = ParamBuilder()
-                     .setSource(reinterpret_cast<uintptr_t>(src_buf),
-                                static_cast<int16_t>(BUFFER_SIZE),
-                                static_cast<int16_t>(BUFFER_SIZE))
-                     .setDest(reinterpret_cast<uintptr_t>(dst_buf),
-                              static_cast<int16_t>(BUFFER_SIZE),
-                              static_cast<int16_t>(BUFFER_SIZE))
-                     .setTransferParams(static_cast<uint16_t>(BUFFER_SIZE), 1, 1)
-                     .setSyncType(false)                    // A-Sync
-                     .enableCompletionInterrupt(tcc)
-                     .setStatic()
-                     .setSrcDstDestinationMode(false, false)
-                     .build();
+    const auto param = PaRAMFactory::makeQdmaASync(reinterpret_cast<uintptr_t>(src_buf),
+                                                               reinterpret_cast<uintptr_t>(dst_buf),
+                                                               BUFFER_SIZE,
+                                                               qch);
 
-    qdma.configure(param);   // пишет PaRAM + разрешает QER
-    qdma.trigger();          // запись в trigger word запускает передачу
+    qdma.configure(param);
+    qdma.trigger();
 
     if (!qdma.wait_completion())
     {
@@ -499,19 +433,12 @@ bool test_qdma_channel_ab(const uint8_t qch)
 
     constexpr uint16_t ACNT = 16;
     constexpr uint16_t BCNT = 4;
-    static_assert(ACNT * BCNT == BUFFER_SIZE);
 
-    auto param = ParamBuilder()
-                     .setSource(reinterpret_cast<uintptr_t>(src_buf),
-                                static_cast<int16_t>(ACNT), 0)
-                     .setDest(reinterpret_cast<uintptr_t>(dst_buf),
-                              static_cast<int16_t>(ACNT), 0)
-                     .setTransferParams(ACNT, BCNT, 1)
-                     .setSyncType(true)                       // ← AB-Sync
-                     .enableCompletionInterrupt(tcc)
-                     .setStatic()
-                     .setSrcDstDestinationMode(false, false)
-                     .build();
+    const auto param = PaRAMFactory::makeABSync(reinterpret_cast<uintptr_t>(src_buf),
+                                                            reinterpret_cast<uintptr_t>(dst_buf),
+                                                            ACNT,
+                                                            BCNT,
+                                                            qch);
 
     qdma.configure(param);   // пишет PaRAM + разрешает QER
     qdma.trigger();          // запись в trigger word запускает передачу
@@ -541,8 +468,8 @@ bool test_qdma_channel_chain(const uint8_t qch)
     prepare_buffers();
 
     const uint8_t tcc     = qch;
-    const uint32_t param0 = (32 + qch)%64;          // основной (как в QdmaChannel)
-    const uint32_t param1 = (33 + qch)%64;          // свободный набор для цепочки
+    const uint32_t param0 = (32 + qch) % REGS::EDMA::AM335X_DMACH_MAX;          // основной (как в QdmaChannel)
+    const uint32_t param1 = (33 + qch) % REGS::EDMA::AM335X_DMACH_MAX;          // свободный набор для цепочки
     constexpr uint16_t HALF = BUFFER_SIZE / 2;
 
     QdmaChannel qdma(qch, tcc, REGS::EDMA::e_paRAM_entry_field::DST);
@@ -556,29 +483,12 @@ bool test_qdma_channel_chain(const uint8_t qch)
 
     map_QDMA_ch_to_paRAM(qch, const_cast<uint32_t&>(param0));
 
-    auto param_last = ParamBuilder()
-                              .setSource(reinterpret_cast<uintptr_t>(src_buf + HALF),
-                                         static_cast<int16_t>(HALF), 0)
-                              .setDest(reinterpret_cast<uintptr_t>(dst_buf + HALF),
-                                       static_cast<int16_t>(HALF), 0)
-                              .setTransferParams(HALF, 1, 1)
-                              .setSyncType(false)
-                              .enableCompletionInterrupt(tcc)
-                              .setStatic(true)
-                              .setLink(0xFFFF)
-                              .build();
-
-    // Первый PaRAM
-    auto param_first = ParamBuilder()
-                           .setSource(reinterpret_cast<uintptr_t>(src_buf),
-                                      static_cast<int16_t>(HALF), 0)
-                           .setDest(reinterpret_cast<uintptr_t>(dst_buf),
-                                    static_cast<int16_t>(HALF), 0)
-                           .setTransferParams(HALF, 1, 1)
-                           .setSyncType(false)
-                           .setStatic(false)
-                           .setLink(static_cast<uint16_t>(param1 * 0x20))
-                           .build();
+    const auto [param_first, param_last] = PaRAMFactory::makeChain(reinterpret_cast<uintptr_t>(src_buf),
+                                                                                                   reinterpret_cast<uintptr_t>(dst_buf),
+                                                                                                   HALF,
+                                                                                                   param0,
+                                                                                                   param1,
+                                                                                                   qch);
 
     disable_QDMA_event(qch);
     QDMA_clr_miss_evt(qch);
