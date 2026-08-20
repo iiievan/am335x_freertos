@@ -388,7 +388,11 @@ bool test_qdma_channel_a(const uint8_t qch)
                                                                BUFFER_SIZE,
                                                                qch);
 
-    qdma.configure(param);
+    if (!qdma.configure(param))
+    {
+        RTT_LOG_E(TAG, "%s ch%u field%u: configure failed", who, qch, static_cast<unsigned>(qdma.trig_word_field));
+        return false;
+    }
     qdma.trigger();
 
     if (!qdma.wait_completion())
@@ -435,7 +439,11 @@ bool test_qdma_channel_ab(const uint8_t qch)
                                                             BCNT,
                                                             qch);
 
-    qdma.configure(param);
+    if (!qdma.configure(param))
+    {
+        RTT_LOG_E(TAG, "%s ch%u field%u: configure failed", who, qch, static_cast<unsigned>(qdma.trig_word_field));
+        return false;
+    }
     qdma.trigger();
 
     if (!qdma.wait_completion())
@@ -482,9 +490,16 @@ bool test_qdma_channel_chain(const uint8_t qch)
                                                                                                    param0,
                                                                                                    param1,
                                                                                                    qch);
-
-    qdma.configure({{ param0, param_first },
-                           { param1, param_last } });
+    if (!qdma.configure(param_first))
+    {
+        RTT_LOG_E(TAG, "%s ch%u field%u: configure failed", who, qch, static_cast<unsigned>(qdma.trig_word_field));
+        return false;
+    }
+    if (!qdma.configure(param_last))
+    {
+        RTT_LOG_E(TAG, "%s ch%u field%u: configure failed", who, qch, static_cast<unsigned>(qdma.trig_word_field));
+        return false;
+    }
     qdma.trigger();
 
     if (!qdma.wait_completion())
@@ -504,6 +519,73 @@ bool test_qdma_channel_chain(const uint8_t qch)
     return true;
 }
 
+bool test_qdma_all_trigger_words(const uint8_t qdma_ch)
+{
+    using namespace HAL::EDMA;
+    constexpr char who[] = "QDMA-TriggerfieldAll";
+
+    constexpr REGS::EDMA::e_paRAM_entry_field all_fields[] =
+    {
+        REGS::EDMA::e_paRAM_entry_field::OPT,
+        REGS::EDMA::e_paRAM_entry_field::SRC,
+        REGS::EDMA::e_paRAM_entry_field::ACNT_BCNT,
+        REGS::EDMA::e_paRAM_entry_field::DST,
+        REGS::EDMA::e_paRAM_entry_field::SRC_DST_BIDX,
+        REGS::EDMA::e_paRAM_entry_field::LINK_BCNTRLD,
+        REGS::EDMA::e_paRAM_entry_field::SRC_DST_CIDX,
+        REGS::EDMA::e_paRAM_entry_field::CCNT
+    };
+
+    const uint8_t tcc = 32 + qdma_ch;
+
+    for (const auto trig_field : all_fields)
+    {
+        prepare_buffers();
+
+        QdmaChannel qdma(qdma_ch, tcc, trig_field, REGS::EDMA::EVENT_Q0);
+        if (!qdma.init())
+        {
+            RTT_LOG_E(TAG, "%s ch%u field%u: init failed", who, qdma_ch, static_cast<uint8_t>(trig_field));
+            EDMA_Diagnostics::dump_full_diagnostics(snapshot, qdma_ch, true, "INIT_FAILED");
+            return false;
+        }
+
+        const auto param = PaRAMFactory::makeQdmaASync(reinterpret_cast<uintptr_t>(src_buf),
+                                                                   reinterpret_cast<uintptr_t>(dst_buf),
+                                                                   BUFFER_SIZE,
+                                                                   tcc);
+
+        if (!qdma.configure(param))
+        {
+            RTT_LOG_E(TAG, "%s ch%u field%u: configure failed", who, qdma_ch, static_cast<unsigned>(qdma.trig_word_field));
+            return false;
+        }
+
+        RTT_LOG_I(TAG,"testing trigger field %u",static_cast<unsigned>(trig_field));
+
+        qdma.trigger();
+
+        if (!qdma.wait_completion())
+        {
+            RTT_LOG_E(TAG, "%s ch%u field%u: timeout/error", who, qdma_ch, static_cast<uint8_t>(trig_field));
+            EDMA_Diagnostics::dump_full_diagnostics(snapshot, qdma_ch, true,
+                                         qdma.has_error() ? "ERROR" : "TIMEOUT");
+            return false;
+        }
+
+        if (!verify_buffers(who, qdma_ch))
+        {
+            RTT_LOG_E(TAG, "%s ch%u field%u: data mismatch", who, qdma_ch, static_cast<uint8_t>(trig_field));
+            EDMA_Diagnostics::dump_full_diagnostics(snapshot, qdma_ch, true, "DATA_MISMATCH");
+            return false;
+        }
+
+        RTT_LOG_I(TAG, "%s ch%u field%u: PASSED", who, qdma_ch, static_cast<uint8_t>(trig_field));
+    }
+
+    return true;
+}
+
 extern "C" void edma_test(void)
 {
     // Одноразовая инициализация периферии EDMA3 и векторов прерываний INTC
@@ -513,6 +595,8 @@ extern "C" void edma_test(void)
     for (size_t i = 0; i < BUFFER_SIZE; ++i) {
         src_buf[i] = static_cast<uint8_t>(i + 0xA5);
     }
+
+    test_qdma_all_trigger_words(3);
 
     RTT_LOG_I(TAG, "=== DMA channels A-transfer test (0..63) ===");
     uint32_t dma_ok = 0;
@@ -575,6 +659,9 @@ extern "C" void edma_test(void)
     RTT_LOG_I(TAG, "=== DMA channels Selflink test ===");
     test_dma_channel_selflink(0, 5);
     test_dma_channel_selflink(1, 10);
+
+    RTT_LOG_I(TAG, "=== QDMA channel all triggerfields test ===");
+    test_qdma_all_trigger_words(3);
 
     RTT_LOG_I(TAG, "=== EDMA test finished ===");
 }
