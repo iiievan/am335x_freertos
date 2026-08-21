@@ -390,9 +390,10 @@ bool test_qdma_channel_a(const uint8_t qch)
 
     if (!qdma.configure(param))
     {
-        RTT_LOG_E(TAG, "%s ch%u field%u: configure failed", who, qch, static_cast<unsigned>(qdma.trig_word_field));
+        RTT_LOG_E(TAG, "%s ch%u field%u: configure failed", who, qch, static_cast<unsigned>(qdma.getTriggerField()));
         return false;
     }
+    //EDMA_Diagnostics::dumpQdmaProgrammingState(qch,"BEFORE TRIGGER");
     qdma.trigger();
 
     if (!qdma.wait_completion())
@@ -441,7 +442,7 @@ bool test_qdma_channel_ab(const uint8_t qch)
 
     if (!qdma.configure(param))
     {
-        RTT_LOG_E(TAG, "%s ch%u field%u: configure failed", who, qch, static_cast<unsigned>(qdma.trig_word_field));
+        RTT_LOG_E(TAG, "%s ch%u field%u: configure failed", who, qch, static_cast<unsigned>(qdma.getTriggerField()));
         return false;
     }
     qdma.trigger();
@@ -490,14 +491,10 @@ bool test_qdma_channel_chain(const uint8_t qch)
                                                                                                    param0,
                                                                                                    param1,
                                                                                                    qch);
-    if (!qdma.configure(param_first))
+    if (!qdma.configure({{param0,param_first},
+                                {param1, param_last}}))
     {
-        RTT_LOG_E(TAG, "%s ch%u field%u: configure failed", who, qch, static_cast<unsigned>(qdma.trig_word_field));
-        return false;
-    }
-    if (!qdma.configure(param_last))
-    {
-        RTT_LOG_E(TAG, "%s ch%u field%u: configure failed", who, qch, static_cast<unsigned>(qdma.trig_word_field));
+        RTT_LOG_E(TAG, "%s ch%u field%u: configure failed", who, qch, static_cast<unsigned>(qdma.getTriggerField()));
         return false;
     }
     qdma.trigger();
@@ -557,7 +554,7 @@ bool test_qdma_all_trigger_words(const uint8_t qdma_ch)
 
         if (!qdma.configure(param))
         {
-            RTT_LOG_E(TAG, "%s ch%u field%u: configure failed", who, qdma_ch, static_cast<unsigned>(qdma.trig_word_field));
+            RTT_LOG_E(TAG, "%s ch%u field%u: configure failed", who, qdma_ch, static_cast<unsigned>(qdma.getTriggerField()));
             return false;
         }
 
@@ -595,8 +592,6 @@ extern "C" void edma_test(void)
     for (size_t i = 0; i < BUFFER_SIZE; ++i) {
         src_buf[i] = static_cast<uint8_t>(i + 0xA5);
     }
-
-    test_qdma_all_trigger_words(3);
 
     RTT_LOG_I(TAG, "=== DMA channels A-transfer test (0..63) ===");
     uint32_t dma_ok = 0;
