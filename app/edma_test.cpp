@@ -49,6 +49,9 @@ namespace
         uint8_t channel{0};
         volatile uint32_t completed_transfers{0};
         uint32_t target_transfers{0};
+
+        volatile bool transfer_error{false};
+        HAL::EDMA::ErrorType last_error{};
     };
 
     static PingPongContext g_pingpong_ctx;
@@ -60,22 +63,17 @@ namespace
         if (!ctx) return;
 
         ctx->completed_transfers++;
-
-        // Если достигли целевого количества итераций — отключаем событие EDMA
-        if (ctx->completed_transfers >= ctx->target_transfers)
-        {
-            HAL::EDMA::disable_transfer(ctx->channel, REGS::EDMA::TRIG_MODE_EVENT);
-        }
     }
 
     void on_pingpong_error(HAL::EDMA::ErrorType err, void* context) noexcept
     {
-        (void)err;
         auto* ctx = static_cast<PingPongContext*>(context);
-        if (ctx)
-        {
-            HAL::EDMA::disable_transfer(ctx->channel, REGS::EDMA::TRIG_MODE_EVENT);
-        }
+
+        if (ctx == nullptr)
+            return;
+
+        ctx->last_error = err;
+        ctx->transfer_error = true;
     }
 }
 
@@ -244,6 +242,8 @@ bool test_dma_channel_pingpong(const uint8_t channel, const uint32_t repetitions
     g_pingpong_ctx.channel = channel;
     g_pingpong_ctx.completed_transfers = 0;
     g_pingpong_ctx.target_transfers = NUM_TRANSFERS;
+    g_pingpong_ctx.transfer_error = false;
+    g_pingpong_ctx.last_error = {};
 
     if (!dma.init(on_pingpong_completion, on_pingpong_error, &g_pingpong_ctx))
     {
@@ -263,23 +263,29 @@ bool test_dma_channel_pingpong(const uint8_t channel, const uint32_t repetitions
     dma.configure({{ ping_param_id, param_ping },
                           { pong_param_id, param_pong } });
 
-    dma.trigger(TriggerMode::TRIG_MODE_MANUAL);
-
-    uint32_t timeout_loops = 10'000'000;
-    while (g_pingpong_ctx.completed_transfers < NUM_TRANSFERS && --timeout_loops)
+    for (uint32_t transfer = 0; transfer < NUM_TRANSFERS; ++transfer)
     {
-        // Если в реальном проекте Ping-Pong триггерится периферией (I2S/Timer/Event),
-        // вызов dma.trigger() категорически НЕ НУЖЕН и даже вреден.
-        if (g_pingpong_ctx.completed_transfers < NUM_TRANSFERS) {
-            dma.trigger(TriggerMode::TRIG_MODE_MANUAL);
-        }
-        for (volatile int i = 0; i < 1000; ++i) { asm volatile("nop"); }
-    }
+        const uint32_t expected_completion = transfer + 1u;
+        uint32_t timeout_loops = 1'000'000u;
 
-    if (timeout_loops == 0) {
-        RTT_LOG_E(TAG, "%s ch%u: TIMEOUT, done %u/%u transfers", who, channel,
-                  (unsigned)g_pingpong_ctx.completed_transfers, NUM_TRANSFERS);
-        return false;
+        dma.trigger(TriggerMode::TRIG_MODE_MANUAL);
+
+        while (g_pingpong_ctx.completed_transfers < expected_completion &&
+               !g_pingpong_ctx.transfer_error && timeout_loops != 0u)
+        {
+            --timeout_loops;
+            asm volatile("nop");
+        }
+
+        if (timeout_loops == 0u)
+        {
+            RTT_LOG_E( TAG, "%s ch%u: transfer %u TIMEOUT, done %u/%u", who, static_cast<unsigned>(channel),
+                                                                             static_cast<unsigned>(transfer),
+                                                                             static_cast<unsigned>(g_pingpong_ctx.completed_transfers),
+                                                                             static_cast<unsigned>(NUM_TRANSFERS));
+
+            return false;
+        }
     }
 
     cp15_DSB_barrier();
@@ -320,6 +326,8 @@ bool test_dma_channel_selflink(const uint8_t channel, const uint32_t repetitions
     g_pingpong_ctx.channel = channel;
     g_pingpong_ctx.completed_transfers = 0;
     g_pingpong_ctx.target_transfers = NUM_TRANSFERS;
+    g_pingpong_ctx.transfer_error = false;
+    g_pingpong_ctx.last_error = {};
 
     if (!dma.init(on_pingpong_completion, on_pingpong_error, &g_pingpong_ctx)) {
         RTT_LOG_E(TAG, "%s ch%u: request failed", who, channel);
@@ -335,22 +343,42 @@ bool test_dma_channel_selflink(const uint8_t channel, const uint32_t repetitions
 
     dma.configure(param);
 
-    dma.trigger(TriggerMode::TRIG_MODE_MANUAL);
+    for (uint32_t transfer = 0; transfer < NUM_TRANSFERS; ++transfer) {
+        const uint32_t expected_completion = transfer + 1u;
+        uint32_t timeout_loops = 1'000'000u;
 
-    uint32_t timeout_loops = 10'000'000;
-    while (g_pingpong_ctx.completed_transfers < NUM_TRANSFERS && --timeout_loops)
-    {
-        // Каждое событие Manual Trigger отрабатывает один перезагруженный кадр
-        if (g_pingpong_ctx.completed_transfers < NUM_TRANSFERS) {
-            dma.trigger(TriggerMode::TRIG_MODE_MANUAL);
+        dma.trigger(TriggerMode::TRIG_MODE_MANUAL);
+
+        while (g_pingpong_ctx.completed_transfers < expected_completion &&
+               !g_pingpong_ctx.transfer_error &&
+               timeout_loops != 0u)
+        {
+            --timeout_loops;
+            asm volatile("nop");
         }
-        for (volatile int i = 0; i < 1000; ++i) { asm volatile("nop"); }
-    }
 
-    if (timeout_loops == 0) {
-        RTT_LOG_E(TAG, "%s ch%u: TIMEOUT, done %u/%u transfers", who, channel,
-                  static_cast<unsigned>(g_pingpong_ctx.completed_transfers), (unsigned)NUM_TRANSFERS);
-        return false;
+        if (g_pingpong_ctx.transfer_error)
+        {
+            RTT_LOG_E(TAG, "%s ch%u: transfer %u ERROR", who, static_cast<unsigned>(channel),
+                                                              static_cast<unsigned>(transfer));
+
+            EDMA_Diagnostics::dump_full_diagnostics(snapshot, channel,false,"EVENT_MISSED");
+
+            return false;
+        }
+
+        if (timeout_loops == 0u)
+        {
+            RTT_LOG_E(TAG,"%s ch%u: transfer %u TIMEOUT, done %u/%u",who, static_cast<unsigned>(channel),
+                                                                          static_cast<unsigned>(transfer),
+                                                                          static_cast<unsigned>(
+                                                                              g_pingpong_ctx.completed_transfers),
+                                                                          static_cast<unsigned>(NUM_TRANSFERS));
+
+            EDMA_Diagnostics::dump_full_diagnostics(snapshot, channel,false,"TIMEOUT");
+
+            return false;
+        }
     }
 
     if (!verify_buffers(who, channel)) {
